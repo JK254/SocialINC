@@ -1,6 +1,6 @@
 # Task: Create a data visualization for SII-IIS
 # Authors: Suhayl Sayed, Jecinta Kemboi
-# Date: 2022-04-13
+# Date: 2022-06-10
 
 # Notes
 # Here is a tutorial for RShiny: https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/
@@ -9,7 +9,7 @@
 # For graphing help, refer to: https://plotly.com/r/. Note that traces, values to be plotted x, have to be columns.
 # For choropleth/leaflet help, refer to: https://rstudio.github.io/leaflet/json.html
 
-#---------------------------------------------------------------------
+# iNSTALL LIBARIES--------------------------------------------------------------------
 # Install packages
 #install.packages("plotly")
 #install.packages("leaflet")
@@ -33,8 +33,38 @@ jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
 
 
 # Data loading and pre-processing------------------------------------------------
+rateDT <- read_csv("4310006901_databaseLoadingData (1).csv") %>% 
+    select(c("REF_DATE", "GEO","Sex","Age group and first officiel language spoken","Immigrant and generation status",
+             "Visible minority status","Highest certificate, diploma or degree", "Indicators","VALUE"))
 
-#####################################################
+setnames(rateDT, colnames(rateDT), c("Year", "Geography","Sex", "Age","Immigration", 
+                                         "VisMin","Degree", "Indicator", "Value"))
+#Read and rename data for average income data
+incomeDT <- read_csv("4310006801_databaseLoadingData (2).csv") %>% 
+    select(c("REF_DATE", "GEO","Sex","Age group and first officiel language spoken","Immigrant and generation status",
+             "Visible minority status","Highest certificate, diploma or degree", "Indicators","VALUE"))
+
+setnames(incomeDT, colnames(incomeDT), c("Year", "Geography","Sex", "Age","Immigration", 
+                                                         "VisMin","Degree", "Indicator", "Value"))
+
+#Read and rename data for basic needs and housing data
+basicDT <- read_csv("1310084101_databaseLoadingData.csv") %>% 
+    select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", 
+             "Indicators", "Characteristics", "VALUE"))
+
+setnames(basicDT, colnames(basicDT), c("Year", "Geography", "VisMin", "Characteristic", 
+                                         "Indicator", "Confidence","Value"))
+
+
+#Read and rename data for health and well being data
+healthDT <- read_csv("1310084101_databaseLoadingData.csv") %>% 
+    select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", 
+             "Indicators", "Characteristics", "VALUE"))
+
+setnames(healthDT, colnames(healthDT), c("Year", "Geography", "VisMin", "Characteristic", 
+                                       "Indicator", "Confidence","Value"))
+
+
 # Read and rename data for civic engagement data
 civicDT2 <- read_csv("4310006601_databaseLoadingData.csv") %>% 
     select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", 
@@ -43,39 +73,46 @@ civicDT2 <- read_csv("4310006601_databaseLoadingData.csv") %>%
 setnames(civicDT2, colnames(civicDT2), c("Year", "Geography", "VisMin", "Characteristic", 
                                        "Indicator", "Confidence","Value"))
 
-#########################################################
+
+
 # Read and rename data for civic engagement data
-civicDT <- read_csv("4310006501_databaseLoadingData.csv") %>% 
+civicDT <- read_csv("4310006501_databaseLoadingData (1).csv") %>% 
     select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", 
              "Indicators", "Statistics", "VALUE"))
 
 setnames(civicDT, colnames(civicDT), c("Year", "Geography", "VisMin", "Characteristic", 
                                        "Indicator", "Confidence","Value"))
 
-#############################################################
+
+
 # Read and rename data for representation data
-representationDT <- read_csv("4310007001_databaseLoadingData.csv") %>% 
-    select(c("REF_DATE", "GEO","Sex","Age group and first officiel language spoken","Immigrant and generation status","Visible minority status","Highest certificate, diploma or degree", "Indicators","VALUE"))
+representationDT <- read_csv("4310007001_databaseLoadingData (1).csv") %>% 
+    select(c("REF_DATE", "GEO","Sex","Age group and first officiel language spoken","Immigrant and generation status",
+             "Visible minority status","Highest certificate, diploma or degree", "Indicators","VALUE"))
 
-setnames(representationDT, colnames(representationDT), c("Year", "Geography","Sex", "Age","Immigration", "VisMin","Degree", "Indicator", "Value"))
+setnames(representationDT, colnames(representationDT), c("Year", "Geography","Sex", "Age","Immigration", 
+                                                         "VisMin","Degree", "Indicator", "Value"))
 
 
-############################################################
+
+
 # Read and rename data for youth not in employment data
-youthDT <- read_csv("4310007201_databaseLoadingData.csv") %>% 
+youthDT <- read_csv("4310007201_databaseLoadingData (1).csv") %>% 
     select(c("REF_DATE", "GEO","Sex","Age group","First official language spoken","Generation status","Visible minority status", "Indicators","VALUE"))
 
 setnames(youthDT, colnames(youthDT), c("Year", "Geography","Sex", "Age", "Language", "Immigration", "VisMin",  "Indicator", "Value"))
 
 
-#############################################################
+
+
 # Read and rename data for sense of belonging data
 belongingDT <- read_csv("4310006401_databaseLoadingData (1).csv") %>% 
     select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", "Indicators", "Statistics", "VALUE"))
 
 setnames(belongingDT, colnames(belongingDT), c("Year", "Geography", "VisMin", "Characteristic", "Indicator", "Confidence","Value"))
 
-############################################################
+
+
 # Read and rename data for employment data
 employmentDT <- read_csv("4310005901_databaseLoadingData.csv") %>% 
     select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", 
@@ -84,7 +121,8 @@ employmentDT <- read_csv("4310005901_databaseLoadingData.csv") %>%
 setnames(employmentDT, colnames(employmentDT), c("Year", "Geography", "VisMin", "Characteristic", "Indicator", "Confidence","Value"))
 
 
-##########################################################
+
+
 # Read and rename data for confidence data
 confidenceDT <- read_csv("4310006201_databaseLoadingData (1).csv") %>% 
     select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", 
@@ -93,7 +131,7 @@ confidenceDT <- read_csv("4310006201_databaseLoadingData (1).csv") %>%
 setnames(confidenceDT, colnames(confidenceDT), c("Year", "Geography", "VisMin", "Characteristic", "Indicator", "Confidence","Value"))
 
 
-##########################################################
+
 # Read and rename data for discrimination data
 discriminationDT <- read_csv("4310006101_databaseLoadingData.csv") %>% 
     select(c("REF_DATE", "GEO", "Visible minority", "Selected sociodemographic characteristics", 
@@ -102,9 +140,9 @@ discriminationDT <- read_csv("4310006101_databaseLoadingData.csv") %>%
 setnames(discriminationDT, colnames(discriminationDT), c("Year", "Geography", "VisMin", "Characteristic", "Indicator", "Confidence","Value"))
 
 
-#########################################################
+
 # Read and rename data for Education data
-educationDT <- read_csv("4310006701_databaseLoadingData (6).csv") %>% 
+educationDT <- read_csv("4310006701_databaseLoadingData.csv") %>% 
     select(c("REF_DATE", "GEO", "Sex", "Age group", 
              "First official language spoken", "Immigrant and generation status", "Visible minority status", "Indicators", 
              "VALUE"))
@@ -112,17 +150,20 @@ educationDT <- read_csv("4310006701_databaseLoadingData (6).csv") %>%
 setnames(educationDT, colnames(educationDT), c("Year", "Geography", "Sex", "Age", "Language", "Immigration", "VisMin", "Indicators", "Value"))
 
 
-##############################################################
+
+
 # Read and rename data for over qualification data
-OverQualDT <- read_csv("4310007101_databaseLoadingData.csv") %>% 
-    select(c("REF_DATE", "GEO", "Sex", "Age group", 
-             "First official language spoken", "Immigrant and generation status", "Visible minority status", "Location of study","Highest certificate, diploma or degree", "Indicators", 
+OverQualDT <- read_csv("4310007101_databaseLoadingData (1).csv") %>% 
+    select(c("REF_DATE", "GEO", "Sex", "Age group", "First official language spoken", "Immigrant and generation status",
+             "Visible minority status", "Location of study","Highest certificate, diploma or degree", "Indicators", 
              "VALUE"))
 
-setnames(OverQualDT, colnames(OverQualDT), c("Year", "Geography", "Sex", "Age", "Language", "Immigration", "VisMin", "Location", "Degree", "Indicators", "Value"))
+setnames(OverQualDT, colnames(OverQualDT), c("Year", "Geography", "Sex", "Age", "Language", "Immigration",
+                                             "VisMin", "Location", "Degree", "Indicators", "Value"))
 
 
-####################################################
+
+
 #Load Dataset for Police-reported hate crime
 polData <- read.csv("3510006601_databaseLoadingData (1).csv") %>%
     select(c("REF_DATE", "GEO",4,"VALUE"))
@@ -142,7 +183,7 @@ ui <- fluidPage(
     
     #Changes color of tabpanel from standard blue to black
     tags$style(type = "text/css", "a{color: #000000;}", style = "font-size:70px",'* {font-family: "Arial"};'),
-    
+   
     
     
     
@@ -588,7 +629,8 @@ ui <- fluidPage(
                              )
                              
                              
-                         ),
+                        
+                     ),
                          
                          
                          
@@ -598,6 +640,7 @@ ui <- fluidPage(
                          # Add the js code and button to the page
                          #extendShinyjs(text = jsResetCode, functions = "reset"),
                          actionButton("reset_button", "Reset Page"),
+                    
                      ),
                      
                      #Main Panel for displaying graphs
@@ -612,7 +655,7 @@ ui <- fluidPage(
                              helpText("Refers to people with a bachelor’s degree or above (at bachelor's level or above) who, during the current year or the year prior the census, held a position usually requiring a high school diploma or equivalency certificate or less.")
                              
                          )
-                         
+                      
                          
                      )
                  )
@@ -620,7 +663,7 @@ ui <- fluidPage(
         ),
                  
                  
-        
+    
         
         tabPanel("Groups Designated as Visible Minorities", fluid = TRUE, font = list(size = 10),
                  sidebarLayout(
@@ -703,10 +746,209 @@ ui <- fluidPage(
                                                 
                                                 
                                             ),
-                                            selected = NULL
+                                            
                              ),
 
+                             #mimi
                              
+                             conditionalPanel(
+                                 condition = "input.LM == 'Working-age population in the labour force (participation rate)'
+                                            ||input.LM == 'Working-age population in employment (employment rate)'
+                                            ||input.LM == 'Working-age population in unemployment (unemployment rate)'
+                                            ||input.LM == 'Workers working mainly full-time weeks in the previous year'",
+                                 
+                                 
+                                 selectizeInput("VM235",
+                                                label = "Visible minority status",
+                                                
+                                                
+                                                choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                                
+                                                selected = list("Chinese"),
+                                                multiple = TRUE
+                                                
+                                 ),
+                                 
+                                 selectizeInput("RateDegree",
+                                                label = "Highest certificate, diploma or degree",
+                                                choices = unique(rateDT$Degree),
+                                                
+                                                
+                                 ),
+                                 
+                                 
+                                 selectizeInput("RateGeo",
+                                                label = "Geography",
+                                                choices = unique(rateDT$Geography),
+                                                selected = "Canada"
+                                                
+                                 ),
+                                 
+                                 selectizeInput("RateImm",
+                                                label = "Immigrant and generation status",
+                                                choices = unique(rateDT$Immigration),
+                                                selected = "Canada"
+                                                
+                                 ),
+                                 
+                                 
+                                 selectizeInput("RateYear",
+                                                label = "Year",
+                                                choices = unique(rateDT$Year),
+                                                
+                                 ),
+                                 
+                                 selectizeInput("RateAgeLang",
+                                                label = "Age group and first official language spoken",
+                                                choices = unique(rateDT$Age),
+                                                
+                                                
+                                                
+                                 ),
+                                 
+                                 
+                                 selectizeInput("RateSex",
+                                                label = "Sex",
+                                                choices = unique(rateDT$Sex),
+                                                selected = "Total - Sex"
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             #end
+                             conditionalPanel(
+                                 condition = "input.LM == 'Average employment income of the population'
+                                            ||input.LM == 'Average weekly wage of paid employees'",
+                                 
+                                 
+                                 selectizeInput("VM230",
+                                                label = "Visible minority status",
+                                                
+                                                
+                                                choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                                
+                                                selected = list("Arab"),
+                                                multiple = TRUE
+                                                
+                                 ),
+                                 
+                                 selectizeInput("IncDegree1",
+                                                label = "Highest certificate, diploma or degree",
+                                                choices = unique(incomeDT$Degree),
+                                                
+                                                
+                                 ),
+                                 
+                                 
+                                 selectizeInput("IncGeo1",
+                                                label = "Geography",
+                                                choices = unique(incomeDT$Geography),
+                                                selected = "Canada"
+                                                
+                                 ),
+                                 
+                                 selectizeInput("IncImm1",
+                                                label = "Immigrant and generation status",
+                                                choices = unique(incomeDT$Immigration),
+                                                selected = "Canada"
+                                                
+                                 ),
+                                 
+                                 
+                                 selectizeInput("IncYear1",
+                                                label = "Year",
+                                                choices = unique(incomeDT$Year),
+                                                
+                                 ),
+                                 
+                                 selectizeInput("IncAgeLang1",
+                                                label = "Age group and first official language spoken",
+                                                choices = unique(incomeDT$Age),
+                                                
+                                                
+                                                
+                                 ),
+                                 
+                                 
+                                 selectizeInput("IncSex1",
+                                                label = "Gender",
+                                                choices = unique(incomeDT$Sex),
+                                                selected = "Total - Sex"
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             #end
+                             
+                             
+                             conditionalPanel(
+                                 condition = "input.LM == 'Self-employed workers in the labour force (unincorporated)'",
+                                 
+                             
+                             selectizeInput("VM155",
+                                            label = "Visible minority status",
+                                            
+                                            
+                                            choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                            
+                                            selected = list("West Asian"),
+                                            multiple = TRUE
+                                            
+                             ),
+                             
+                             selectizeInput("RepDegree1",
+                                            label = "Highest certificate, diploma or degree",
+                                            choices = unique(representationDT$Degree),
+                                            
+                                            
+                             ),
+                             
+                             
+                             selectizeInput("RepGeo1",
+                                            label = "Geography",
+                                            choices = unique(representationDT$Geography),
+                                            selected = "Canada"
+                                            
+                             ),
+                             
+                             selectizeInput("RepImm1",
+                                            label = "Immigrant and generation status",
+                                            choices = unique(representationDT$Immigration),
+                                            selected = "Canada"
+                                            
+                             ),
+                             
+                             
+                             selectizeInput("RepYear1",
+                                            label = "Year",
+                                            choices = unique(representationDT$Year),
+                                            
+                             ),
+                             
+                             selectizeInput("RepAgeLang1",
+                                            label = "Age group and first official language spoken",
+                                            choices = unique(representationDT$Age),
+                                            
+                                            
+                                            
+                             ),
+                             
+                             
+                             selectizeInput("RepSex1",
+                                            label = "Gender",
+                                            choices = unique(representationDT$Sex),
+                                            selected = "Total - Sex"
+                             ),
+                             
+                         ),
+                         
+                      
+                            
+                             
+                             
+                             #####
                              conditionalPanel(
                                  condition = "input.LM == 'Overqualified workers with a university degree'",
                                  
@@ -715,7 +957,7 @@ ui <- fluidPage(
                                  
                                  selectizeInput("VM20",
                                                 label = "Visible minority status",
-                                                choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                                choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
 		
                                                 selected = list("Total - Visible minority", "Not a visible minority"),
                                                 multiple = TRUE
@@ -782,20 +1024,17 @@ ui <- fluidPage(
                          
                          
                          
-                        # Done 
+                        # Youth not in employment, education or training (NEET) Tab 2
                        
                         
                         conditionalPanel(
                             condition = "input.LM == 'Youth not in employment, education or training (NEET)'",
-                            
-                            
-                            
-                            
+                     
                             selectizeInput("VM140",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            
-                                           selected = list("Total - Visible minority", "Not a visible minority"),
+                                           selected = list("South Asian"),
                                            multiple = TRUE
                             ),
                             
@@ -806,12 +1045,9 @@ ui <- fluidPage(
                                            
                          
                             ),
-                            
-                            
                           
-                            
                             selectizeInput("YouthImm",
-                                           label = "Groups designated by Immigration and Generational Status",
+                                           label = "Generation Status",
                                            choices = unique(youthDT$Immigration),
                                            selected = "Canada"
                                            
@@ -854,8 +1090,8 @@ ui <- fluidPage(
                             
                             selectizeInput("VM135",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
-                                           selected = list("Total - Visible minority", "Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           selected = list("Korean"),
                                            multiple = TRUE
                             ),
                             
@@ -900,7 +1136,7 @@ ui <- fluidPage(
                             
                             selectizeInput("VM130",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            selected = list("Total - Visible minority", "Not a visible minority"),
                                            multiple = TRUE
                             ),
@@ -947,7 +1183,7 @@ ui <- fluidPage(
                             
                             selectizeInput("VM135",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            selected = list("Total - Visible minority", "Not a visible minority"),
                                            multiple = TRUE
                             ),
@@ -993,7 +1229,7 @@ ui <- fluidPage(
                             
                             selectizeInput("VM130",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            selected = list("Total - Visible minority", "Not a visible minority"),
                                            multiple = TRUE
                             ),
@@ -1041,7 +1277,7 @@ ui <- fluidPage(
                             
                             selectizeInput("VM125",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            selected = list("Total - Visible minority", "Not a visible minority"),
                                            multiple = TRUE
                             ),
@@ -1091,7 +1327,7 @@ ui <- fluidPage(
                             
                             selectizeInput("VM120",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            selected = list("Total - Visible minority", "Not a visible minority"),
                                            multiple = TRUE
                             ),
@@ -1140,7 +1376,7 @@ ui <- fluidPage(
                             
                             selectizeInput("VM115",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            selected = list("Total - Visible minority", "Not a visible minority"),
                                            multiple = TRUE
                             ),
@@ -1183,12 +1419,11 @@ ui <- fluidPage(
                         
                         conditionalPanel(
                             condition = "input.LM == 'Paid employees considering their current job good for career advancement'",
-                            
-                            
+                        
                             
                             selectizeInput("VM110",
                                            label = "Visible minority status",
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            selected = list("Total - Visible minority", "Not a visible minority"),
                                            multiple = TRUE
                             ),
@@ -1238,7 +1473,7 @@ ui <- fluidPage(
                              
                              selectizeInput("VM100",
                                             label = "Visible minority status",
-                                            choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                            choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                             selected = list("Total - Visible minority", "Not a visible minority"),
                                             multiple = TRUE
                              ),
@@ -1253,10 +1488,8 @@ ui <- fluidPage(
                              selectizeInput("EmploymentGeo",
                                              label = "Geography",
                                              choices = unique(employmentDT$Geography),
-                                             selected = "Canada"
-                                                           
-       
-                                            
+                                             selected = "Canada",
+                                       
                              ),
                              
                              
@@ -1290,8 +1523,6 @@ ui <- fluidPage(
                          selectizeInput("dimTrust",
                                         label = "Indicators",
                                         choices = list(
-                                            
-                                            
                                             "Population expressing confidence in Federal Parliament",
                                             
                                             "Population expressing Confidence in the Canadian media",
@@ -1307,10 +1538,8 @@ ui <- fluidPage(
                                             "Population expressing confidence in merchants and local business people",
                                             
                                             "Population expressing confidence in banks"
-                                            
-                                            
-                                            
-                                        )
+                                          
+                                        ),
                          ),
                          
                          
@@ -1444,6 +1673,7 @@ ui <- fluidPage(
                          #TodayRep
                          
                          #Widgets for Representation Variables
+                     
                          conditionalPanel(
                              
                              condition = "input.dim == 'Representation in decision-making positions'",
@@ -1454,101 +1684,19 @@ ui <- fluidPage(
                                                            
                                                            "Percent of workers in senior management occupations",
                                                            
-                                                           "Percent of workers in specialized middle management occupations",
-                                                           
-                                                           "Percent of workers in other middle management occupations"
-                                            )
+                                                           "Percent of workers in middle management occupations" ),
+                                       
                              ),
                              
-                         
-                        #Today1
-                        
-                        
-                        
-                        
-                        
-            
-                        
-                        conditionalPanel(
-                            condition = "input.Rep == 'Percent of workers in specialized middle management occupations'",
-                            
-                            
-                            
-                            
-                            selectizeInput("VM155",
-                                           label = "Visible minority status",
-                                           #choices =unique(representationDT$VisMin),
-                                           
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
-                                           
-                                           selected = list("Total - Visible minority"),
-                                           multiple = TRUE
-                                           
-                            ),
-                            
-                            selectizeInput("RepDegree3",
-                                           label = "Highest certificate, diploma or degree",
-                                           choices = unique(representationDT$Degree),
-                                           
-                                           
-                            ),
-                            
-                            
-                            selectizeInput("RepGeo3",
-                                           label = "Geography",
-                                           choices = unique(representationDT$Geography),
-                                           selected = "Canada"
-                                           
-                            ),
-                            
-                            selectizeInput("RepImm3",
-                                           label = "Immigrant and generation status",
-                                           choices = unique(representationDT$Immigration),
-                                           selected = "Canada"
-                                           
-                            ),
-                            
-                            
-                            selectizeInput("RepYear3",
-                                           label = "Year",
-                                           choices = unique(representationDT$Year),
-                                           
-                            ),
-                            
-                            selectizeInput("RepAgeLang3",
-                                           label = "Age group and first official language spoken",
-                                           choices = unique(representationDT$Age),
-                                           
-                                           
-                                           
-                            ),
-                            
-                            
-                            selectizeInput("RepSex3",
-                                           label = "Sex",
-                                           choices = sort(unique(representationDT$Sex), decreasing = TRUE),
-                                           selected = "Total - Sex"
-                            ),
-                            
-                            
-                        ),
-                        
-                        
-                        
-                        #End
-                        conditionalPanel(
-                            condition = "input.Rep == 'Percent of workers in senior management occupations'",
-                            
-                            
-                            
+                      #mimi
                             
                             selectizeInput("VM150",
                                            label = "Visible minority status",
                                          
                                            
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                            
-                                           selected = list("Total - Visible minority"),
+                                           selected = list("West Asian"),
                                            multiple = TRUE
                                            
                             ),
@@ -1592,7 +1740,7 @@ ui <- fluidPage(
                             
                             
                             selectizeInput("RepSex2",
-                                           label = "Sex",
+                                           label = "Gender",
                                            choices = unique(representationDT$Sex),
                                            selected = "Total - Sex"
                             ),
@@ -1600,74 +1748,9 @@ ui <- fluidPage(
                             
                         ),
                         
-                        
-                        #End
-                        conditionalPanel(
-                            condition = "input.Rep == 'Percent of workers in all management occupations'",
-                            
-                            
-                            
-                            
-                            selectizeInput("VM145",
-                                           label = "Visible minority status",
-                                           #choices =unique(representationDT$VisMin),
-                                           
-                                           choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
-                                           
-                                           selected = list("Total - Visible minority", "Not a visible minority"),
-                                           multiple = TRUE
-                              
-                            ),
-                            
-                            selectizeInput("RepDegree",
-                                           label = "Highest certificate, diploma or degree",
-                                           choices = unique(representationDT$Degree),
-                                           
-                                           
-                            ),
-                            
-                            
-                            selectizeInput("RepGeo",
-                                           label = "Geography",
-                                           choices = unique(representationDT$Geography),
-                                           selected = "Canada"
-                                           
-                            ),
-                            
-                            selectizeInput("RepImm",
-                                           label = "Immigrant and generation status",
-                                           choices = unique(representationDT$Immigration),
-                                           selected = "Canada"
-                                           
-                            ),
-                            
-                            
-                            selectizeInput("RepYear",
-                                           label = "Year",
-                                           choices = unique(representationDT$Year),
-                                           
-                            ),
-                            
-                            selectizeInput("RepAgeLang",
-                                           label = "Age group and first official language spoken",
-                                           choices = unique(representationDT$Age),
-                                          
-                                           
-                                           
-                            ),
-                            
-                         
-                            selectizeInput("RepSex",
-                                           label = "Sex",
-                                           choices = sort(unique(representationDT$Sex), decreasing = TRUE),
-                                           selected = "Total - Sex"
-                            ),
-                            
-                           
-                        ),
-                        
+               
                      
-                         ),
+     
                      
                      
                          
@@ -1698,12 +1781,8 @@ ui <- fluidPage(
                                                 
                                                 "Discrimination when attending school or classes",
                             
-                                                "Hate Crime"
-                                                
-                                                
-                                                
-                                                
-                                            )
+                                                "Hate Crime"),
+                                  
                              ),
                              
                              
@@ -1761,16 +1840,14 @@ ui <- fluidPage(
                                      
                                      condition = "input.covCharacteristics == 'Gender'",
                                      
-                                     selectizeInput("covCharSpecGender",
+                                     selectizeInput("covCharSex",
                                                     label = "Gender",
                                                     choices = list('Man', 'Woman'),
                                                     
                                      ),
                                      
                                  ),
-                                 
-                                 
-                                 
+                         
                                  conditionalPanel(
                                      
                                      condition = "input.covCharacteristics == 'Immigration Status'",
@@ -1825,15 +1902,14 @@ ui <- fluidPage(
                                                 label = "Confidence Interval",
                                                 choices = unique(discriminationDT$Confidence)
                                  ),
-                                 
-                                 
                             
-                                 
-                                 
                              ),
                              
                              
-                             conditionalPanel(
+                             
+                             
+                             
+                    conditionalPanel(
                                  
                                  condition = "input.disind == 'Hate Crime'",
                                  selectizeInput("disYear",
@@ -1888,7 +1964,7 @@ ui <- fluidPage(
                      
                      
                      
-            #Civic engagement and political participation Tab 2 
+            #Civic engagement and political participation - Visible Minority  
                      
                          conditionalPanel(
                              
@@ -1903,7 +1979,7 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population members in a cultural, educational or hobby organization",
                                                 
-                                                "Percent of the population members in union or professional association",
+                                                "Percent of the population members in a union or professional association",
                                                 
                                                 "Percent of the population members in a political party or group",
                                                 
@@ -1919,7 +1995,7 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population members in an immigrant or ethnic association or club",
                                                 
-                                                "Percent of the population members in an environmental group ",
+                                                "Percent of the population members in an environmental group",
                                                 
                                                 "Percent of the population engaged in political activities",
                                                 
@@ -1929,21 +2005,136 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population voting in the last municipal election"
                                                 
-                                            )
+                                            ),
+                             
                              ),
                              
-                             #Leo
+                            
+                             selectizeInput("VM175",
+                                            label = "Visible minority status",
+                                            choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                            selected = list("Filipino"),
+                                            multiple = TRUE
+                             ),
+                             
+                             
+                             selectizeInput("CivicYear3",
+                                            label = "Year",
+                                            choices = unique(civicDT$Year),
+                                            
+                             ),      
+                             
+                             selectizeInput("CivicGeo3",
+                                            label = "Geography",
+                                            choices = unique(civicDT$Geography),
+                                            selected = "Canada"
+                                            
+                                            
+                                            
+                             ),
+                             
+                             selectizeInput("CivicCharacteristics3",
+                                            label = "Sociodemographic Characteristics",
+                                            choices = list('Age', 'Gender', 'Immigration Status', 'Generation Status', 'Language Spoken', 'Education Status'),
+                                            
+                             ),
+                             
                              conditionalPanel(
+                                 
+                                 condition = "input.CivicCharacteristics3 == 'Age'",
+                                 
+                                 selectizeInput("CivicCharSpecAge3",
+                                                label = "Age",
+                                                choices = list('Total, 15 years and over', '15 to 24 years', '25 to 64 years', '65 years and over'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.CivicCharacteristics3 == 'Gender'",
+                                 
+                                 selectizeInput("CivicCharSpecGend3",
+                                                label = "Gender",
+                                                choices = list('Man', 'Woman'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.CivicCharacteristics3 == 'Immigration Status'",
+                                 
+                                 selectizeInput("CivicCharSpecImm3",
+                                                label = "Immigration Status",
+                                                choices = list('Immigrants', 'Non-Immigrants'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.CivicCharacteristics3 == 'Generation Status'",
+                                 
+                                 selectizeInput("CivicCharSpecGen3",
+                                                label = "Immigration Status",
+                                                choices = list( 'First generation', 'Second generation', 'Third generation or more'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.CivicCharacteristics3 == 'Language Spoken'",
+                                 
+                                 selectizeInput("CivicCharSpecLang3",
+                                                label = "Language Spoken",
+                                                choices = list('First official language spoken, English only', 'First official language spoken, French only'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.CivicCharacteristics3 == 'Education Status'",
+                                 
+                                 selectizeInput("CivicCharSpecEdu3",
+                                                label = "Language Spoken",
+                                                choices = list('Secondary (high) school diploma or equivalency certificate or less', 'Postsecondary certicate or diploma (non-university)', 'University certificate or diploma'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             selectizeInput("CivicConf3",
+                                            label = "Confidence",
+                                            choices = unique(civicDT$Confidence),
+                                            
+                                            
+                             ),
+                             
+                         ),
+      
+                          conditionalPanel(
                                  condition = "input.dimCivilEngagement == 'Percent of the population voting in the last municipal election'
                                  ||input.dimCivilEngagement == 'Percent of the population voting in the last provincial election'
                                  ||input.dimCivilEngagement == 'Percent of the population voting in the last federal election'",
                                  
                                  
-                                 
                                  selectizeInput("VM170",
                                                 label = "Visible minority status",
                                                 choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
-                                                selected = list("Total - Visible minority"),
+                                                selected = list("South Asian"),
                                                 multiple = TRUE
                                  ),
                                  
@@ -1975,7 +2166,7 @@ ui <- fluidPage(
                                      
                                      selectizeInput("CivicCharSpecAge2",
                                                     label = "Age",
-                                                    choices = list('Total, 15 years and over', '15 to 24 years', '25 to 64 years', '65 years and over'),
+                                                    choices = list('Total, 18 years and over', '18 to 24 years', '25 to 64 years', '65 years and over'),
                                                     
                                      ),
                                      
@@ -2048,7 +2239,7 @@ ui <- fluidPage(
                                  
                                  selectizeInput("CivicConf2",
                                                 label = "Confidence",
-                                                choices = unique(civicDT$Confidence),
+                                                choices = unique(civicDT2$Confidence),
                                                 
                                                 
                                  ),
@@ -2056,268 +2247,10 @@ ui <- fluidPage(
                              ),
                              
                              
+                      
                              
-                             
-                             
-                             
-                             
-                             
-                             #####
-                             conditionalPanel(
-                                 condition = "input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization'",
-                                
-                                 
-                                 
-                                 selectizeInput("VM160",
-                                                label = "Visible minority status",
-                                                choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean",
-                                                               "Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
-                                                selected = list("Total - Visible minority"),
-                                                multiple = TRUE
-                                 ),
-                                 
-                                 
-                                 selectizeInput("CivicYear1",
-                                                label = "Year",
-                                                choices = unique(civicDT$Year),
-                                                
-                                 ),      
-                                 
-                                 selectizeInput("CivicGeo1",
-                                                label = "Geography",
-                                                choices = unique(civicDT$Geography),
-                                                selected = "Canada"
-                                                
-                                                
-                                                
-                                 ),
-                                 
-                                 selectizeInput("CivicCharacteristics1",
-                                                label = "Sociodemographic Characteristics",
-                                                choices = list('Age', 'Sex', 'Immigration Status', 'Generation Status', 'Language Spoken', 'Education Status'),
-                                                
-                                 ),
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics1 == 'Age'",
-                                     
-                                     selectizeInput("CivicCharSpecAge1",
-                                                    label = "Age",
-                                                    choices = list('Total, 15 years and over', '15 to 24 years', '25 to 64 years', '65 years and over'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics1 == 'Sex'",
-                                     
-                                     selectizeInput("CivicCharSpecSex1",
-                                                    label = "Sex",
-                                                    choices = list('Man', 'Woman'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics1 == 'Immigration Status'",
-                                     
-                                     selectizeInput("CivicCharSpecImm1",
-                                                    label = "Immigration Status",
-                                                    choices = list('Immigrants', 'Non-Immigrants'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics1 == 'Generation Status'",
-                                     
-                                     selectizeInput("CivicCharSpecGen1",
-                                                    label = "Immigration Status",
-                                                    choices = list( 'First generation', 'Second generation', 'Third-plus generation'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics1 == 'Language Spoken'",
-                                     
-                                     selectizeInput("CivicCharSpecLang1",
-                                                    label = "Language Spoken",
-                                                    choices = list('First official language spoken, English only', 'First official language spoken, French only'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics1 == 'Education Status'",
-                                     
-                                     selectizeInput("CivicCharSpecEdu1",
-                                                    label = "Language Spoken",
-                                                    choices = list('High school diploma or a high school equivalency certificate or less', 'Postsecondary certicate or diploma (non-university)', 'University certificate or diploma'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                             
-                                 selectizeInput("CivicConf1",
-                                                label = "Confidence",
-                                                choices = unique(civicDT$Confidence),
-                                                
-                                                
-                                 ),
-                                 
-                             ),
-                           
-                             
-                             
-                             
-                             
-                             conditionalPanel(
-                                 condition = "input.dimCivilEngagement == 'Percent of the population members in a sports or recreational organization'",
-                                 
-                                 
-                                 
-                                 selectizeInput("VM161",
-                                                label = "Visible minority status",
-                                                choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
-                                                selected = list("Total - Visible minority"),
-                                                multiple = TRUE
-                                 ),
-                                 
-                                 
-                                 selectizeInput("CivicYear2",
-                                                label = "Year",
-                                                choices = unique(civicDT$Year),
-                                                
-                                 ),      
-                                 
-                                 selectizeInput("CivicGeo2",
-                                                label = "Geography",
-                                                choices = unique(civicDT$Geography),
-                                                selected = "Canada"
-                                                
-                                                
-                                 ),              
-                                
-                                 
-                                 
-                                 selectizeInput("CivicCharacteristics2",
-                                                label = "Sociodemographic Characteristics",
-                                                choices = list('Age', 'Sex', 'Immigration Status', 'Generation Status', 'Language Spoken', 'Education Status'),
-                                                
-                                 ),
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics2 == 'Age'",
-                                     
-                                     selectizeInput("CivicCharSpecAge2",
-                                                    label = "Age",
-                                                    choices = list('Total, 15 years and over', '15 to 24 years', '25 to 64 years', '65 years and over'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics2 == 'Sex'",
-                                     
-                                     selectizeInput("CivicCharSpecSex2",
-                                                    label = "Sex",
-                                                    choices = list('Man', 'Woman'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics2 == 'Immigration Status'",
-                                     
-                                     selectizeInput("CivicCharSpecImm2",
-                                                    label = "Immigration Status",
-                                                    choices = list('Immigrants', 'Non-Immigrants'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics2 == 'Generation Status'",
-                                     
-                                     selectizeInput("CivicCharSpecGen2",
-                                                    label = "Immigration Status",
-                                                    choices = list( 'First generation', 'Second generation', 'Third-plus generation'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics2 == 'Language Spoken'",
-                                     
-                                     selectizeInput("CivicCharSpecLang2",
-                                                    label = "Language Spoken",
-                                                    choices = list('First official language spoken, English only', 'First official language spoken, French only'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                 
-                                 conditionalPanel(
-                                     
-                                     condition = "input.CivicCharacteristics2 == 'Education Status'",
-                                     
-                                     selectizeInput("CivicCharSpecEdu2",
-                                                    label = "Language Spoken",
-                                                    choices = list('High school diploma or a high school equivalency certificate or less', 'Postsecondary certicate or diploma (non-university)', 'University certificate or diploma'),
-                                                    
-                                     ),
-                                     
-                                 ),
-                                 
-                                
-                                 selectizeInput("CivicConf2",
-                                                label = "Confidence",
-                                                choices = unique(civicDT$Confidence),
-                                                
-                                                
-                                 ),
-                                 
-                             ),
-                             
-                             
-                             
-                              
-                         ),
-                         
-                     
-                     
-                     
-                    #Basic needs and housing Tab 2  
+                    
+                    #Basic needs and housing VisMin  
                          conditionalPanel(
                              
                              condition = "input.dim == 'Basic needs and housing'",
@@ -2325,32 +2258,95 @@ ui <- fluidPage(
                              selectizeInput("dimBasicNeeds",
                                             label = "Indicators",
                                             choices = list(
-                                                "Percent of the population living in a dwelling owned by one member of the household ",
-                                                
-                                                "Percent of the population living in core need household",
-                                                
-                                                "Percent of the population living in suitable housing",
-                                                
-                                                "Percent of the population living in an affordable housing",
                                                 
                                                 "Percent of the population living in a food-secure household",
                                                 
-                                                " Percent of the population living in a household with marginal food security",
+                                                "Percent of the population living in a household with marginal food security",
                                                 
                                                 "Percent of the population living in a food-insecure household, moderate or severe",
                                                 
                                                 "Percent of the population living in a household with moderate food insecurity",
                                                 
-                                                " Percent of the population living in a household with severe food insecurity"
+                                                "Percent of the population living in a household with severe food insecurity"),
+                                
+                             ),
+                             
+                             selectizeInput("basicYear",
+                                            label = "Year",
+                                            choices = unique(basicDT$'Year')
+                             ),
+                             
+                             selectizeInput("basicGeo",
+                                            label = "Geography",
+                                            choices = unique(basicDT$'Geography')
+                             ),
+                             
+                             
+                             
+                             
+                             selectizeInput("VM185",
+                                            label = "Visible minority status",
+                                            choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                            selected = list("Latin American"),
+                                            multiple = TRUE
+                             ),
+                             
+                             selectizeInput("basicCharacteristics",
+                                            label = "Selected sociodemographic characteristics",
+                                            choices = list('Age', 'Gender', 'Immigration Status'),
+                                            
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.basicCharacteristics == 'Age'",
+                                 
+                                 selectizeInput("basicCharSpecAge",
+                                                label = "Age",
+                                                choices = list('Total, 12 years and over', '12 to 17 years', '18 to 64 years', '65 years and over'),
                                                 
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.basicCharacteristics == 'Gender'",
+                                 
+                                 selectizeInput("basicCharSpecSex",
+                                                label = "Gender",
+                                                choices = list('Total, by gender of person','Men', 'Women'),
                                                 
-                                            )
-                             )
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.basicCharacteristics == 'Immigration Status'",
+                                 
+                                 selectizeInput("basicCharSpecImm",
+                                                label = "Immigration Status",
+                                                choices = list('Total, by immigration status','Landed immigrants','Immigrant, less than 10 years in Canada','Immigrant, 10 or more years in Canada','Born in Canada'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             selectizeInput("basicConfidence",
+                                            label = "Confidence Interval",
+                                            choices = unique(basicDT$'Confidence')
+                             ),
+                             
+                             
+                             
+                          
                              
                          ),
                          
                          
-                     
+                   
                      
                      #Health and wellbeing Tab 2
                          conditionalPanel(
@@ -2360,7 +2356,7 @@ ui <- fluidPage(
                              selectizeInput("dimHealth",
                                             label = "Indicators",
                                             choices = list(
-                                                " Percent of the population reporting very good or excellent general health",
+                                                "Percent of the population reporting very good or excellent general health",
                                                 
                                                 "Percent of the population reporting fair or poor general health",
                                                 
@@ -2370,18 +2366,97 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population reporting their life stressful",
                                                 
-                                                "Percent of the population satisfied with life as a whole",
+                                                "Percent of the population reporting life satisfaction, satisfied or very satisfied",
                                                 
-                                                "Percent of the population predicting their life opportunities will improve in the next 5 years"
+                                                "Percent of the population reporting having a regular healthcare provider",
+                                                
+                                                "Percent of the population reporting no need for mental health care",
+                                                
+                                                "Percent of the population reporting all needs met for mental health care",
+                                                
+                                                "Percent of the population reporting needs partially met for mental health care",
+                                                
+                                                "Percent of the population reporting needs partially met or needs not met for mental health care",
+                                                
+                                                "Percent of the population reporting needs not met for mental health care",
+                                                
+                                                "Percent of the population reporting unmet health care needs"),
                                                 
                                                 
-                                                
-                                            )
-                             )
+                                   
+                             ),
                              
-                         ),
+                      
+                             selectizeInput("healthYear",
+                                            label = "Year",
+                                            choices = unique(healthDT$'Year')
+                             ),
+                             
+                             selectizeInput("healthGeo",
+                                            label = "Geography",
+                                            choices = unique(healthDT$'Geography')
+                             ),
+                       
+                             
+                             selectizeInput("VM180",
+                                            label = "Visible minority status",
+                                            choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                            selected = list("Latin American"),
+                                            multiple = TRUE
+                             ),
+                             
+                             selectizeInput("healthCharacteristics",
+                                            label = "Selected sociodemographic characteristics",
+                                            choices = list('Age', 'Gender', 'Immigration Status'),
+                                            
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.healthCharacteristics == 'Age'",
+                                 
+                                 selectizeInput("healthCharSpecAge",
+                                                label = "Age",
+                                                choices = list('Total, 12 years and over', '12 to 17 years', '18 to 64 years', '65 years and over'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.healthCharacteristics == 'Gender'",
+                                 
+                                 selectizeInput("healthCharSpecSex",
+                                                label = "Gender",
+                                                choices = list('Total, by gender of person','Men', 'Women'),
+                                                
+                                 ),
+                                 
+                             ),
+                      
+                             conditionalPanel(
+                                 
+                                 condition = "input.healthCharacteristics == 'Immigration Status'",
+                                 
+                                 selectizeInput("healthCharSpecImm",
+                                                label = "Immigration Status",
+                                                choices = list('Total, by immigration status','Landed immigrants','Immigrant, less than 10 years in Canada','Immigrant, 10 or more years in Canada','Born in Canada'),
+                                                
+                                 ),
+                                 
+                             ),
+                            
+                          
+                             selectizeInput("healthConfidence",
+                                            label = "Confidence Interval",
+                                            choices = unique(healthDT$'Confidence')
+                             ),
+                             
                          
+                             ),
                          
+                        
                      
                          
                  # Income and wealth Tab 2 
@@ -2412,7 +2487,7 @@ ui <- fluidPage(
                          
                      
                      
-                     #Social connections and personnal networks Tab 2
+                     #Social connections and personal networks/ VisMin
                          conditionalPanel(
                              
                              condition = "input.dim == 'Social connections and personnal networks'",
@@ -2420,6 +2495,16 @@ ui <- fluidPage(
                              selectizeInput("dimSocial",
                                             label = "Indicators",
                                             choices = list(
+                                                "Population reporting that most people can be trusted",
+                                                
+                                                "Population reporting strong sense of belonging to their local community",
+                                                
+                                                "Population reporting strong sense of belonging to their town or city",
+                                                
+                                                "Population reporting strong sense of belonging to their province",
+                                                
+                                                "Population reporting strong sense of belonging to Canada",
+                                                
                                                 "Percent of the population living alone",
                                                 
                                                 "Median size of a personal local network with close ties", 
@@ -2438,24 +2523,20 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population with a personal weak-ties network of 20 or more people ",
                                                 
-                                                "Percent of the population with a personal ethnically-diverse network",
+                                                "Percent of the population with a personal ethnically-diverse network"
                                                 
-                                                "Population reporting that most people can be trusted",
-                                                
-                                                "Population reporting strong sense of belonging to their local community",
-                                                
-                                                "Population reporting strong sense of belonging to their town or city",
-                                                
-                                                "Population reporting strong sense of belonging to their province",
-                                                
-                                                "Population reporting strong sense of belonging to Canada"
-                                                
-                                                
-                                                
-                                                
-                                                
-                                            )
+                                              
+                          
+                                            ),
                              ),
+                             
+                             selectizeInput("VM401",
+                                            label = "Visible minority status",
+                                            choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                            selected = list("Black"),
+                                            multiple = TRUE
+                             ),
+                             
                              
                              selectizeInput("confYearS",
                                             label = "Year",
@@ -2468,15 +2549,7 @@ ui <- fluidPage(
                              ),
                              
                              
-                             
-                             
-                             selectizeInput("VM401",
-                                            label = "Visible minority status",
-                                            choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
-                                            selected = list("Black"),
-                                            multiple = TRUE
-                             ),
-                             
+                            
                              selectizeInput("confCharacteristics",
                                             label = "Selected sociodemographic characteristics",
                                             choices = list('Age', 'Gender', 'Immigration Status', 'Generation Status', 'Language Spoken', 'Education Status'),
@@ -2574,7 +2647,7 @@ ui <- fluidPage(
            
                         
                          
-                         
+                #mimi         
             #Education,training and skills indicator Tab 2
                          conditionalPanel(
                              
@@ -2594,31 +2667,22 @@ ui <- fluidPage(
                                                 
                                                 "Population with bachelor’s degree",
                                                 
-                                                "Population with master’s degree or earned doctorate",
-                                                
-                                                "Knowledge of official languages, English only",
-                                                
-                                                "Knowledge of official languages, French only",
-                                                
-                                                "Knowledge of official languages, English and French",
-                                                
-                                                "Knowledge of official languages, neither English nor French",
-                                                
-                                                "Received a formal training paid by the employer in the past 12 months",
-                                                
-                                                "Received an informal on-the-job training (from co-workers or supervisors) in the past 12 months"
+                                                "Population with master’s degree or earned doctorate"
                                                 
                                                 
-                                            )
+                                                
+                                            ),
                              ),
                              
                              
                              conditionalPanel(
-                                 condition = "input.dimEducation4 == 'Population with bachelor’s degree' || 'Population with no certificate, diploma or degree' || 'Population with high school diploma or equivalency certificate' || 'Population with postsecondary certificate or diploma below bachelor level' || 'Population with bachelor’s degree or above' || 'Population with master’s degree or earned doctorate' ",
-                                 
-                                 
-                                 
-                                 
+                                 condition = "input.dimEducation4 == 'Population with bachelor’s degree' 
+                                 ||input.dimEducation4 =='Population with no certificate, diploma or degree' 
+                                 ||input.dimEducation4 == 'Population with high school diploma or equivalency certificate' 
+                                 ||input.dimEducation4 =='Population with postsecondary certificate or diploma below bachelor level' 
+                                 ||input.dimEducation4 == 'Population with bachelor’s degree or above' 
+                                 ||input.dimEducation4 == 'Population with master’s degree or earned doctorate' ",
+                       
                                  selectizeInput("VM10",
                                                 label = "Visible Minority Group",
                                                 choices = unique(educationDT$VisMin),
@@ -2656,7 +2720,7 @@ ui <- fluidPage(
                                  ),
                                  
                                  selectizeInput("eduSex2",
-                                                label = "Sex",
+                                                label = "Gender",
                                                 choices = sort(unique(educationDT$Sex), decreasing = TRUE),
                                                 selected = "Total - Sex"
                                  ),
@@ -2768,9 +2832,617 @@ ui <- fluidPage(
          mainPanel(
                          
          h2("Groups Designated as Visible Minorities"),
-                       
-           
-        #Leo
+        
+         #sasa
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with severe food insecurity' & input.basicCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasic5", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with severe food insecurity' & input.basicCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicAge5", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with severe food insecurity' & input.basicCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicSex5", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         
+         
+         
+         
+         ####
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with moderate food insecurity' & input.basicCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasic4", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with moderate food insecurity' & input.basicCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicAge4", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with moderate food insecurity' & input.basicCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicSex4", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         
+         
+         
+         
+         ###
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a food-insecure household, moderate or severe' & input.basicCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasic3", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a food-insecure household, moderate or severe' & input.basicCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicAge3", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a food-insecure household, moderate or severe' & input.basicCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicSex3", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         
+         
+         ####
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with marginal food security' & input.basicCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasic2", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with marginal food security' & input.basicCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicAge2", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a household with marginal food security' & input.basicCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicSex2", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         
+         ###
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a food-secure household' & input.basicCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasic1", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a food-secure household' & input.basicCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicAge1", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Basic needs and housing' & input.dimBasicNeeds == 'Percent of the population living in a food-secure household' & input.basicCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarBasicSex1", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         ##
+         
+        ###########################################
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting unmet health care needs' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth13", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting unmet health care needs' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge13", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting unmet health care needs' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex13", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         ######
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting needs not met for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth12", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting needs not met for mental health care' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge12", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting needs not met for mental health care' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex12", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         
+         
+         
+         ####
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting needs partially met or needs not met for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth11", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting needs partially met or needs not met for mental health care' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge11", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting needs partially met or needs not met for mental health care' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex11", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+        
+         
+         ###
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting all needs met for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth10", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting all needs met for mental health care' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge10", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting all needs met for mental health care' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex10", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         
+         
+         ###
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting no need for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth9", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting no need for mental health care' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge9", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting no need for mental health care' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex9", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         ###
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting having a regular healthcare provider' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth8", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting having a regular healthcare provider' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge8", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting having a regular healthcare provider' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex8", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         ####
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting life satisfaction, satisfied or very satisfied' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth7", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting life satisfaction, satisfied or very satisfied' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge7", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting life satisfaction, satisfied or very satisfied' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex7", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         ###
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting their life stressful' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth6", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting their life stressful' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge6", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting their life stressful' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex6", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         ##
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting fair or poor mental health' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth4", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting fair or poor mental health' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge4", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting fair or poor mental health' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex4", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         ###
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting very good or excellent mental health' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth3", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting very good or excellent mental health' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge3", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting very good or excellent mental health' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex3", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         
+         ###
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting fair or poor general health' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth2", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting fair or poor general health' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge2", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting fair or poor general health' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex2", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         
+         ####
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting very good or excellent general health' & input.healthCharacteristics == 'Immigration Status'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealth1", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting very good or excellent general health' & input.healthCharacteristics == 'Age'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthAge1", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         conditionalPanel(
+             
+             condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting very good or excellent general health' & input.healthCharacteristics == 'Gender'",
+             br(),
+             br(),
+             plotlyOutput("sBarHealthSex1", inline = TRUE, width = 700, height = 500),
+             br(),
+             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+             
+         ),
+         #####
         
         conditionalPanel(
             
@@ -3341,8 +4013,886 @@ ui <- fluidPage(
              
          ),
          
-        #Leo
+#################Leo
+
+    
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population engaged in political activities' & input.CivicCharacteristics3 == 'Immigration Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivic17", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population engaged in political activities' & input.CivicCharacteristics3 == 'Age'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicAge17", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population engaged in political activities' & input.CivicCharacteristics3 == 'Gender'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicSex17", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population engaged in political activities' & input.CivicCharacteristics3 == 'Generation Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicGen17", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population engaged in political activities' & input.CivicCharacteristics3 == 'Language Spoken'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicLang17", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population engaged in political activities' & input.CivicCharacteristics3 == 'Education Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicEdu17", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+
+
+
+
+
+####
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an environmental group' & input.CivicCharacteristics3 == 'Immigration Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivic16", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an environmental group' & input.CivicCharacteristics3 == 'Age'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicAge16", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an environmental group' & input.CivicCharacteristics3 == 'Gender'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicSex16", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an environmental group' & input.CivicCharacteristics3 == 'Generation Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicGen16", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an environmental group' & input.CivicCharacteristics3 == 'Language Spoken'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicLang16", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an environmental group' & input.CivicCharacteristics3 == 'Education Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicEdu16", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+
+
+        #####
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an immigrant or ethnic association or club' & input.CivicCharacteristics3 == 'Immigration Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivic15", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an immigrant or ethnic association or club' & input.CivicCharacteristics3 == 'Age'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicAge15", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an immigrant or ethnic association or club' & input.CivicCharacteristics3 == 'Gender'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicSex15", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an immigrant or ethnic association or club' & input.CivicCharacteristics3 == 'Generation Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicGen15", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an immigrant or ethnic association or club' & input.CivicCharacteristics3 == 'Language Spoken'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicLang15", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in an immigrant or ethnic association or club' & input.CivicCharacteristics3 == 'Education Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicEdu15", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+########
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a youth organization' & input.CivicCharacteristics3 == 'Immigration Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivic14", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a youth organization' & input.CivicCharacteristics3 == 'Age'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicAge14", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a youth organization' & input.CivicCharacteristics3 == 'Gender'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicSex14", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a youth organization' & input.CivicCharacteristics3 == 'Generation Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicGen14", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a youth organization' & input.CivicCharacteristics3 == 'Language Spoken'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicLang14", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a youth organization' & input.CivicCharacteristics3 == 'Education Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicEdu14", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+        #####
+    
+
+###Number 13 has an error and slows down the program
+
+
+        #############
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a humanitarian or charitable organization or service club' & input.CivicCharacteristics3 == 'Immigration Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivic12", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a humanitarian or charitable organization or service club' & input.CivicCharacteristics3 == 'Age'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicAge12", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a humanitarian or charitable organization or service club' & input.CivicCharacteristics3 == 'Gender'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicSex12", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a humanitarian or charitable organization or service club' & input.CivicCharacteristics3 == 'Generation Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicGen12", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a humanitarian or charitable organization or service club' & input.CivicCharacteristics3 == 'Language Spoken'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicLang12", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a humanitarian or charitable organization or service club' & input.CivicCharacteristics3 == 'Education Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicEdu12", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+
+
+
+  #####
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a school group, neighbourhood, civic or community association' & input.CivicCharacteristics3 == 'Immigration Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivic11", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a school group, neighbourhood, civic or community association' & input.CivicCharacteristics3 == 'Age'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicAge11", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a school group, neighbourhood, civic or community association' & input.CivicCharacteristics3 == 'Gender'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicSex11", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a school group, neighbourhood, civic or community association' & input.CivicCharacteristics3 == 'Generation Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicGen11", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a school group, neighbourhood, civic or community association' & input.CivicCharacteristics3 == 'Language Spoken'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicLang11", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a school group, neighbourhood, civic or community association' & input.CivicCharacteristics3 == 'Education Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicEdu11", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+
+            ########
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a religious-affiliated group' & input.CivicCharacteristics3 == 'Immigration Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivic10", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a religious-affiliated group' & input.CivicCharacteristics3 == 'Age'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicAge10", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a religious-affiliated group' & input.CivicCharacteristics3 == 'Gender'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicSex10", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a religious-affiliated group' & input.CivicCharacteristics3 == 'Generation Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicGen10", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a religious-affiliated group' & input.CivicCharacteristics3 == 'Language Spoken'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicLang10", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+conditionalPanel(
+    
+    condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a religious-affiliated group' & input.CivicCharacteristics3 == 'Education Status'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarCivicEdu10", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+    
+),
+
+
+
+
+                #####
         
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a political party or group' & input.CivicCharacteristics3 == 'Immigration Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivic9", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a political party or group' & input.CivicCharacteristics3 == 'Age'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicAge9", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a political party or group' & input.CivicCharacteristics3 == 'Gender'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicSex9", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a political party or group' & input.CivicCharacteristics3 == 'Generation Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicGen9", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a political party or group' & input.CivicCharacteristics3 == 'Language Spoken'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicLang9", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a political party or group' & input.CivicCharacteristics3 == 'Education Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicEdu9", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    
+         ###
+    
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a union or professional association' & input.CivicCharacteristics3 == 'Immigration Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivic8", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a union or professional association' & input.CivicCharacteristics3 == 'Age'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicAge8", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a union or professional association' & input.CivicCharacteristics3 == 'Gender'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicSex8", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a union or professional association' & input.CivicCharacteristics3 == 'Generation Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicGen8", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a union or professional association' & input.CivicCharacteristics3 == 'Language Spoken'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicLang8", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a union or professional association' & input.CivicCharacteristics3 == 'Education Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicEdu8", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    
+    
+    
+    
+        ####
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a cultural, educational or hobby organization' & input.CivicCharacteristics3 == 'Immigration Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivic7", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a cultural, educational or hobby organization' & input.CivicCharacteristics3 == 'Age'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicAge7", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a cultural, educational or hobby organization' & input.CivicCharacteristics3 == 'Gender'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicSex7", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a cultural, educational or hobby organization' & input.CivicCharacteristics3 == 'Generation Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicGen7", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a cultural, educational or hobby organization' & input.CivicCharacteristics3 == 'Language Spoken'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicLang7", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a cultural, educational or hobby organization' & input.CivicCharacteristics3 == 'Education Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicEdu7", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    
+    
+    
+        #######
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics3 == 'Immigration Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivic6", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics3 == 'Age'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicAge6", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics3 == 'Gender'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicSex6", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics3 == 'Generation Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicGen6", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics3 == 'Language Spoken'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicLang6", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics3 == 'Education Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicEdu6", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    
+    
+    
+    
+    
+    
+    
+         ####
+    
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a sports or recreational organization' & input.CivicCharacteristics3 == 'Immigration Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivic5", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a sports or recreational organization' & input.CivicCharacteristics3 == 'Age'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicAge5", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a sports or recreational organization' & input.CivicCharacteristics3 == 'Gender'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicSex5", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a sports or recreational organization' & input.CivicCharacteristics3 == 'Generation Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicGen5", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a sports or recreational organization' & input.CivicCharacteristics3 == 'Language Spoken'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicLang5", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    conditionalPanel(
+        
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members in a sports or recreational organization' & input.CivicCharacteristics3 == 'Education Status'",
+        
+        br(),
+        br(),
+        plotlyOutput("sBarCivicEdu5", inline = TRUE, width = 700, height = 500),
+        br(),
+        helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+        
+    ),
+    
+        
+            
+    
+    
+    
+        ###
     conditionalPanel(
         
         condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population voting in the last provincial election' & input.CivicCharacteristics2 == 'Immigration Status'",
@@ -3379,7 +4929,7 @@ ui <- fluidPage(
     ),
     conditionalPanel(
         
-        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population voting in the last provinciall election' & input.CivicCharacteristics2 == 'Generation Status'",
+        condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population voting in the last provincial election' & input.CivicCharacteristics2 == 'Generation Status'",
         
         br(),
         br(),
@@ -3556,94 +5106,122 @@ ui <- fluidPage(
         
     ),
     
-         
-                         
-                         ###
-                         conditionalPanel(
-                             
-                             condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics1 == 'Immigration Status'",
-                             
-                             br(),
-                             br(),
-                             plotlyOutput("sBarCivic1", inline = TRUE, width = 700, height = 500),
-                             br(),
-                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
-                             
-                         ),
-                         
-                         conditionalPanel(
-                             
-                             condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics1 == 'Age'",
-                             
-                             br(),
-                             br(),
-                             plotlyOutput("sBarCivicAge1", inline = TRUE, width = 700, height = 500),
-                             br(),
-                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
-                             
-                         ),
-                         conditionalPanel(
-                             
-                             condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics1 == 'Gender'",
-                             
-                             br(),
-                             br(),
-                             plotlyOutput("sBarCivicSex1", inline = TRUE, width = 700, height = 500),
-                             br(),
-                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
-                             
-                         ),
-                         conditionalPanel(
-                             
-                             condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics1 == 'Generation Status'",
-                             
-                             br(),
-                             br(),
-                             plotlyOutput("sBarCivicGen1", inline = TRUE, width = 700, height = 500),
-                             br(),
-                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
-                             
-                         ),
-                         conditionalPanel(
-                             
-                             condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics1 == 'Language Spoken'",
-                             
-                             br(),
-                             br(),
-                             plotlyOutput("sBarCivicLang1", inline = TRUE, width = 700, height = 500),
-                             br(),
-                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
-                             
-                         ),
-                         conditionalPanel(
-                             
-                             condition = "input.dim == 'Civic engagement and political participation' & input.dimCivilEngagement == 'Percent of the population members of at least one civic group or organization' & input.CivicCharacteristics1 == 'Education Status'",
-                             
-                             br(),
-                             br(),
-                             plotlyOutput("sBarCivicEdu1", inline = TRUE, width = 700, height = 500),
-                             br(),
-                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
-                             
-                         ),
-                         
-                         #end
-                         
-                         
-                         
-                         
-                         
+#########################
+
+#mimi 
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Workers working mainly full-time weeks in the previous year'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarRate4", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+    
+),
+
+
+#end
+conditionalPanel(
+    
+    condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Working-age population in unemployment (unemployment rate)'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarRate3", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+    
+),
+
+#end
+conditionalPanel(
+    
+    condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Working-age population in employment (employment rate)'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarRate2", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+    
+),
+
+
+#end
+conditionalPanel(
+    
+    condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Working-age population in the labour force (participation rate)'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarRate1", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+    
+),
+
+#end
+
+conditionalPanel(
+    
+    condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Average weekly wage of paid employees'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarInc2", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Censuses of population, 2006 and 2016; National Household Survey, 2011")
+    
+),
+
+
+#end
+conditionalPanel(
+    
+    condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Average employment income of the population'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarInc1", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Censuses of population, 2006 and 2016; National Household Survey, 2011")
+    
+),
+
+
+
+
+#end
+conditionalPanel(
+    
+    condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Self-employed workers in the labour force (unincorporated)'",
+    
+    br(),
+    br(),
+    plotlyOutput("sBarRep4", inline = TRUE, width = 700, height = 500),
+    br(),
+    helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+    
+),
+
+
                     
+
+
+###################
                         
                          conditionalPanel(
                              
-                             condition = "input.dim == 'Representation in decision-making positions' & input.Rep == 'Percent of workers in specialized middle management occupations'",
+                             condition = "input.dim == 'Representation in decision-making positions' & input.Rep == 'Percent of workers in middle management occupations'",
                              
                              br(),
                              br(),
                              plotlyOutput("sBarRep3", inline = TRUE, width = 700, height = 500),
                              br(),
-                             helpText("Note: Source.")
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
                              
                          ),
                          
@@ -3659,7 +5237,7 @@ ui <- fluidPage(
                              br(),
                              plotlyOutput("sBarRep2", inline = TRUE, width = 700, height = 500),
                              br(),
-                             helpText("Note: Source.")
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
                              
                          ),
                          
@@ -3675,12 +5253,13 @@ ui <- fluidPage(
                              br(),
                              plotlyOutput("sBarRep1", inline = TRUE, width = 700, height = 500),
                              br(),
-                             helpText("Note: Source.")
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
                              
                          ),
                          
                          
                          
+##################################
                          conditionalPanel(
                              
                              condition = "input.dim == 'Participation in the Labour Market' & input.LM == 'Youth not in employment, education or training (NEET)'",
@@ -3689,7 +5268,7 @@ ui <- fluidPage(
                              br(),
                              plotlyOutput("sBarYouth", inline = TRUE, width = 700, height = 500),
                              br(),
-                             helpText("Note: Source.")
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
                              
                          ),
                          
@@ -3801,7 +5380,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarClass", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarClass2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -3817,42 +5396,45 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarClassAge", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarClassAge2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
-                         
-                         
+
                          conditionalPanel(
-                             
-                             condition = "input.dim == 'Discrimination and victimization' & input.disind == 'Discrimination when attending school or classes' &  input.covCharacteristics == 'Gender'" ,
-                             br(),
-                             
-                             h3("Discrimination when attending school or classes"),
-                             br(),
-                             
-                             fluidRow(
-                                 splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarClassGender", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarClassGender2", inline = TRUE, width = 400, height = 500))
-                             ),
-                             
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
-                             
-                         ),
+                                
+                                condition = "input.dim == 'Discrimination and victimization' & input.disind == 'Discrimination when attending school or classes' &  input.covCharacteristics == 'Gender'" ,
+                                br(),
+                                
+                                h3("Discrimination when attending school or classes"),
+                                br(),
+                                
+                                fluidRow(
+                                    splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarClassGender", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarClassGender2", inline = TRUE, width = 400, height = 500))
+                                ),
+                                
+                                helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                                
+                            ),
+
+                            conditionalPanel(
+                                
+                                condition = "input.dim == 'Discrimination and victimization' & input.disind == 'Discrimination when attending school or classes' &  input.covCharacteristics == 'Generation Status'" ,
+                                br(),
+                                
+                                h3("Discrimination when attending school or classes"),
+                                br(),
+                                
+                                fluidRow(
+                                    splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarClassGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarClassGen2", inline = TRUE, width = 400, height = 500))
+                                ),
+                                
+                                helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                                
+                            ),
+
+
                          
-                         conditionalPanel(
-                             
-                             condition = "input.dim == 'Discrimination and victimization' & input.disind == 'Discrimination when attending school or classes' &  input.covCharacteristics == 'Generation Status'" ,
-                             br(),
-                             
-                             h3("Discrimination when attending school or classes"),
-                             br(),
-                             
-                             fluidRow(
-                                 splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarClassGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarClassGen2", inline = TRUE, width = 400, height = 500))
-                             ),
-                             
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
-                             
-                         ),
+
                          
                          
                          conditionalPanel(
@@ -3906,7 +5488,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarBan", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarBan2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -3922,7 +5504,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarBanAge", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarBanAge2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -3939,7 +5521,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarBanSex", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarBanSex2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -3955,7 +5537,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarBanGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarBanGen2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4012,7 +5594,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarPol", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarPol2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4028,7 +5610,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarPolAge", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarPolAge2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4045,7 +5627,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarPolSex", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarPolSex2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4061,7 +5643,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarPolGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarPolGen2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4118,7 +5700,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarJob", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarJob2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4134,7 +5716,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarJobAge", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarJobAge2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4151,7 +5733,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarJobSex", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarJobSex2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4167,7 +5749,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarJobGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarJobGen2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4223,7 +5805,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarLang", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarLang2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4239,7 +5821,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarLangAge", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarLangAge2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4256,7 +5838,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarLangSex", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarLangSex2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4272,7 +5854,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarLangGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarLangGen2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4328,7 +5910,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarRel", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarRel2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4344,7 +5926,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarRelAge", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarRelAge2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4361,7 +5943,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarRelSex", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarRelSex2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4377,7 +5959,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarRelGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarRelGen2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4430,7 +6012,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarCol", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarCol2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4446,7 +6028,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarColAge", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarColAge2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4463,7 +6045,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarColSex", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarColSex2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -4479,7 +6061,7 @@ ui <- fluidPage(
                                  splitLayout(cellWidths = c("50%", "50%"), plotlyOutput("sBarColGen", inline = TRUE, width = 400, height = 500), plotlyOutput("sBarColGen2", inline = TRUE, width = 400, height = 500))
                              ),
                              
-                             helpText("Source: General Social Survey (GSS), cycle 35, Social Identity. Years available: 2020")
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
                              
                          ),
                          
@@ -5307,20 +6889,83 @@ ui <- fluidPage(
                                             selected = NULL
                              ),
                              
+                        conditionalPanel(
+                            condition = "input.LM2 == 'Self-employed workers in the labour force (unincorporated)'",
+                                 
+                                 selectizeInput("RepImm2",
+                                                label = "Immigrant and generation status",
+                                                choices = unique(representationDT$Immigration),
+                                                selected = ("Immigrants"),
+                                                multiple = TRUE
+                                        
+                                 ),
+                                 
+                               
+                            selectizeInput("VM190",
+                                           label = "Visible minority status",
+                                           
+                                           choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                           
+                                           selected = list("West Asian"),
+                                           
+                                           
+                            ),
+                            
+                                 selectizeInput("RepDegree2",
+                                                label = "Highest certificate, diploma or degree",
+                                                choices = unique(representationDT$Degree),
+                                    
+                                 ),
+                              
+                                 selectizeInput("RepGeo2",
+                                                label = "Geography",
+                                                choices = unique(representationDT$Geography),
+                                                selected = "Canada"
+                                               
+                                 ),
+                                
+                                 
+                            
+                                 selectizeInput("RepYear2",
+                                                label = "Year",
+                                                choices = unique(representationDT$Year),
+                                                
+                                 ),
+                                 
+                                 selectizeInput("RepAgeLang2",
+                                                label = "Age group and first official language spoken",
+                                                choices = unique(representationDT$Age),
+                               
+                                 ),
+                                 
+                            
+                                 
+                                 selectizeInput("RepSex2",
+                                                label = "Gender",
+                                                choices = unique(representationDT$Sex),
+                                                selected = "Total - Sex"
+                                 ),
+                                 
+                             ),
                              
+                 ####################
                              conditionalPanel(
                                  condition = "input.LM2 == 'Overqualified workers with a university degree'",
                                  
-                                 
-                                 
-                                 
+                               
                                  selectizeInput("VM21",
-                                                label = "Groups designated by Immigration and Generational Status",
+                                                  label = "Groups designated by Immigration and Generational Status",
                                                 choices = unique(OverQualDT$Immigration),
-                                                selected = list("Black"),
-                                                multiple = TRUE
+                                               multiple = TRUE
+                                               
                                  ),
                                  
+                                 selectizeInput("OverVMIS",
+                                                label = "Visible minority status",
+                                                choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                                
+                                                selected =list("Filipino")
+                                 ),
                                  
                                  selectizeInput("OverLocationIS",
                                                 label = "Location of Study",
@@ -5336,6 +6981,7 @@ ui <- fluidPage(
                                                 
                                  ),
                                  
+                                
                                  
                                  selectizeInput("OverGeoIS",
                                                 label = "Geography",
@@ -5344,14 +6990,7 @@ ui <- fluidPage(
                                                 
                                  ),
                                  
-                                 selectizeInput("OverVMIS",
-                                                label = "Visible minority status",
-                                                choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
-                                                
-                                                
-                                 ),
-                                 
-                                 
+                                
                                  selectizeInput("OverYearIS",
                                                 label = "Year",
                                                 choices = unique(OverQualDT$Year),
@@ -5376,8 +7015,248 @@ ui <- fluidPage(
                                                 
                                  )
                              ),
-                             
+                            
+                 
+                 conditionalPanel(
+                     condition = "input.LM2 == 'Youth not in employment, education or training (NEET)'",
+                     
+                     
+                     selectizeInput("YouthImm2",
+                                    label = "Generation Status",
+                                  choices = unique(youthDT$Immigration),
+                                 selected =("First generation"),
+                                 multiple = TRUE
+                                    
+                                    
+                     ),
+                     
+                    
+                     selectizeInput("YouthGeo2",
+                                    label = "Geography",
+                                    choices = unique(youthDT$Geography),
+                                    
+                                    
+                     ),
+                     
+                     selectizeInput("VM195",
+                                    label = "Visible minority status",
+                                    choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                    selected = list("South Asian"),
+                                    
+                                    
+                     ),
+                     
+                     
+                     selectizeInput("YouthYear2",
+                                    label = "Year",
+                                    choices = unique(youthDT$Year),
+                                    
+                     ),
+                     
+                     selectizeInput("YouthAge2",
+                                    label = "Age Group",
+                                    choices = unique(youthDT$Age),
+                                    selected = "Total - Age"
+                     ),
+                     
+                     selectizeInput("YouthSex2",
+                                    label = "Sex",
+                                    choices = sort(unique(youthDT$Sex), decreasing = TRUE),
+                                    selected = "Total - Sex"
+                     ),
+                     
+                     selectizeInput("YouthLang2",
+                                    label = "Language",
+                                    choices = unique(youthDT$'Language'),
+                                    
+                     ),
+                 ),
+                 
+                 
+                     #leo
+                     
+                     conditionalPanel(
+                         condition = "input.LM2 == 'Working-age population in the labour force (participation rate)'
+                                    ||input.LM2 == 'Working-age population in employment (employment rate)'
+                                    ||input.LM2 == 'Working-age population in unemployment (unemployment rate)'
+                                    ||input.LM2 == 'Workers working mainly full-time weeks in the previous year'",
+                         
+                         selectizeInput("RateImm2",
+                                        label = "Immigrant and generation status",
+                                        choices = unique(rateDT$Immigration),
+                                        selected = list("Immigrants"),
+                                        multiple = TRUE
+                                 
+                         ),   
+                         
+                        selectizeInput("VM245",
+                                       label = "Visible minority status",
+                                       
+                                       choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                       
+                                       selected = list("Chinese"),
+                                       
+                                                       
+                                    
                          ),
+                         
+                         selectizeInput("RateDegree2",
+                                        label = "Highest certificate, diploma or degree",
+                                        choices = unique(rateDT$Degree),
+                                        
+                                        
+                         ),
+                         
+                         
+                         selectizeInput("RateGeo2",
+                                        label = "Geography",
+                                        choices = unique(rateDT$Geography),
+                                        selected = "Canada"
+                                        
+                         ),
+                         
+                       
+                         
+                         selectizeInput("RateYear2",
+                                        label = "Year",
+                                        choices = unique(rateDT$Year),
+                                        
+                         ),
+                         
+                         selectizeInput("RateAgeLang2",
+                                        label = "Age group and first official language spoken",
+                                        choices = unique(rateDT$Age),
+                                        
+                                        
+                                        
+                         ),
+                         
+                         
+                         selectizeInput("RateSex2",
+                                        label = "Sex",
+                                        choices = unique(rateDT$Sex),
+                                        selected = "Total - Sex"
+                         ),
+                         
+                     ),
+                     
+                     
+                     #end
+                     conditionalPanel(
+                         condition = "input.LM2 == 'Average employment income of the population'
+                                    ||input.LM2 == 'Average weekly wage of paid employees'",
+                         
+                         selectizeInput("IncImm2",
+                                        label = "Immigrant and generation status",
+                                        choices = unique(incomeDT$Immigration),
+                                        multiple = TRUE
+                                        
+                         ),
+                         
+                         
+                         selectizeInput("IncDegree2",
+                                        label = "Highest certificate, diploma or degree",
+                                        choices = unique(incomeDT$Degree),
+                                        
+                                        
+                         ),
+                         
+                         
+                         selectizeInput("IncGeo2",
+                                        label = "Geography",
+                                        choices = unique(incomeDT$Geography),
+                                        selected = "Canada"
+                                        
+                         ),
+                         
+                         selectizeInput("VM240",
+                                        label = "Visible minority status",
+                                        
+                                        
+                                        choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                        
+                                        selected = list("Arab"),
+                                        
+                                        
+                         ),
+                    
+                         selectizeInput("IncYear2",
+                                        label = "Year",
+                                        choices = unique(incomeDT$Year),
+                                        
+                         ),
+                         
+                         selectizeInput("IncAgeLang2",
+                                        label = "Age group and first official language spoken",
+                                        choices = unique(incomeDT$Age),
+                                        
+                                        
+                                        
+                         ),
+                         
+                         
+                         selectizeInput("IncSex2",
+                                        label = "Gender",
+                                        choices = unique(incomeDT$Sex),
+                                        selected = "Total - Sex"
+                         ),
+                         
+                     ),
+                     
+                     
+                     #end
+                
+                     
+                     #####
+                  
+                 
+                 #End
+                 conditionalPanel(
+                     condition = "input.LM2 == 'Paid employees having disability insurance in their current job'",
+                     
+                     
+                     
+                     selectizeInput("VM200",
+                                    label = "Visible minority status",
+                                    choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                    selected = list("Korean"),
+                                    multiple = TRUE
+                     ),
+                     
+                     
+                     selectizeInput("EmploymentYear8",
+                                    label = "Year",
+                                    choices = unique(employmentDT$Year),
+                                    
+                     ),      
+                     
+                     selectizeInput("EmploymentGeo8",
+                                    label = "Geography",
+                                    choices = unique(employmentDT$Geography),
+                                    selected = "Canada"
+                                    
+                                    
+                                    
+                     ),
+                     
+                     
+                     selectizeInput("EmploymentChar8",
+                                    label = "Characteristic",
+                                    choices = unique(employmentDT$Characteristic),
+                                    
+                                    
+                     ),
+                     
+                     selectizeInput("EmploymentConf8",
+                                    label = "Confidence",
+                                    choices = unique(employmentDT$Confidence),
+                                    
+                                    
+                     ),
+                     
+                 ),
+                 
+            ),
                          
                          # Widgets for use with datasets with Labour Market Variables
                          conditionalPanel(
@@ -5396,19 +7275,8 @@ ui <- fluidPage(
                                                             
                                                             "Population with bachelor’s degree",
                                                             
-                                                            "Population with master’s degree or earned doctorate",
+                                                            "Population with master’s degree or earned doctorate"
                                                             
-                                                            "Knowledge of official languages, English only",
-                                                            
-                                                            "Knowledge of official languages, French only",
-                                                            
-                                                            "Knowledge of official languages, English and French",
-                                                            
-                                                            "Knowledge of official languages, neither English nor French",
-                                                            
-                                                            "Received a formal training paid by the employer in the past 12 months",
-                                                            
-                                                            "Received an informal on-the-job training (from co-workers or supervisors) in the past 12 months"
                                                             
                                             ),
                                             selected = NULL
@@ -5417,7 +7285,12 @@ ui <- fluidPage(
                              
                              
                              conditionalPanel(
-                                 condition = "input.Edu == 'Population with bachelor’s degree' || 'Population with no certificate, diploma or degree' || 'Population with high school diploma or equivalency certificate' || 'Population with postsecondary certificate or diploma below bachelor level' || 'Population with bachelor’s degree or above' || 'Population with master’s degree or earned doctorate' ",
+                                 condition = "input.Edu == 'Population with bachelor’s degree' 
+                                 ||input.Edu ==  'Population with no certificate, diploma or degree' 
+                                 ||input.Edu ==  'Population with high school diploma or equivalency certificate' 
+                                 ||input.Edu ==  'Population with postsecondary certificate or diploma below bachelor level'
+                                 ||input.Edu ==  'Population with bachelor’s degree or above' 
+                                 ||input.Edu ==  'Population with master’s degree or earned doctorate' ",
                                  
                                  
                                  
@@ -5459,7 +7332,7 @@ ui <- fluidPage(
                                  ),
                                  
                                  selectizeInput("eduSex",
-                                                label = "Sex",
+                                                label = "Gender",
                                                 choices = sort(unique(educationDT$Sex), decreasing = TRUE),
                                                 selected = "Total - Sex"
                                  ),
@@ -5471,15 +7344,12 @@ ui <- fluidPage(
                                  )
                              )
                              
-                             
-                             
-                             
-                             
-                             
+                       
                          ),
                          
                          
-                         
+    ########### Civic engagement and political participation/Immigration Tab       
+    
                          conditionalPanel(
                              
                              condition = "input.dim2 == 'Civic engagement and political participation'",
@@ -5493,7 +7363,7 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population members in a cultural, educational or hobby organization",
                                                 
-                                                "Percent of the population members in union or professional association",
+                                                "Percent of the population members in a union or professional association",
                                                 
                                                 "Percent of the population members in a political party or group",
                                                 
@@ -5509,7 +7379,7 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population members in an immigrant or ethnic association or club",
                                                 
-                                                "Percent of the population members in an environmental group ",
+                                                "Percent of the population members in an environmental group",
                                                 
                                                 "Percent of the population engaged in political activities",
                                                 
@@ -5518,15 +7388,254 @@ ui <- fluidPage(
                                                 "Percent of the population voting in the last provincial election",
                                                 
                                                 "Percent of the population voting in the last municipal election"
-                                                
-                                            )
-                             )
+                                                ),
+                                            
+                             ),
                              
+                             
+                                 selectizeInput("VM260",
+                                                label = "Visible minority status",
+                                                choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                                selected = list("Filipino"),
+                                                multiple = TRUE
+                                 ),
+                                 
+                                 
+                                 selectizeInput("CivicYear4",
+                                                label = "Year",
+                                                choices = unique(civicDT$Year),
+                                                
+                                 ),      
+                                 
+                                 selectizeInput("CivicGeo4",
+                                                label = "Geography",
+                                                choices = unique(civicDT$Geography),
+                                                selected = "Canada"
+                                                
+                                                
+                                                
+                                 ),
+                                 
+                                 selectizeInput("CivicCharacteristics4",
+                                                label = "Sociodemographic Characteristics",
+                                                choices = list('Age', 'Gender', 'Immigration Status', 'Generation Status', 'Language Spoken', 'Education Status'),
+                                                
+                                 ),
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.CivicCharacteristics4 == 'Age'",
+                                     
+                                     selectizeInput("CivicCharSpecAge4",
+                                                    label = "Age",
+                                                    choices = list('Total, 15 years and over', '15 to 24 years', '25 to 64 years', '65 years and over'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.CivicCharacteristics4 == 'Gender'",
+                                     
+                                     selectizeInput("CivicCharSpecGend4",
+                                                    label = "Gender",
+                                                    choices = list('Man', 'Woman'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.CivicCharacteristics4 == 'Immigration Status'",
+                                     
+                                     selectizeInput("CivicCharSpecImm4",
+                                                    label = "Immigration Status",
+                                                    choices = list('Immigrants', 'Non-Immigrants'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.CivicCharacteristics4 == 'Generation Status'",
+                                     
+                                     selectizeInput("CivicCharSpecGen4",
+                                                    label = "Immigration Status",
+                                                    choices = list( 'First generation', 'Second generation', 'Third generation or more'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.CivicCharacteristics4 == 'Language Spoken'",
+                                     
+                                     selectizeInput("CivicCharSpecLang4",
+                                                    label = "Language Spoken",
+                                                    choices = list('First official language spoken, English only', 'First official language spoken, French only'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.CivicCharacteristics4 == 'Education Status'",
+                                     
+                                     selectizeInput("CivicCharSpecEdu4",
+                                                    label = "Language Spoken",
+                                                    choices = list('Secondary (high) school diploma or equivalency certificate or less', 'Postsecondary certicate or diploma (non-university)', 'University certificate or diploma'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 
+                                 selectizeInput("CivicConf4",
+                                                label = "Confidence",
+                                                choices = unique(civicDT$Confidence),
+                                                
+                                                
+                                 ),
+                                 
+                             
+                                
+                                conditionalPanel(
+                                    condition = "input.dimCivilEngagement2 == 'Percent of the population voting in the last municipal election'
+                                                ||input.dimCivilEngagement2 == 'Percent of the population voting in the last provincial election'
+                                                ||input.dimCivilEngagement2 == 'Percent of the population voting in the last federal election'",
+                                    
+                                    
+                                    selectizeInput("VM250",
+                                                   label = "Visible minority status",
+                                                   choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                                   selected = list("South Asian"),
+                                                   multiple = TRUE
+                                    ),
+                                    
+                                    
+                                    selectizeInput("CivicYear5",
+                                                   label = "Year",
+                                                   choices = unique(civicDT2$Year),
+                                                   
+                                    ),      
+                                    
+                                    selectizeInput("CivicGeo5",
+                                                   label = "Geography",
+                                                   choices = unique(civicDT2$Geography),
+                                                   selected = "Canada"
+                                                   
+                                                   
+                                                   
+                                    ),
+                                    
+                                    selectizeInput("CivicCharacteristics5",
+                                                   label = "Sociodemographic Characteristics",
+                                                   choices = list('Immigration Status','Generation Status','Age', 'Gender',  'Language Spoken', 'Education Status'),
+                                                   
+                                    ),
+                                    
+                                    conditionalPanel(
+                                        
+                                        condition = "input.CivicCharacteristics5 == 'Immigration Status'",
+                                        
+                                        selectizeInput("CivicCharSpecImm5",
+                                                       label = "Immigration Status",
+                                                       choices = list('Immigrants', 'Non-Immigrants'),
+                                                       multiple = TRUE
+                                        ),
+                                        
+                                    ),
+                                    
+                                    conditionalPanel(
+                                        
+                                        condition = "input.CivicCharacteristics5 == 'Generation Status'",
+                                        
+                                        selectizeInput("CivicCharSpecGen5",
+                                                       label = "Immigration Status",
+                                                       choices = list( 'First generation', 'Second generation', 'Third generation or more'),
+                                                       multiple =TRUE
+                                        ),
+                                        
+                                    ),
+                                    
+                                    
+                                    conditionalPanel(
+                                        
+                                        condition = "input.CivicCharacteristics5 == 'Age'",
+                                        
+                                        selectizeInput("CivicCharSpecAge5",
+                                                       label = "Age",
+                                                       choices = list('Total, 18 years and over', '18 to 24 years', '25 to 64 years', '65 years and over'),
+                                                       
+                                        ),
+                                        
+                                    ),
+                                    
+                                    conditionalPanel(
+                                        
+                                        condition = "input.CivicCharacteristics5 == 'Gender'",
+                                        
+                                        selectizeInput("CivicCharSpecSex5",
+                                                       label = "Gender",
+                                                       choices = list('Man', 'Woman'),
+                                                       
+                                        ),
+                                        
+                                    ),
+                                    
+                                    
+                                    
+                                    
+                                    conditionalPanel(
+                                        
+                                        condition = "input.CivicCharacteristics5 == 'Language Spoken'",
+                                        
+                                        selectizeInput("CivicCharSpecLang5",
+                                                       label = "Language Spoken",
+                                                       choices = list('First official language spoken, English only', 'First official language spoken, French only'),
+                                                       
+                                        ),
+                                        
+                                    ),
+                                    
+                                    
+                                    conditionalPanel(
+                                        
+                                        condition = "input.CivicCharacteristics5 == 'Education Status'",
+                                        
+                                        selectizeInput("CivicCharSpecEdu5",
+                                                       label = "Language Spoken",
+                                                       choices = list('Secondary (high) school diploma or equivalency certificate or less', 'Postsecondary certicate or diploma (non-university)', 'University certificate or diploma'),
+                                                       
+                                        ),
+                                        
+                                    ),
+                                    
+                                    
+                                    selectizeInput("CivicConf5",
+                                                   label = "Confidence",
+                                                   choices = unique(civicDT2$Confidence),
+                                                   
+                                                   
+                                    ),
+                                         ),
+                             
+                             
+                      
+    
                          ),
-                         
-                         
-                         
-                         
+                                         
+                                         
+         #Widgets for Immigration -Representation in decision-making positions
                          
                          conditionalPanel(
                              
@@ -5538,45 +7647,171 @@ ui <- fluidPage(
                                                            
                                                            "Percent of workers in senior management occupations",
                                                            
-                                                           "Percent of workers in specialized middle management occupations",
+                                                           "Percent of workers in middle management occupations"
                                                            
-                                                           "Percent of workers in other middle management occupations"
-                                            )
+                                                           
+                                            ),
                              ),
+                             
+                             
+                             selectizeInput("RepImm3",
+                                            label = "Immigrant and generation status",
+                                            choices = unique(representationDT$Immigration),
+                                            selected = "Immigrants",
+                                            multiple = TRUE
+                                            
+                             ),
+                             selectizeInput("VM210",
+                                            label = "Visible minority status",
+                                            
+                                            
+                                            choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                            
+                                            selected = list("West Asian"),
+                                            
+                                            
+                             ),
+                             
+                             selectizeInput("RepDegree3",
+                                            label = "Highest certificate, diploma or degree",
+                                            choices = unique(representationDT$Degree),
+                                            
+                                            
+                             ),
+                             
+                             
+                             selectizeInput("RepGeo3",
+                                            label = "Geography",
+                                            choices = unique(representationDT$Geography),
+                                            selected = "Canada"
+                                            
+                             ),
+                             
+                           
+                             selectizeInput("RepYear3",
+                                            label = "Year",
+                                            choices = unique(representationDT$Year),
+                                            
+                             ),
+                             
+                             selectizeInput("RepAgeLang3",
+                                            label = "Age group and first official language spoken",
+                                            choices = unique(representationDT$Age),
+                                
+                             ),
+                             
+                             
+                             selectizeInput("RepSex3",
+                                            label = "Gender",
+                                            choices = unique(representationDT$Sex),
+                                            selected = "Total - Sex"
+                             ),
+                             
                              
                          ),
                          
                          
-                         
-                         conditionalPanel(
+                  #Widgets for Basic needs and housing Tab 3    
+                        
+    
+                     conditionalPanel(
                              
                              condition = "input.dim2 == 'Basic needs and housing'",
                              
                              selectizeInput("dimBasicNeeds2",
                                             label = "Indicators",
                                             choices = list(
-                                                "Percent of the population living in a dwelling owned by one member of the household ",
-                                                
-                                                "Percent of the population living in core need household",
-                                                
-                                                "Percent of the population living in suitable housing",
-                                                
-                                                "Percent of the population living in an affordable housing",
-                                                
                                                 "Percent of the population living in a food-secure household",
                                                 
-                                                " Percent of the population living in a household with marginal food security",
+                                                "Percent of the population living in a household with marginal food security",
                                                 
                                                 "Percent of the population living in a food-insecure household, moderate or severe",
                                                 
                                                 "Percent of the population living in a household with moderate food insecurity",
                                                 
-                                                " Percent of the population living in a household with severe food insecurity"
+                                                "Percent of the population living in a household with severe food insecurity"
                                                 
-                                                
-                                            )
-                             )
+                                                ),
+                                        
+                             ),
                              
+                            
+                           
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.basicCharacteristics2",
+                                 
+                                 selectizeInput("basicCharacteristics2",
+                                                label = "Selected sociodemographic characteristics",
+                                                choices = list('Immigration Status','Age','Gender'),
+                                                
+                                 ),
+                             ),
+                          
+                             conditionalPanel(
+                                 
+                                 condition = "input.basicCharacteristics2 == 'Immigration Status'",
+                                 
+                                 selectizeInput("basicCharSpecImm2",
+                                                label = "Immigration Status",
+                                                choices = list('Total, by immigration status','Landed immigrants','Immigrant, less than 10 years in Canada','Immigrant, 10 or more years in Canada','Born in Canada'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.basicCharacteristics2 == 'Age'",
+                                 
+                                 selectizeInput("basicCharSpecAge2",
+                                                label = "Age",
+                                                choices = list('Total, 12 years and over', '12 to 17 years', '18 to 64 years', '65 years and over'),
+                                                selected = NULL,
+                                                multiple =  TRUE
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.basicCharacteristics2 == 'Gender'",
+                                 
+                                 selectizeInput("basicCharSpecSex2",
+                                                label = "Gender",
+                                                choices = list('Total, by gender of person','Men', 'Women'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             
+                             selectizeInput("VM215",
+                                            label = "Visible minority status",
+                                            choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                            selected = list("Latin American"),
+                                           
+                             ),
+                             selectizeInput("basicYear2",
+                                            label = "Year",
+                                            choices = unique(basicDT$'Year')
+                             ),
+                             
+                             selectizeInput("basicGeo2",
+                                            label = "Geography",
+                                            choices = unique(basicDT$'Geography')
+                             ),
+                             
+                             
+                             
+                             selectizeInput("basicConfidence2",
+                                            label = "Confidence Interval",
+                                            choices = unique(basicDT$'Confidence')
+                             ),
+                       
+                              
                          ),
                          
                          
@@ -5638,7 +7873,7 @@ ui <- fluidPage(
                              selectizeInput("dimHealth2",
                                             label = "Indicators",
                                             choices = list(
-                                                " Percent of the population reporting very good or excellent general health",
+                                                "Percent of the population reporting very good or excellent general health",
                                                 
                                                 "Percent of the population reporting fair or poor general health",
                                                 
@@ -5648,19 +7883,99 @@ ui <- fluidPage(
                                                 
                                                 "Percent of the population reporting their life stressful",
                                                 
-                                                "Percent of the population satisfied with life as a whole",
+                                                "Percent of the population reporting life satisfaction, satisfied or very satisfied",
                                                 
-                                                "Percent of the population predicting their life opportunities will improve in the next 5 years"
+                                                "Percent of the population reporting having a regular healthcare provider",
                                                 
+                                                "Percent of the population reporting no need for mental health care",
                                                 
+                                                "Percent of the population reporting all needs met for mental health care",
                                                 
-                                            )
-                             )
+                                                "Percent of the population reporting needs partially met for mental health care",
+                                                
+                                                "Percent of the population reporting needs partially met or needs not met for mental health care",
+                                                
+                                                "Percent of the population reporting needs not met for mental health care",
+                                                
+                                                "Percent of the population reporting unmet health care needs"),
+                                            
+                                 
+                            
+                            ),
+                            
+                            
+                            
+                            selectizeInput("healthCharacteristics2",
+                                           label = "Selected sociodemographic characteristics",
+                                           choices = list('Immigration Status', 'Age', 'Gender'),
+                                           
+                            ),
+                            conditionalPanel(
+                                
+                                condition = "input.healthCharacteristics2",
+                                
+                                selectizeInput("healthCharSpecImm2",
+                                               label = "Immigration Status",
+                                               choices = list('Total, by immigration status','Landed immigrants','Immigrant, less than 10 years in Canada','Immigrant, 10 or more years in Canada','Born in Canada'),
+                                               multiple = TRUE
+                                ),
+                                
+                            ),
+                            conditionalPanel(
+                                
+                                condition = "input.healthCharacteristics2 == 'Age'",
+                                
+                                selectizeInput("healthCharSpecAge2",
+                                               label = "Age",
+                                               choices = list('Total, 12 years and over', '12 to 17 years', '18 to 64 years', '65 years and over'),
+                                               multiple = TRUE
+                                ),
+                                
+                            ),
+                            
+                            conditionalPanel(
+                                
+                                condition = "input.healthCharacteristics2 == 'Gender'",
+                                
+                                selectizeInput("healthCharSpecSex2",
+                                               label = "Gender",
+                                               choices = list('Total, by gender of person','Men', 'Women'),
+                                               
+                                ),
+                                
+                            ),
+                            
+                            selectizeInput("VM220",
+                                           label = "Visible minority status",
+                                           choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                           selected = list("Latin American"),
+                                           
+                            ),
+                            
+                             selectizeInput("healthYear2",
+                                            label = "Year",
+                                            choices = unique(healthDT$'Year')
+                             ),
                              
+                             selectizeInput("healthGeo2",
+                                            label = "Geography",
+                                            choices = unique(healthDT$'Geography')
+                             ),
+                        
+                           
+                             selectizeInput("healthConfidence2",
+                                            label = "Confidence Interval",
+                                            choices = unique(healthDT$'Confidence')
+                             ),
+                             
+                             
+                               
                          ),
                          
                          
-                         conditionalPanel(
+    
+    
+                 conditionalPanel(
                              
                              condition = "input.dim2 == 'Public services and institutions'",
                              
@@ -5687,11 +8002,127 @@ ui <- fluidPage(
                                                 
                                                 
                                                 
-                                            )
-                             )
+                                            ),
+                             ),
+                             
+                             selectizeInput("confCharacteristicsIM",
+                                            label = "Selected sociodemographic characteristics",
+                                            choices = list('Immigration Status', 'Generation Status','Age', 'Gender',  'Language Spoken', 'Education Status'),
+                                            
+                             ),
+                             
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.confCharacteristicsIM == 'Immigration Status'",
+                                 
+                                 selectizeInput("confCharSpecImmIM",
+                                                label = "Immigration Status",
+                                                choices = list('Immigrants', 'Non-Immigrants'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.confCharacteristicsIM == 'Generation Status'",
+                                 
+                                 selectizeInput("confCharSpecGenIM",
+                                                label = "Immigration Status",
+                                                choices = list( 'First generation', 'Second generation', 'Third generation or more'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.confCharacteristicsIM == 'Age'",
+                                 
+                                 selectizeInput("confCharSpecAgeIM",
+                                                label = "Age",
+                                                choices = list('Total, 15 years and over', '15 to 24 years', '25 to 64 years', '65 years and over'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.confCharacteristicsIM == 'Gender'",
+                                 
+                                 selectizeInput("confCharSpecGenderIM",
+                                                label = "Gender",
+                                                choices = list('Men', 'Women'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                            
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.confCharacteristicsIM == 'Language Spoken'",
+                                 
+                                 selectizeInput("confCharSpecLangIM",
+                                                label = "Language Spoken",
+                                                choices = list('First official language spoken, English only', 'First official language spoken, French only'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             
+                             conditionalPanel(
+                                 
+                                 condition = "input.confCharacteristicsIM == 'Education Status'",
+                                 
+                                 selectizeInput("confCharSpecEduIM",
+                                                label = "Language Spoken",
+                                                choices = list('Secondary (high) school diploma or equivalency certificate or less', 'Postsecondary certificate or diploma (non-university)', 'University certificate or diploma'),
+                                                
+                                 ),
+                                 
+                             ),
+                             
+                             selectizeInput("confYearIM",
+                                            label = "Year",
+                                            choices = unique(confidenceDT$'Year')
+                             ),
+                             
+                             selectizeInput("confGeoIM",
+                                            label = "Geography",
+                                            choices = unique(confidenceDT$'Geography')
+                             ),
+                             
+                             
+                             
+                             selectizeInput("VM205",
+                                            label = "Visible minority status",
+                                            choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                            selected = list("Chinese"),
+                                            multiple = TRUE
+                             ),
+                             
+                             
+                             
+                             selectizeInput("confConfidenceIM",
+                                            label = "Confidence Interval",
+                                            choices = unique(confidenceDT$'Confidence')
+                             ),
+                             
                              
                          ),
-                             
+    
+    
+    
+    #Widgets Income and wealth Tab Immigration 
+    
                              conditionalPanel(
                                  
                                  condition = "input.dim2 == 'Income and wealth'",
@@ -5726,6 +8157,16 @@ ui <- fluidPage(
                                  selectizeInput("dimSocial2",
                                                 label = "Indicators",
                                                 choices = list(
+                                                    "Population reporting that most people can be trusted",
+                                                    
+                                                    "Population reporting strong sense of belonging to their local community",
+                                                    
+                                                    "Population reporting strong sense of belonging to their town or city",
+                                                    
+                                                    "Population reporting strong sense of belonging to their province",
+                                                    
+                                                    "Population reporting strong sense of belonging to Canada",
+                                                    
                                                     "Percent of the population living alone",
                                                     
                                                     "Median size of a personal local network with close ties", 
@@ -5747,8 +8188,116 @@ ui <- fluidPage(
                                                     "Percent of the population with a personal ethnically-diverse network"
                                                     
                                                     
-                                                )
-                                 )
+                                                ),
+                                 ),
+                                 
+                                 selectizeInput("confCharacteristics2",
+                                                label = "Selected sociodemographic characteristics",
+                                                choices = list('Immigration Status', 'Generation Status','Age', 'Gender',  'Language Spoken', 'Education Status'),
+                                                
+                                 ),
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.confCharacteristics2 == 'Immigration Status'",
+                                     
+                                     selectizeInput("confCharSpecImm2",
+                                                    label = "Immigration Status",
+                                                    choices = list('Immigrants', 'Non-Immigrants'),
+                                                    multiple = TRUE
+                                     ),
+                                     
+                                 ),
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.confCharacteristics2 == 'Generation Status'",
+                                     
+                                     selectizeInput("confCharSpecGen2",
+                                                    label = "Immigration Status",
+                                                    choices = list( 'First generation', 'Second generation', 'Third generation or more'),
+                                                    multiple = TRUE
+                                     ),
+                                     
+                                 ),
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.confCharacteristics2 == 'Age'",
+                                     
+                                     selectizeInput("confCharSpecAge2",
+                                                    label = "Age",
+                                                    choices = list('Total, 15 years and over', '15 to 24 years', '25 to 64 years', '65 years and over'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.confCharacteristics2 == 'Gender'",
+                                     
+                                     selectizeInput("confCharSpecSex2",
+                                                    label = "Gender",
+                                                    choices = list('Men', 'Women'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                             
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.confCharacteristics2 == 'Language Spoken'",
+                                     
+                                     selectizeInput("confCharSpecLang2",
+                                                    label = "Language Spoken",
+                                                    choices = list('First official language spoken, English only', 'First official language spoken, French only'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 
+                                 conditionalPanel(
+                                     
+                                     condition = "input.confCharacteristics2 == 'Education Status'",
+                                     
+                                     selectizeInput("confCharSpecEdu2",
+                                                    label = "Language Spoken",
+                                                    choices = list('Secondary (high) school diploma or equivalency certificate or less', 'Postsecondary certicate or diploma (non-university)', 'University certificate or diploma'),
+                                                    
+                                     ),
+                                     
+                                 ),
+                                 
+                                 selectizeInput("confYearIM",
+                                                label = "Year",
+                                                choices = unique(confidenceDT$'Year')
+                                 ),
+                                 
+                                 selectizeInput("confGeoIM",
+                                                label = "Geography",
+                                                choices = unique(confidenceDT$'Geography')
+                                 ),
+                                 
+                                 
+                                 
+                                 
+                                 selectizeInput("VM225",
+                                                label = "Visible minority status",
+                                                choices = list("Total, by visible minority group","Total - Visible minority","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","Not a visible minority"),
+                                                selected = list("Black"),
+                                                
+                                 ),
+                                 
+                                
+                                 
+                                 selectizeInput("confConfidence2",
+                                                label = "Confidence Interval",
+                                                choices = unique(confidenceDT$'Confidence')
+                                 ),
+                                 
                                  
                              ),
                              
@@ -5796,33 +8345,1769 @@ ui <- fluidPage(
                          
                          
                          
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
                      ),
+    
+    
+    
+    
                      mainPanel(
                          
                          h2("Immigration Status"),
                          
+             #Visuals related to Public services
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in banks' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in banks' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in banks' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in banks' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in banks' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in banks' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         ####
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the justice system and courts' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the justice system and courts' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the justice system and courts' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the justice system and courts' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the justice system and courts' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the justice system and courts' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         ##########
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in merchants and local business people' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in merchants and local business people' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in merchants and local business people' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in merchants and local business people' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in merchants and local business people' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in merchants and local business people' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         ##
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in major corporations' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in major corporations' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in major corporations' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in major corporations' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in major corporations' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in major corporations' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         ##
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the school system' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the school system' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the school system' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the school system' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the school system' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the school system' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         
+                         ##
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the police service' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the police service' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the police service' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the police service' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the police service' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in the police service' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         ##
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in Federal Parliament' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in Federal Parliament' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in Federal Parliament' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in Federal Parliament' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in Federal Parliament' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing confidence in Federal Parliament' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         ##   
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing Confidence in the Canadian media' & input.confCharacteristicsP == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing Confidence in the Canadian media' & input.confCharacteristicsP == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing Confidence in the Canadian media' & input.confCharacteristicsP == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing Confidence in the Canadian media' & input.confCharacteristicsP == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing Confidence in the Canadian media' & input.confCharacteristicsP == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Public services and institutions' & input.dimTrust2 == 'Population expressing Confidence in the Canadian media' & input.confCharacteristicsP == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+            #Visuals related to Social connections 
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to Canada' & input.confCharacteristics2 == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to Canada' & input.confCharacteristics2 == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to Canada' & input.confCharacteristics2 == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+            
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to Canada' & input.confCharacteristics2 == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to Canada' & input.confCharacteristics2 == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to Canada' & input.confCharacteristics2 == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         #End
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their province' & input.confCharacteristics2 == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their province' & input.confCharacteristics2 == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their province' & input.confCharacteristics2 == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their province' & input.confCharacteristics2 == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their province' & input.confCharacteristics2 == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their province' & input.confCharacteristics2 == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         #End
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their town or city' & input.confCharacteristics2 == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their town or city' & input.confCharacteristics2 == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their town or city' & input.confCharacteristics2 == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their town or city' & input.confCharacteristics2 == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their town or city' & input.confCharacteristics2 == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their town or city' & input.confCharacteristics2 == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         #End
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their local community' & input.confCharacteristics2 == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their local community' & input.confCharacteristics2 == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their local community' & input.confCharacteristics2 == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their local community' & input.confCharacteristics2 == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their local community' & input.confCharacteristics2 == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting strong sense of belonging to their local community' & input.confCharacteristics2 == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                         #End
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting that most people can be trusted' & input.confCharacteristics2 == 'Immigration Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Conf8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting that most people can be trusted' & input.confCharacteristics2 == 'Age'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfAge8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting that most people can be trusted' & input.confCharacteristics2 == 'Gender'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfSex8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting that most people can be trusted' & input.confCharacteristics2 == 'Generation Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfGen8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting that most people can be trusted' & input.confCharacteristics2 == 'Language Spoken'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfLang8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Social connections and personnal networks' & input.dimSocial2 == 'Population reporting that most people can be trusted' & input.confCharacteristics2 == 'Education Status'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2ConfEdu8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Statistics Canada, General Social Survey – Social Identity, 2020.")
+                             
+                         ),
+                         
+                         
+                                         
+        #Visuals related to Representation 
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Representation in decision-making positions' & input.Rep2 == 'Percent of workers in middle management occupations'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rep3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Representation in decision-making positions' & input.Rep2 == 'Percent of workers in senior management occupations'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rep2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Representation in decision-making positions' & input.Rep2 == 'Percent of workers in all management occupations'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rep1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+         
+        #Visuals related to Basic Needs and Housing 
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with severe food insecurity' & input.basicCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Basic5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with severe food insecurity' & input.basicCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicAge5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with severe food insecurity' & input.basicCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicSex5", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         ####
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with moderate food insecurity' & input.basicCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Basic4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with moderate food insecurity' & input.basicCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicAge4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with moderate food insecurity' & input.basicCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicSex4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         ###
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a food-insecure household, moderate or severe' & input.basicCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Basic3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a food-insecure household, moderate or severe' & input.basicCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicAge3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a food-insecure household, moderate or severe' & input.basicCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicSex3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         
+                         ####
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with marginal food security' & input.basicCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Basic2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with marginal food security' & input.basicCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicAge2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a household with marginal food security' & input.basicCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicSex2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         ###
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a food-secure household' & input.basicCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Basic1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a food-secure household' & input.basicCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicAge1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Basic needs and housing' & input.dimBasicNeeds2 == 'Percent of the population living in a food-secure household' & input.basicCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2BasicSex1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         ##
+                         
+        #Visuals related to Health and well being - Immigration Status
+        
+                            conditionalPanel(
+                                
+                                condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs partially met for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+                                br(),
+                                br(),
+                                plotlyOutput("sBar2Health14", inline = TRUE, width = 700, height = 500),
+                                br(),
+                                helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                                
+                            ),
+                            
+                            conditionalPanel(
+                                
+                                condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs partially met for mental health care' & input.healthCharacteristics == 'Age'",
+                                br(),
+                                br(),
+                                plotlyOutput("sBar2HealthAge14", inline = TRUE, width = 700, height = 500),
+                                br(),
+                                helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                                
+                            ),
+                            conditionalPanel(
+                                
+                                condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs partially met for mental health care' & input.healthCharacteristics == 'Gender'",
+                                br(),
+                                br(),
+                                plotlyOutput("sBar2HealthSex14", inline = TRUE, width = 700, height = 500),
+                                br(),
+                                helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                                
+                            ),
+                            
+                            
+                        
+        
+                        #end                    
+                    
+                        conditionalPanel(
+                            
+                            condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting unmet health care needs' & input.healthCharacteristics == 'Immigration Status'",
+                            br(),
+                            br(),
+                            plotlyOutput("sBar2Health13", inline = TRUE, width = 700, height = 500),
+                            br(),
+                            helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                            
+                        ),
+                        
+                        conditionalPanel(
+                            
+                            condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting unmet health care needs' & input.healthCharacteristics == 'Age'",
+                            br(),
+                            br(),
+                            plotlyOutput("sBar2HealthAge13", inline = TRUE, width = 700, height = 500),
+                            br(),
+                            helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                            
+                        ),
+                        conditionalPanel(
+                            
+                            condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting unmet health care needs' & input.healthCharacteristics == 'Gender'",
+                            br(),
+                            br(),
+                            plotlyOutput("sBar2HealthSex13", inline = TRUE, width = 700, height = 500),
+                            br(),
+                            helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                            
+                        ),
+                        
+                        
+                                         
+                         ######
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs not met for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs not met for mental health care' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs not met for mental health care' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex12", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         
+                         
+                         ####
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs partially met or needs not met for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs partially met or needs not met for mental health care' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting needs partially met or needs not met for mental health care' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex11", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         ###
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting all needs met for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting all needs met for mental health care' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting all needs met for mental health care' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex10", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         
+                         ###
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting no need for mental health care' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting no need for mental health care' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting no need for mental health care' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex9", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         ###
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting having a regular healthcare provider' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting having a regular healthcare provider' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting having a regular healthcare provider' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex8", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         ####
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting life satisfaction, satisfied or very satisfied' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting life satisfaction, satisfied or very satisfied' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting life satisfaction, satisfied or very satisfied' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex7", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         ###
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting their life stressful' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting their life stressful' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting their life stressful' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex6", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         ##
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting fair or poor mental health' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting fair or poor mental health' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting fair or poor mental health' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         ###
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting very good or excellent mental health' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting very good or excellent mental health' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting very good or excellent mental health' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         
+                         ###
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting fair or poor general health' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting fair or poor general health' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting fair or poor general health' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         
+                         ####
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting very good or excellent general health' & input.healthCharacteristics == 'Immigration Status'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Health1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting very good or excellent general health' & input.healthCharacteristics == 'Age'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthAge1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Health and wellbeing' & input.dimHealth2 == 'Percent of the population reporting very good or excellent general health' & input.healthCharacteristics == 'Gender'",
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2HealthSex1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
+                             
+                         ),
+                         #####
+                         
+                         
                          #Visuals related to Labour Market
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Youth not in employment, education or training (NEET)'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBarYouth2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         #end
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Paid employees having disability insurance in their current job'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("employment2Plot1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Note: Source.")
+                             
+                         ),
+                         
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Workers working mainly full-time weeks in the previous year'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rate4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         
+                         #end
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Working-age population in unemployment (unemployment rate)'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rate3", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         #end
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Working-age population in employment (employment rate)'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rate2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         
+                         #end
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Working-age population in the labour force (participation rate)'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rate1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         #end
+                         
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Average weekly wage of paid employees'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Inc2", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Censuses of population, 2006 and 2016; National Household Survey, 2011")
+                             
+                         ),
+                         
+                         
+                         #end
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Average employment income of the population'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Inc1", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Censuses of population, 2006 and 2016; National Household Survey, 2011")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         #end
+                         conditionalPanel(
+                             
+                             condition = "input.dim2 == 'Participation in the Labour Market' & input.LM2 == 'Self-employed workers in the labour force (unincorporated)'",
+                             
+                             br(),
+                             br(),
+                             plotlyOutput("sBar2Rep4", inline = TRUE, width = 700, height = 500),
+                             br(),
+                             helpText("Source: Census of Population, 2016, National Household Survey, 2011,  Census of Population, 2006.")
+                             
+                         ),
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         #end
                          conditionalPanel(
                              
                              condition = "input.dim2 == 'Education, training and skills'",
@@ -6042,7 +10327,7 @@ ui <- fluidPage(
                                  
                                  selectizeInput("OverVMSX",
                                                 label = "Visible minority status",
-                                                choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                                choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                                 
                                                 
                                  ),
@@ -6075,54 +10360,18 @@ ui <- fluidPage(
                              
                          ),
                          
-                      #Done 5/9/22
+                     
                       conditionalPanel(
                           
                           condition = "input.dim3 == 'Civic engagement and political participation'",
                           
-                          selectizeInput("dimCivilEngagement3",
-                                         label = "Indicators",
-                                         choices = list(
-                                             "Percent of the population members of at least one civic group or organization",
-                                             
-                                             "Percent of the population members in a sports or recreational organization",
-                                             
-                                             "Percent of the population members in a cultural, educational or hobby organization",
-                                             
-                                             "Percent of the population members in union or professional association",
-                                             
-                                             "Percent of the population members in a political party or group",
-                                             
-                                             "Percent of the population members in a religious-affiliated group",
-                                             
-                                             "Percent of the population members in a school group, neighbourhood, civic or community association",
-                                             
-                                             "Percent of the population members in a humanitarian or charitable organization or service club",
-                                             
-                                             "Percent of the population members in a seniors' group",
-                                             
-                                             "Percent of the population members in a youth organization",
-                                             
-                                             "Percent of the population members in an immigrant or ethnic association or club",
-                                             
-                                             "Percent of the population members in an environmental group ",
-                                             
-                                             "Percent of the population engaged in political activities",
-                                             
-                                             "Percent of the population voting in the last federal election",
-                                             
-                                             "Percent of the population voting in the last provincial election",
-                                             
-                                             "Percent of the population voting in the last municipal election"
-                                             
-                                         )
-                          )
+                          
                           
                       ),
                       
                       
                       
-                      
+ #Widgets for Immigration - Representation in decision-making positions         
                       
                       conditionalPanel(
                           
@@ -6720,7 +10969,7 @@ ui <- fluidPage(
                              
                              selectizeInput("OverVMGEO",
                                             label = "Visible minority status",
-                                            choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                            choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                             
                                             
                              ),
@@ -7250,7 +11499,7 @@ ui <- fluidPage(
                              
                              selectizeInput("OverVMLINE",
                                             label = "Visible minority status",
-                                            choices = list("Total - Visible minority","Visible minority population","South Asian,Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
+                                            choices = list("Total - Visible minority","Visible minority population","South Asian","Chinese","Black","Filipino","Latin American","Arab","Southeast Asian","West Asian","Korean","Japanese","Visible minority n.i.e","Multiple visible minorities","Not a visible minority"),
                                             
                                             
                              ),
@@ -7686,9 +11935,12 @@ ui <- fluidPage(
                          
                      )
                  )
+            )
         )
     )
-)
+
+
+
 
 
 # Define server logic ---------------------------------------------------------------
@@ -7700,13 +11952,2089 @@ server <- function(input, output) {
     # Reactive values ----------------------------------------------------------
     # This reactive filters for sex to build the first column graph on the first tab
 
-     #Leo
+    #Leo
+    
+    #Filters for Immigration Basic Needs and Health 
+    
+    filtered_2basic5 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecImm2,`Indicator` == 'Household severely food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicAge5 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecAge2,`Indicator` == 'Household severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicSex5 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecSex2,`Indicator` == 'Household severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    ###
+    
+    filtered_2basic4 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecImm2,`Indicator` == 'Household moderately food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicAge4 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecAge2,`Indicator` == 'Household moderately food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicSex4 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecSex2,`Indicator` == 'Household moderately food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_2basic3 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecImm2,`Indicator` == 'Household moderately or severely food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicAge3 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecAge2,`Indicator` == 'Household moderately or severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicSex3 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecSex2,`Indicator` == 'Household moderately or severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_2basic2 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecImm2,`Indicator` == 'Household marginally food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicAge2 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecAge2,`Indicator` == 'Household marginally food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicSex2 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecSex2,`Indicator` == 'Household marginally food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_2basic1 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecImm2,`Indicator` == 'Household food secure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicAge1 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecAge2,`Indicator` == 'Household food secure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2basicSex1 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM215, `Year` %in% input$basicYear2, `Geography` %in% input$basicGeo2, `Confidence` %in% input$basicConfidence2,`Characteristic` %in% input$basicCharSpecSex2,`Indicator` == 'Household food secure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    
+    
+    filtered_2health14 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived need for mental health care, needs partially met' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge14 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived need for mental health care, needs partially met')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex14 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived need for mental health care, needs partially met')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    filtered_2health13 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Unmet health care needs' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge13 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Unmet health care needs')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex13 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Unmet health care needs')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_2health12 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived need for mental health care, needs not met' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge12 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived need for mental health care, needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex12 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived need for mental health care, needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_2health11 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived need for mental health care, needs partially met or needs not met' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge11 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived need for mental health care, needs partially met or needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex11 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived need for mental health care, needs partially met or needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_2health10 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived need for mental health care, all needs met' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge10 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived need for mental health care, all needs met')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex10 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived need for mental health care, all needs met')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_2health9 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived need for mental health care, no need' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge9 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived need for mental health care, no need')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex9 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived need for mental health care, no need')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_2health8 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Has a regular healthcare provider' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge8 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Has a regular healthcare provider')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex8 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Has a regular healthcare provider')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_2health7 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Life satisfaction, satisfied or very satisfied' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge7 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Life satisfaction, satisfied or very satisfied')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex7 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Life satisfaction, satisfied or very satisfied')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_2health6 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived life stress, most days quite a bit or extremely stressful' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge6 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived life stress, most days quite a bit or extremely stressful')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex6 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived life stress, most days quite a bit or extremely stressful')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_2health4 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived mental health, fair or poor' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge4<- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived mental health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex4 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived mental health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    #####
+    filtered_2health3 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived mental health, very good or excellent' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge3 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived mental health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex3 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived mental health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_2health2 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived health, fair or poor' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge2 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex2 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    ###
+    
+    filtered_2health1 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecImm2,`Indicator` == 'Perceived health, very good or excellent' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthAge1 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecAge2,`Indicator` == 'Perceived health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2healthSex1 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM220, `Year` %in% input$healthYear2, `Geography` %in% input$healthGeo2, `Confidence` %in% input$healthConfidence2,`Characteristic` %in% input$healthCharSpecSex2,`Indicator` == 'Perceived health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    #Filters for VisMin Basic Needs and Health 
+    
+    filtered_basic5 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecImm,`Indicator` == 'Household severely food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicAge5 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecAge,`Indicator` == 'Household severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicSex5 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecSex,`Indicator` == 'Household severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_basic4 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecImm,`Indicator` == 'Household moderately food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicAge4 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecAge,`Indicator` == 'Household moderately food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicSex4 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecSex,`Indicator` == 'Household moderately food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_basic3 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecImm,`Indicator` == 'Household moderately or severely food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicAge3 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecAge,`Indicator` == 'Household moderately or severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicSex3 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecSex,`Indicator` == 'Household moderately or severely food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_basic2 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecImm,`Indicator` == 'Household marginally food insecure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicAge2 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecAge,`Indicator` == 'Household marginally food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicSex2 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecSex,`Indicator` == 'Household marginally food insecure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_basic1 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecImm,`Indicator` == 'Household food secure' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicAge1 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecAge,`Indicator` == 'Household food secure')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_basicSex1 <- reactive({
+        
+        newDT <- basicDT %>%
+            
+            filter(`VisMin` %in% input$VM185, `Year` %in% input$basicYear, `Geography` %in% input$basicGeo, `Confidence` %in% input$basicConfidence,`Characteristic` %in% input$basicCharSpecSex,`Indicator` == 'Household food secure')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    
+    filtered_health13 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Unmet health care needs' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge13 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Unmet health care needs')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex13 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Unmet health care needs')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_health12 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived need for mental health care, needs not met' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge12 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived need for mental health care, needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex12 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived need for mental health care, needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_health11 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived need for mental health care, needs partially met or needs not met' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge11 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived need for mental health care, needs partially met or needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex11 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived need for mental health care, needs partially met or needs not met')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_health10 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived need for mental health care, all needs met' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge10 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived need for mental health care, all needs met')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex10 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived need for mental health care, all needs met')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_health9 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived need for mental health care, no need' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge9 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived need for mental health care, no need')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex9 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived need for mental health care, no need')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_health8 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Has a regular healthcare provider' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge8 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Has a regular healthcare provider')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex8 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Has a regular healthcare provider')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_health7 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Life satisfaction, satisfied or very satisfied' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge7 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Life satisfaction, satisfied or very satisfied')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex7 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Life satisfaction, satisfied or very satisfied')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_health6 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived life stress, most days quite a bit or extremely stressful' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge6 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived life stress, most days quite a bit or extremely stressful')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex6 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived life stress, most days quite a bit or extremely stressful')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    filtered_health4 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived mental health, fair or poor' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge4<- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived mental health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex4 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived mental health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    #####
+    filtered_health3 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived mental health, very good or excellent' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge3 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived mental health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex3 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived mental health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_health2 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived health, fair or poor' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge2 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex2 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived health, fair or poor')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    ###
+    
+    filtered_health1 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecImm,`Indicator` == 'Perceived health, very good or excellent' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthAge1 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecAge,`Indicator` == 'Perceived health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_healthSex1 <- reactive({
+        
+        newDT <- healthDT %>%
+            
+            filter(`VisMin` %in% input$VM180, `Year` %in% input$healthYear, `Geography` %in% input$healthGeo, `Confidence` %in% input$healthConfidence,`Characteristic` %in% input$healthCharSpecSex,`Indicator` == 'Perceived health, very good or excellent')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    ####
+    
+    filtered_civic17 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Engaged in political activities' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge17 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Engaged in political activities')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex17 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Engaged in political activities')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen17 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Engaged in political activities')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang17 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Engaged in political activities')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu17 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Engaged in political activities')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    
+    ######
+    
+    filtered_civic16 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in environmental group' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge16 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in environmental group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex16 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in environmental group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen16 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in environmental group')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang16 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in environmental group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu16 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in environmental group')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ######
+    filtered_civic15 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in immigrant or ethnic association or club' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge15 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in immigrant or ethnic association or club')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex15 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in immigrant or ethnic association or club')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen15 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in immigrant or ethnic association or club')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang15 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in immigrant or ethnic association or club')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu15 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in immigrant or ethnic association or club')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #######
+    
+    filtered_civic14 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in youth organization' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge14 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in youth organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex14 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in youth organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen14 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in youth organization')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang14 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in youth organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu14 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in youth organization')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    #######
+    filtered_civic12 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in humanitarian or charitable organization or service club' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge12 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in humanitarian or charitable organization or service club')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex12 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in humanitarian or charitable organization or service club')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen12 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in humanitarian or charitable organization or service club')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang12 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in humanitarian or charitable organization or service club')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu12 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in humanitarian or charitable organization or service club')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    ##########
+    
+    filtered_civic11 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in school group, neighbourhood, civic or community association' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge11 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in school group, neighbourhood, civic or community association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex11 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in school group, neighbourhood, civic or community association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen11 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in school group, neighbourhood, civic or community association')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang11 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in school group, neighbourhood, civic or community association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu11 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in school group, neighbourhood, civic or community association')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    ##########
+    filtered_civic10 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in religious-affiliated group' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge10 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in religious-affiliated group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex10 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in religious-affiliated group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen10 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in religious-affiliated group')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang10 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in religious-affiliated group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu10 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in religious-affiliated group')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    #########
+    filtered_civic9 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in political party or group' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge9 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in political party or group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex9 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in political party or group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen9 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in political party or group')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang9 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in political party or group')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu9 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in political party or group')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    ###
+    
+    filtered_civic8 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in union or professional association' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge8 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in union or professional association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex8 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in union or professional association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen8 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in union or professional association')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang8 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in union or professional association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu8 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in union or professional association')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+     ##
+    
+    filtered_civic7 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in cultural, educational or hobby organization' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge7 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in cultural, educational or hobby organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex7 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in cultural, educational or hobby organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen7 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in cultural, educational or hobby organization')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang7 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in cultural, educational or hobby organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu7 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in cultural, educational or hobby organization')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    filtered_civic6 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant of at least one group, organization or association' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge6 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant of at least one group, organization or association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex6 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant of at least one group, organization or association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen6 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant of at least one group, organization or association')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang6 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant of at least one group, organization or association')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu6 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant of at least one group, organization or association')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    filtered_civic5 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecImm3,`Indicator` == 'Member or participant in sports or recreational organization' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicAge5 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecAge3,`Indicator` == 'Member or participant in sports or recreational organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicSex5 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGend3,`Indicator` == 'Member or participant in sports or recreational organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicGen5 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecGen3,`Indicator` == 'Member or participant in sports or recreational organization')
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_civicLang5 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecLang3,`Indicator` == 'Member or participant in sports or recreational organization')
+        
+        
+        return(newDT)
+    })
+    
+    filtered_civicEdu5 <- reactive({
+        
+        newDT <- civicDT %>%
+            
+            filter(`VisMin` %in% input$VM175, `Year` %in% input$CivicYear3, `Geography` %in% input$CivicGeo3, `Confidence` %in% input$CivicConf3,`Characteristic` %in% input$CivicCharSpecEdu3,`Indicator` == 'Member or participant in sports or recreational organization')
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    ###
     
     filtered_civic4 <- reactive({
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecImm2,`Indicator` == 'Voted in last provincial election' )
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecImm2,`Indicator` == 'Voted in last provincial election' )
         
         
         return(newDT)
@@ -7716,7 +14044,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecAge2,`Indicator` == 'Voted in last provincial election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecAge2,`Indicator` == 'Voted in last provincial election')
         
         
         return(newDT)
@@ -7726,7 +14054,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecSex2,`Indicator` == 'Voted in last provincial election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecSex2,`Indicator` == 'Voted in last provincial election')
         
         
         return(newDT)
@@ -7736,7 +14064,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecGen2,`Indicator` == 'Voted in last provincial election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecGen2,`Indicator` == 'Voted in last provincial election')
         
         
         return(newDT)
@@ -7747,7 +14075,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecLang2,`Indicator` == 'Voted in last provincial election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecLang2,`Indicator` == 'Voted in last provincial election')
         
         
         return(newDT)
@@ -7757,7 +14085,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecEdu2,`Indicator` == 'Voted in last provincial election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecEdu2,`Indicator` == 'Voted in last provincial election')
         
         
         return(newDT)
@@ -7771,7 +14099,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecImm2,`Indicator` == 'Voted in last municipal election' )
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecImm2,`Indicator` == 'Voted in last federal election' )
         
         
         return(newDT)
@@ -7781,7 +14109,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecAge2,`Indicator` == 'Voted in last municipal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecAge2,`Indicator` == 'Voted in last federal election')
         
         
         return(newDT)
@@ -7791,7 +14119,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecSex2,`Indicator` == 'Voted in last municipal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecSex2,`Indicator` == 'Voted in last federal election')
         
         
         return(newDT)
@@ -7801,7 +14129,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecGen2,`Indicator` == 'Voted in last municipal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecGen2,`Indicator` == 'Voted in last federal election')
         
         
         return(newDT)
@@ -7812,7 +14140,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecLang2,`Indicator` == 'Voted in last municipal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecLang2,`Indicator` == 'Voted in last federal election')
         
         
         return(newDT)
@@ -7822,18 +14150,20 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecEdu2,`Indicator` == 'Voted in last municipal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecEdu2,`Indicator` == 'Voted in last federal election')
         
         
         return(newDT)
     })
+    
+    
     
     ####
     filtered_civic2 <- reactive({
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecImm2,`Indicator` == 'Voted in last federal election' )
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecImm2,`Indicator` == 'Voted in last municipal election' )
         
         
         return(newDT)
@@ -7843,7 +14173,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecAge2,`Indicator` == 'Voted in last federal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecAge2,`Indicator` == 'Voted in last municipal election')
         
         
         return(newDT)
@@ -7853,7 +14183,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecSex2,`Indicator` == 'Voted in last federal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecSex2,`Indicator` == 'Voted in last municipal election')
         
         
         return(newDT)
@@ -7863,7 +14193,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecGen2,`Indicator` == 'Voted in last federal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecGen2,`Indicator` == 'Voted in last municipal election')
         
         
         return(newDT)
@@ -7874,7 +14204,7 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecLang2,`Indicator` == 'Voted in last federal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecLang2,`Indicator` == 'Voted in last municipal election')
         
         
         return(newDT)
@@ -7884,78 +14214,13 @@ server <- function(input, output) {
         
         newDT <- civicDT2 %>%
             
-            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConfidence2,`Characteristic` %in% input$civicCharSpecEdu2,`Indicator` == 'Voted in last federal election')
+            filter(`VisMin` %in% input$VM170, `Year` %in% input$CivicYear2, `Geography` %in% input$CivicGeo2, `Confidence` %in% input$CivicConf2,`Characteristic` %in% input$CivicCharSpecEdu2,`Indicator` == 'Voted in last municipal election')
         
         
         return(newDT)
     })
     
-        ####
-    filtered_civic1 <- reactive({
-        
-        newDT <- civicDT %>%
-            
-            filter(`VisMin` %in% input$VM160, `Year` %in% input$CivicYear1, `Geography` %in% input$CivicGeo1, `Confidence` %in% input$CivicConfidence1,`Characteristic` %in% input$civicCharSpecImm1,`Indicator` == 'Member or participant of at least one group, organization or association')
-        
-        
-        return(newDT)
-    })
-    
-    filtered_civicAge1 <- reactive({
-        
-        newDT <- civicDT %>%
-            
-            filter(`VisMin` %in% input$VM160, `Year` %in% input$CivicYear1, `Geography` %in% input$CivicGeo1, `Confidence` %in% input$CivicConfidence1,`Characteristic` %in% input$civicCharSpecAge1,`Indicator` == 'Member or participant of at least one group, organization or association')
-        
-        
-        return(newDT)
-    })
-    
-    filtered_civicSex1 <- reactive({
-        
-        newDT <- civicDT %>%
-            
-            filter(`VisMin` %in% input$VM160, `Year` %in% input$CivicYear1, `Geography` %in% input$CivicGeo1, `Confidence` %in% input$CivicConfidence1,`Characteristic` %in% input$civicCharSpecSex1,`Indicator` == 'Member or participant of at least one group, organization or association')
-        
-        
-        return(newDT)
-    })
-    
-    filtered_civicGen1 <- reactive({
-        
-        newDT <- civicDT %>%
-            
-            filter(`VisMin` %in% input$VM160, `Year` %in% input$CivicYear1, `Geography` %in% input$CivicGeo1, `Confidence` %in% input$CivicConfidence1,`Characteristic` %in% input$civicCharSpecGen1,`Indicator` == 'Member or participant of at least one group, organization or association')
-        
-        
-        return(newDT)
-    })
-    
-    
-    filtered_civicLang1 <- reactive({
-        
-        newDT <- civicDT %>%
-            
-            filter(`VisMin` %in% input$VM160, `Year` %in% input$CivicYear1, `Geography` %in% input$CivicGeo1, `Confidence` %in% input$CivicConfidence1,`Characteristic` %in% input$civicCharSpecLang1,`Indicator` == 'Member or participant of at least one group, organization or association')
-        
-        
-        return(newDT)
-    })
-    
-    filtered_civicEdu1 <- reactive({
-        
-        newDT <- civicDT %>%
-            
-            filter(`VisMin` %in% input$VM160, `Year` %in% input$CivicYear1, `Geography` %in% input$CivicGeo1, `Confidence` %in% input$CivicConfidence1,`Characteristic` %in% input$civicCharSpecEdu1,`Indicator` == 'Member or participant of at least one group, organization or association')
-        
-        
-        return(newDT)
-    })
-    
-    
-    
-    
- 
+  
     
     #End #####
     filtered_Conf12 <- reactive({
@@ -8288,6 +14553,16 @@ server <- function(input, output) {
         newDT <- employmentDT%>%
             
             filter(`VisMin` %in% input$VM135, `Year` %in% input$EmploymentYear7, `Geography` %in% input$EmploymentGeo7, `Confidence` %in% input$EmploymentConf7,`Characteristic` %in% input$EmploymentChar7,`Indicator` == 'Have access to disability insurance under employment contract' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_Employ6 <- reactive({
+        
+        newDT <- employmentDT%>%
+            
+            filter(`VisMin` %in% input$VM130, `Year` %in% input$EmploymentYear6, `Geography` %in% input$EmploymentGeo6, `Confidence` %in% input$EmploymentConf6,`Characteristic` %in% input$EmploymentChar6,`Indicator` == 'Match between education and employment' )
         
         
         return(newDT)
@@ -8919,7 +15194,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Discrimination at work or when applying for a job or a promotion, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Discrimination at work or when applying for a job or a promotion, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -8930,7 +15205,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Discrimination at work or when applying for a job or promotion, since the beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Discrimination at work or when applying for a job or promotion, since the beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9056,7 +15331,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Discrimination in a store, bank or restaurant, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Discrimination in a store, bank or restaurant, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9067,7 +15342,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Discrimination in a store, bank or restaurant, since the  beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Discrimination in a store, bank or restaurant, since the  beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9189,12 +15464,13 @@ server <- function(input, output) {
         return(newDT)
     })
     
+    #######
     
     filtered_ClassGender <- reactive({
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Discrimination when attending school or classes, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Discrimination when attending school or classes, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9205,12 +15481,13 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Discrimination when attending school or classes, since the  beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Discrimination when attending school or classes, since the  beginning of COVID-19 pandemic' )
         
         
         return(newDT)
     })
     
+    ####
     
     filtered_ClassGen <- reactive({
         
@@ -9330,7 +15607,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Discrimination when dealing with the police, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Discrimination when dealing with the police, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9341,7 +15618,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Discrimination when dealing with the police, since the beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Discrimination when dealing with the police, since the beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9467,7 +15744,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Experience(s) of discrimination based on language, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Experience(s) of discrimination based on language, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9478,7 +15755,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Experience(s) of discrimination based on language, since the beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Experience(s) of discrimination based on language, since the beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9605,7 +15882,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Experience(s) of discrimination based on religion, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Experience(s) of discrimination based on religion, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9616,7 +15893,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Experience(s) of discrimination based on religion, since the beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Experience(s) of discrimination based on religion, since the beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9743,7 +16020,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Experience(s) of discrimination based on race or colour, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Experience(s) of discrimination based on race or colour, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9754,7 +16031,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Experience(s) of discrimination based on race or colour, since the beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Experience(s) of discrimination based on race or colour, since the beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9878,7 +16155,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Experience(s) of discrimination based on ethnicity or culture, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Experience(s) of discrimination based on ethnicity or culture, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -9889,7 +16166,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Experience(s) of discrimination based on ethnicity or culture, since the beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Experience(s) of discrimination based on ethnicity or culture, since the beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -10017,7 +16294,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender,`Indicator` == 'Experience(s) of discrimination, 5 years before COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex,`Indicator` == 'Experience(s) of discrimination, 5 years before COVID-19 pandemic' )
         
         
         return(newDT)
@@ -10028,7 +16305,7 @@ server <- function(input, output) {
         
         newDT <- discriminationDT %>%
             
-            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSpecGender, `Indicator` == 'Experience(s) of discrimination since the beginning of COVID-19 pandemic' )
+            filter(`VisMin` %in% input$VM30, `Year` %in% input$covYear, `Geography` %in% input$covGeo, `Confidence` %in% input$covConfidence,`Characteristic` %in% input$covCharSex, `Indicator` == 'Experience(s) of discrimination since the beginning of COVID-19 pandemic' )
         
         
         return(newDT)
@@ -10102,12 +16379,1076 @@ server <- function(input, output) {
     
     
     ###
-    #Today
+    #Mimi
+    
+    #Filters for Immigration - Public services
+    
+    
+    filtered_2Conf <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in the police service' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in the police service' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in the police service' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in the police service' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in the police service' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in the police service' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    ##
+    
+    
+    filtered_2Conf1 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in Federal Parliament' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge1 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in Federal Parliament' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex1 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in Federal Parliament' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen1 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in Federal Parliament' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang1 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in Federal Parliament' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu1 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in Federal Parliament' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    ##
+    
+    
+    filtered_2Conf2 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in the Canadian media' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge2 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in the Canadian media' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex2 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in the Canadian media' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen2 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in the Canadian media' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang2 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in the Canadian media' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu2 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in the Canadian media' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    ##
+    
+    
+    filtered_2Conf3 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in the school system' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge3 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in the school system' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex3 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in the school system' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen3 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in the school system' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang3 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in the school system' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu3 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in the school system' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    ##
+    
+    
+    filtered_2Conf4 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in the justice system and courts' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge4 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in the justice system and courts' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex4 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in the justice system and courts' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen4 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in the justice system and courts' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang4 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in the justice system and courts' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu4 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in the justice system and courts' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    ##
+    
+    
+    
+    filtered_2Conf5 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in major corporations' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge5 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in major corporations' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex5 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in major corporations' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen5 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in major corporations' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang5 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in major corporations' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu5 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in major corporations' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    ##
+    
+    
+    
+    
+    filtered_2Conf6 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in merchants and local business people' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge6 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in merchants and local business people' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex6 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in merchants and local business people' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen6 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in merchants and local business people' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang6 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in merchants and local business people' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu6 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in merchants and local business people' )
+        
+        
+        return(newDT)
+    })
+    
+    ####
+    filtered_2Conf7 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecImmIM,`Indicator` == 'Confidence in banks' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge7 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecAgeIM,`Indicator` == 'Confidence in banks' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex7 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenderIM,`Indicator` == 'Confidence in banks' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen7 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecGenIM,`Indicator` == 'Confidence in banks' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang7 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecLangIM,`Indicator` == 'Confidence in banks' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu7 <- reactive({
+        
+        newDT <- confidenceDT %>%
+            
+            filter(`VisMin` %in% input$VM205, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidenceIM,`Characteristic` %in% input$confCharSpecEduIM,`Indicator` == 'Confidence in banks' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #Filters for Immigration - Social connections
+    
+    filtered_2Conf12 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecImm2,`Indicator` == 'Strong sense of belonging to Canada' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge12 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecAge2,`Indicator` == 'Strong sense of belonging to Canada' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex12 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecSex2,`Indicator` == 'Strong sense of belonging to Canada' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen12 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecGen2,`Indicator` == 'Strong sense of belonging to Canada' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang12 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecLang2,`Indicator` == 'Strong sense of belonging to Canada' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu12 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecEdu2,`Indicator` == 'Strong sense of belonging to Canada' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #End
+    filtered_2Conf11 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecImm2,`Indicator` == 'Strong sense of belonging to the province' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge11 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecAge2,`Indicator` == 'Strong sense of belonging to the province' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex11 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecSex2,`Indicator` == 'Strong sense of belonging to the province' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen11 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecGen2,`Indicator` == 'Strong sense of belonging to the province' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang11 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecLang2,`Indicator` == 'Strong sense of belonging to the province' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu11 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecEdu2,`Indicator` == 'Strong sense of belonging to the province' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    #End
+    
+    filtered_2Conf10 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecImm2,`Indicator` == 'Strong sense of belonging to the town or city' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge10 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecAge2,`Indicator` == 'Strong sense of belonging to the town or city' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex10 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecSex2,`Indicator` == 'Strong sense of belonging to the town or city' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen10 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecGen2,`Indicator` == 'Strong sense of belonging to the town or city' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang10 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecLang2,`Indicator` == 'Strong sense of belonging to the town or city' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu10 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecEdu2,`Indicator` == 'Strong sense of belonging to the town or city' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    #End
+    
+    
+    filtered_2Conf9 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecImm2,`Indicator` == 'Strong sense of belonging to the local community' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge9 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecAge2,`Indicator` == 'Strong sense of belonging to the local community' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex9 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecSex2,`Indicator` == 'Strong sense of belonging to the local community' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen9 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecGen2,`Indicator` == 'Strong sense of belonging to the local community' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang9 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecLang2,`Indicator` == 'Strong sense of belonging to the local community' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu9 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecEdu2,`Indicator` == 'Strong sense of belonging to the local community' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #End
+    
+    filtered_2Conf8 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecImm2,`Indicator` == 'Reported that most people can be trusted in general' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfAge8 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecAge2,`Indicator` == 'Reported that most people can be trusted in general' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfSex8 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecSex2,`Indicator` == 'Reported that most people can be trusted in general' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfGen8 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecGen2,`Indicator` == 'Reported that most people can be trusted in general' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2ConfLang8 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecLang2,`Indicator` == 'Reported that most people can be trusted in general' )
+        
+        
+        return(newDT)
+    })
+    
+    filtered_2ConfEdu8 <- reactive({
+        
+        newDT <- belongingDT %>%
+            
+            filter(`VisMin` %in% input$VM225, `Year` %in% input$confYearIM, `Geography` %in% input$confGeoIM, `Confidence` %in% input$confConfidence2,`Characteristic` %in% input$confCharSpecEdu2,`Indicator` == 'Reported that most people can be trusted in general' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #Filters for Immigration - Representation 
+    filtered_2rep3VM <- reactive({
+        
+        newDT <- representationDT %>%
+            filter(`Immigration` %in% input$RepImm3,`Degree` %in% input$RepDegree3,`VisMin` %in% input$VM210, `Geography` %in% input$RepGeo3,`Year` %in% input$RepYear3,`Age` %in% input$RepAgeLang3,`Sex` %in% input$RepSex3,`Indicator` == 'Workers in all management occupations' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2rep2VM <- reactive({
+        
+        newDT <- representationDT %>%
+            filter(`Immigration` %in% input$RepImm3,`Degree` %in% input$RepDegree3,`VisMin` %in% input$VM210, `Geography` %in% input$RepGeo3,`Year` %in% input$RepYear3,`Age` %in% input$RepAgeLang3,`Sex` %in% input$RepSex3, `Indicator` == 'Workers in senior management occupations' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    filtered_2rep1VM <- reactive({
+        
+        newDT <- representationDT %>%
+            filter(`Immigration` %in% input$RepImm3,`Degree` %in% input$RepDegree3,`VisMin` %in% input$VM210, `Geography` %in% input$RepGeo3,`Year` %in% input$RepYear3,`Age` %in% input$RepAgeLang3,`Sex` %in% input$RepSex3,`Indicator` == 'Workers in middle management occupations' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #Filters for Immigration Labor Participation
+    
+    filtered_rep4VM2 <- reactive({
+        
+        newDT <- representationDT %>%
+            filter(`Immigration` %in% input$RepImm2,`Degree` %in% input$RepDegree2,`VisMin` %in% input$VM190, `Geography` %in% input$RepGeo2,`Year` %in% input$RepYear2,`Age` %in% input$RepAgeLang2,`Sex` %in% input$RepSex2,`Indicator` == 'Population in self-employment (unincorporated)' )
+        
+        
+        return(newDT)
+    })
+    
+    #end
+    
+    filtered_youthVM2 <- reactive({
+        
+        newDT <- youthDT %>%
+            filter(`Immigration` %in% input$YouthImm2,`Language` %in% input$YouthLang2,`VisMin` %in% input$VM195, `Geography` %in% input$YouthGeo2,`Year` %in% input$YouthYear2,`Age` %in% input$YouthAge2,`Sex` %in% input$YouthSex2)
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #end
+    filtered_rate4VM2 <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm2,`Degree` %in% input$RateDegree2,`VisMin` %in% input$VM245, `Geography` %in% input$RateGeo2,`Year` %in% input$RateYear2,`Age` %in% input$RateAgeLang2,`Sex` %in% input$RateSex2,`Indicator` == 'Population in full-time employment' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    #end
+    filtered_rate3VM2 <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm2,`Degree` %in% input$RateDegree2,`VisMin` %in% input$VM245, `Geography` %in% input$RateGeo2,`Year` %in% input$RateYear2,`Age` %in% input$RateAgeLang2,`Sex` %in% input$RateSex2,`Indicator` == 'Unemployment rate' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    #end
+    filtered_rate2VM2 <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm2,`Degree` %in% input$RateDegree2,`VisMin` %in% input$VM245, `Geography` %in% input$RateGeo2,`Year` %in% input$RateYear2,`Age` %in% input$RateAgeLang2,`Sex` %in% input$RateSex2,`Indicator` == 'Employment rate' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    #end
+    filtered_rate1VM2 <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm2,`Degree` %in% input$RateDegree2,`VisMin` %in% input$VM245, `Geography` %in% input$RateGeo2,`Year` %in% input$RateYear2,`Age` %in% input$RateAgeLang2,`Sex` %in% input$RateSex2,`Indicator` == 'Participation rate' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #end
+    filtered_inc2VM2 <- reactive({
+        
+        newDT <- incomeDT %>%
+            filter(`Immigration` %in% input$IncImm2,`Degree` %in% input$IncDegree2,`VisMin` %in% input$VM240, `Geography` %in% input$IncGeo2,`Year` %in% input$IncYear2,`Age` %in% input$IncAgeLang2,`Sex` %in% input$IncSex2,`Indicator` == 'Average weekly earnings (full-time)' )
+        
+        
+        return(newDT)
+    })
+    
+    #end
+    filtered_inc1VM2 <- reactive({
+        
+        newDT <- incomeDT %>%
+            filter(`Immigration` %in% input$IncImm2,`Degree` %in% input$IncDegree2,`VisMin` %in% input$VM240, `Geography` %in% input$IncGeo2,`Year` %in% input$IncYear2,`Age` %in% input$IncAgeLang2,`Sex` %in% input$IncSex2,`Indicator` == 'Average employment income' )
+        
+        
+        return(newDT)
+    })
+    
+   
+    #end
+    
+    
+    
+    #Filters for Visible Minority Labor Participation 
+    filtered_rate4VM <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm,`Degree` %in% input$RateDegree,`VisMin` %in% input$VM235, `Geography` %in% input$RateGeo,`Year` %in% input$RateYear,`Age` %in% input$RateAgeLang,`Sex` %in% input$RateSex,`Indicator` == 'Population in full-time employment' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    #end
+    filtered_rate3VM <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm,`Degree` %in% input$RateDegree,`VisMin` %in% input$VM235, `Geography` %in% input$RateGeo,`Year` %in% input$RateYear,`Age` %in% input$RateAgeLang,`Sex` %in% input$RateSex,`Indicator` == 'Unemployment rate' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    #end
+    filtered_rate2VM <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm,`Degree` %in% input$RateDegree,`VisMin` %in% input$VM235, `Geography` %in% input$RateGeo,`Year` %in% input$RateYear,`Age` %in% input$RateAgeLang,`Sex` %in% input$RateSex,`Indicator` == 'Employment rate' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    #end
+    filtered_rate1VM <- reactive({
+        
+        newDT <- rateDT %>%
+            filter(`Immigration` %in% input$RateImm,`Degree` %in% input$RateDegree,`VisMin` %in% input$VM235, `Geography` %in% input$RateGeo,`Year` %in% input$RateYear,`Age` %in% input$RateAgeLang,`Sex` %in% input$RateSex,`Indicator` == 'Participation rate' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    #end
+    filtered_inc2VM <- reactive({
+        
+        newDT <- incomeDT %>%
+            filter(`Immigration` %in% input$IncImm1,`Degree` %in% input$IncDegree1,`VisMin` %in% input$VM230, `Geography` %in% input$IncGeo1,`Year` %in% input$IncYear1,`Age` %in% input$IncAgeLang1,`Sex` %in% input$IncSex1,`Indicator` == 'Average weekly earnings (full-time)' )
+        
+        
+        return(newDT)
+    })
+    
+    #end
+    filtered_inc1VM <- reactive({
+        
+        newDT <- incomeDT %>%
+            filter(`Immigration` %in% input$IncImm1,`Degree` %in% input$IncDegree1,`VisMin` %in% input$VM230, `Geography` %in% input$IncGeo1,`Year` %in% input$IncYear1,`Age` %in% input$IncAgeLang1,`Sex` %in% input$IncSex1,`Indicator` == 'Average employment income' )
+        
+        
+        return(newDT)
+    })
+    
+    
+    
+    
+    
+    #end
+    
+    filtered_rep4VM <- reactive({
+        
+        newDT <- representationDT %>%
+            filter(`Immigration` %in% input$RepImm1,`Degree` %in% input$RepDegree1,`VisMin` %in% input$VM155, `Geography` %in% input$RepGeo1,`Year` %in% input$RepYear1,`Age` %in% input$RepAgeLang1,`Sex` %in% input$RepSex1,`Indicator` == 'Population in self-employment (unincorporated)' )
+        
+        
+        return(newDT)
+    })
+    
+    #end
     
     filtered_rep3VM <- reactive({
         
         newDT <- representationDT %>%
-            filter(`Immigration` %in% input$RepImm,`Degree` %in% input$RepDegree,`VisMin` %in% input$VM145, `Geography` %in% input$RepGeo,`Year` %in% input$RepYear,`Age` %in% input$RepAgeLang,`Sex` %in% input$RepSex,`Indicator` == 'Workers in all management occupations' )
+            filter(`Immigration` %in% input$RepImm2,`Degree` %in% input$RepDegree2,`VisMin` %in% input$VM150, `Geography` %in% input$RepGeo2,`Year` %in% input$RepYear2,`Age` %in% input$RepAgeLang2,`Sex` %in% input$RepSex2,`Indicator` == 'Workers in all management occupations' )
         
         
         return(newDT)
@@ -10117,7 +17458,7 @@ server <- function(input, output) {
     filtered_rep2VM <- reactive({
         
         newDT <- representationDT %>%
-            filter(`Immigration` %in% input$RepImm,`Degree` %in% input$RepDegree,`VisMin` %in% input$VM145, `Geography` %in% input$RepGeo,`Year` %in% input$RepYear,`Age` %in% input$RepAgeLang,`Sex` %in% input$RepSex, `Indicator` == 'Workers in senior management occupations' )
+            filter(`Immigration` %in% input$RepImm2,`Degree` %in% input$RepDegree2,`VisMin` %in% input$VM150, `Geography` %in% input$RepGeo2,`Year` %in% input$RepYear2,`Age` %in% input$RepAgeLang2,`Sex` %in% input$RepSex2, `Indicator` == 'Workers in senior management occupations' )
         
         
         return(newDT)
@@ -10127,7 +17468,7 @@ server <- function(input, output) {
     filtered_rep1VM <- reactive({
         
         newDT <- representationDT %>%
-            filter(`Immigration` %in% input$RepImm,`Degree` %in% input$RepDegree,`VisMin` %in% input$VM145, `Geography` %in% input$RepGeo,`Year` %in% input$RepYear,`Age` %in% input$RepAgeLang,`Sex` %in% input$RepSexc,`Indicator` == 'Workers in specialized middle management occupations' )
+            filter(`Immigration` %in% input$RepImm2,`Degree` %in% input$RepDegree2,`VisMin` %in% input$VM150, `Geography` %in% input$RepGeo2,`Year` %in% input$RepYear2,`Age` %in% input$RepAgeLang2,`Sex` %in% input$RepSex2,`Indicator` == 'Workers in middle management occupations' )
         
         
         return(newDT)
@@ -10138,7 +17479,7 @@ server <- function(input, output) {
     filtered_youthVM <- reactive({
         
         newDT <- youthDT %>%
-            filter(`Immigration` %in% input$youthImm,`Language` %in% input$youthLang,`VisMin` %in% input$VM140, `Geography` %in% input$youthGeo,`Year` %in% input$youthYear,`Age` %in% input$youthAge,`Sex` %in% input$youthSex)
+            filter(`Immigration` %in% input$YouthImm,`Language` %in% input$YouthLang,`VisMin` %in% input$VM140, `Geography` %in% input$YouthGeo,`Year` %in% input$YouthYear,`Age` %in% input$YouthAge,`Sex` %in% input$YouthSex)
         
         
         return(newDT)
@@ -10451,13 +17792,3033 @@ server <- function(input, output) {
     # Output ---------------------------------------------------
     
     #Leo
+    #Plotly for Immigration 
     
-    output$sBarCivic3 <- renderPlotly({
+    output$sBar2Rep3 <- renderPlotly({
+        
+        req(filtered_2rep3VM())
+        
+        fig <- plot_ly(filtered_2rep3VM(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Workers in middle management occupations",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    output$sBar2Rep2 <- renderPlotly({
+        
+        req(filtered_2rep2VM())
+        
+        fig <- plot_ly(filtered_2rep2VM(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Workers in senior management occupations",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2Rep1 <- renderPlotly({
+        
+        req(filtered_2rep1VM())
+        
+        fig <- plot_ly(filtered_2rep1VM(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Workers in all management occupations",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    #end
+    output$sBar2Basic5 <- renderPlotly({
+        
+        req(filtered_2basic5())
+        
+        
+        fig <- plot_ly(filtered_2basic5(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicAge5 <- renderPlotly({
+        
+        req(filtered_2basicAge5)
+        
+        
+        fig <- plot_ly(filtered_2basicAge5(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicSex5 <- renderPlotly({
+        
+        req(filtered_2basicSex5())
+        
+        
+        fig <- plot_ly(filtered_2basicSex5(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    
+    output$sBar2Basic3 <- renderPlotly({
+        
+        req(filtered_2basic3())
+        
+        
+        fig <- plot_ly(filtered_2basic3(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately or severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicAge3 <- renderPlotly({
+        
+        req(filtered_2basicAge3)
+        
+        
+        fig <- plot_ly(filtered_2basicAge3(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately or severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicSex3 <- renderPlotly({
+        
+        req(filtered_2basicSex3())
+        
+        
+        fig <- plot_ly(filtered_2basicSex3(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately or severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    
+    output$sBar2Basic4 <- renderPlotly({
+        
+        req(filtered_2basic4())
+        
+        
+        fig <- plot_ly(filtered_2basic4(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicAge4 <- renderPlotly({
+        
+        req(filtered_2basicAge4)
+        
+        
+        fig <- plot_ly(filtered_2basicAge4(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicSex4 <- renderPlotly({
+        
+        req(filtered_2basicSex4())
+        
+        
+        fig <- plot_ly(filtered_2basicSex4(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    output$sBar2Basic2 <- renderPlotly({
+        
+        req(filtered_2basic2())
+        
+        
+        fig <- plot_ly(filtered_2basic2(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household marginally food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicAge2 <- renderPlotly({
+        
+        req(filtered_2basicAge2)
+        
+        
+        fig <- plot_ly(filtered_2basicAge2(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household marginally food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicSex2 <- renderPlotly({
+        
+        req(filtered_2basicSex2())
+        
+        
+        fig <- plot_ly(filtered_2basicSex2(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household marginally food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    output$sBar2Basic1 <- renderPlotly({
+        
+        req(filtered_2basic1())
+        
+        
+        fig <- plot_ly(filtered_2basic1(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household food secure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicAge1 <- renderPlotly({
+        
+        req(filtered_2basicAge1)
+        
+        
+        fig <- plot_ly(filtered_2basicAge1(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household food secure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2BasicSex1 <- renderPlotly({
+        
+        req(filtered_2basicSex1())
+        
+        
+        fig <- plot_ly(filtered_2basicSex1(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household food secure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ####
+    
+    output$sBar2Health14 <- renderPlotly({
+        
+        req(filtered_2health14())
+        
+        
+        fig <- plot_ly(filtered_2health14(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs partially met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge14 <- renderPlotly({
+        
+        req(filtered_2healthAge14)
+        
+        
+        fig <- plot_ly(filtered_2healthAge14(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs partially met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex14 <- renderPlotly({
+        
+        req(filtered_2healthSex14())
+        
+        
+        fig <- plot_ly(filtered_2healthSex14(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs partially met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    ##
+    output$sBar2Health13 <- renderPlotly({
+        
+        req(filtered_2health13())
+        
+        
+        fig <- plot_ly(filtered_2health13(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Unmet health care needs",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge13 <- renderPlotly({
+        
+        req(filtered_2healthAge13)
+        
+        
+        fig <- plot_ly(filtered_2healthAge13(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Unmet health care needs",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex13 <- renderPlotly({
+        
+        req(filtered_2healthSex13())
+        
+        
+        fig <- plot_ly(filtered_2healthSex13(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Unmet health care needs",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    #####
+    
+    output$sBar2Health12 <- renderPlotly({
+        
+        req(filtered_2health12())
+        
+        
+        fig <- plot_ly(filtered_2health12(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge12 <- renderPlotly({
+        
+        req(filtered_2healthAge12)
+        
+        
+        fig <- plot_ly(filtered_2healthAge12(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex12 <- renderPlotly({
+        
+        req(filtered_2healthSex12())
+        
+        
+        fig <- plot_ly(filtered_2healthSex12(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    
+    output$sBar2Health11 <- renderPlotly({
+        
+        req(filtered_2health11())
+        
+        
+        fig <- plot_ly(filtered_2health11(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs partially met or needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge11 <- renderPlotly({
+        
+        req(filtered_2healthAge11)
+        
+        
+        fig <- plot_ly(filtered_2healthAge11(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs partially met or needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex11 <- renderPlotly({
+        
+        req(filtered_2healthSex11())
+        
+        
+        fig <- plot_ly(filtered_2healthSex11(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs partially met or needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBar2Health10 <- renderPlotly({
+        
+        req(filtered_2health10())
+        
+        
+        fig <- plot_ly(filtered_2health10(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge10 <- renderPlotly({
+        
+        req(filtered_2healthAge10)
+        
+        
+        fig <- plot_ly(filtered_2healthAge10(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex10 <- renderPlotly({
+        
+        req(filtered_2healthSex10())
+        
+        
+        fig <- plot_ly(filtered_2healthSex10(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    output$sBar2Health9 <- renderPlotly({
+        
+        req(filtered_2health9())
+        
+        
+        fig <- plot_ly(filtered_2health9(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, no need",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge9 <- renderPlotly({
+        
+        req(filtered_2healthAge9)
+        
+        
+        fig <- plot_ly(filtered_2healthAge9(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, no need",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex9 <- renderPlotly({
+        
+        req(filtered_2healthSex9())
+        
+        
+        fig <- plot_ly(filtered_2healthSex9(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, no need",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    
+    output$sBar2Health8 <- renderPlotly({
+        
+        req(filtered_2health8())
+        
+        
+        fig <- plot_ly(filtered_2health8(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Has a regular healthcare provider",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge8 <- renderPlotly({
+        
+        req(filtered_2healthAge8)
+        
+        
+        fig <- plot_ly(filtered_2healthAge8(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Has a regular healthcare provider",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex8 <- renderPlotly({
+        
+        req(filtered_2healthSex8())
+        
+        
+        fig <- plot_ly(filtered_2healthSex8(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Has a regular healthcare provider",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBar2Health7 <- renderPlotly({
+        
+        req(filtered_2health7())
+        
+        
+        fig <- plot_ly(filtered_2health7(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Life satisfaction, satisfied or very satisfied",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge7 <- renderPlotly({
+        
+        req(filtered_2healthAge7())
+        
+        
+        fig <- plot_ly(filtered_2healthAge7(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Life satisfaction, satisfied or very satisfied",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex7 <- renderPlotly({
+        
+        req(filtered_2healthSex7())
+        
+        
+        fig <- plot_ly(filtered_2healthSex7(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Life satisfaction, satisfied or very satisfied",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBar2Health6 <- renderPlotly({
+        
+        req(filtered_2health6())
+        
+        
+        fig <- plot_ly(filtered_2health6(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived life stress, most days quite a bit or extremely stressful",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge6 <- renderPlotly({
+        
+        req(filtered_2healthAge6())
+        
+        
+        fig <- plot_ly(filtered_2healthAge6(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived life stress, most days quite a bit or extremely stressful",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex6 <- renderPlotly({
+        
+        req(filtered_2healthSex6())
+        
+        
+        fig <- plot_ly(filtered_2healthSex6(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived life stress, most days quite a bit or extremely stressful",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    #####
+    output$sBar2Health4 <- renderPlotly({
+        
+        req(filtered_2health4())
+        
+        
+        fig <- plot_ly(filtered_2health4(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge4 <- renderPlotly({
+        
+        req(filtered_2healthAge4())
+        
+        
+        fig <- plot_ly(filtered_2healthAge4(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex4 <- renderPlotly({
+        
+        req(filtered_2healthSex4())
+        
+        
+        fig <- plot_ly(filtered_healthSex4(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBar2Health3 <- renderPlotly({
+        
+        req(filtered_2health3())
+        
+        
+        fig <- plot_ly(filtered_2health3(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge3 <- renderPlotly({
+        
+        req(filtered_2healthAge3())
+        
+        
+        fig <- plot_ly(filtered_2healthAge3(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex3 <- renderPlotly({
+        
+        req(filtered_2healthSex3())
+        
+        
+        fig <- plot_ly(filtered_2healthSex3(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBar2Health2 <- renderPlotly({
+        
+        req(filtered_2health2())
+        
+        
+        fig <- plot_ly(filtered_2health2(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge2 <- renderPlotly({
+        
+        req(filtered_2healthAge2())
+        
+        
+        fig <- plot_ly(filtered_2healthAge2(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex2 <- renderPlotly({
+        
+        req(filtered_2healthSex2())
+        
+        
+        fig <- plot_ly(filtered_2healthSex2(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    output$sBar2Health1 <- renderPlotly({
+        
+        req(filtered_2health1())
+        
+        
+        fig <- plot_ly(filtered_2health1(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthAge1 <- renderPlotly({
+        
+        req(filtered_2healthAge1())
+        
+        
+        fig <- plot_ly(filtered_2healthAge1(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2HealthSex1 <- renderPlotly({
+        
+        req(filtered_2healthSex1())
+        
+        
+        fig <- plot_ly(filtered_2healthSex1(), x = ~Characteristic, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    #Plotly for Visible Minority`
+    
+    output$sBarBasic5 <- renderPlotly({
+        
+        req(filtered_basic5())
+        
+        
+        fig <- plot_ly(filtered_basic5(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicAge5 <- renderPlotly({
+        
+        req(filtered_basicAge5)
+        
+        
+        fig <- plot_ly(filtered_basicAge5(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicSex5 <- renderPlotly({
+        
+        req(filtered_basicSex5())
+        
+        
+        fig <- plot_ly(filtered_basicSex5(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    
+    output$sBarBasic3 <- renderPlotly({
+        
+        req(filtered_basic3())
+        
+        
+        fig <- plot_ly(filtered_basic3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately or severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicAge3 <- renderPlotly({
+        
+        req(filtered_basicAge3)
+        
+        
+        fig <- plot_ly(filtered_basicAge3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately or severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicSex3 <- renderPlotly({
+        
+        req(filtered_basicSex3())
+        
+        
+        fig <- plot_ly(filtered_basicSex3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately or severely food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    
+    output$sBarBasic4 <- renderPlotly({
+        
+        req(filtered_basic4())
+        
+        
+        fig <- plot_ly(filtered_basic4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicAge4 <- renderPlotly({
+        
+        req(filtered_basicAge4)
+        
+        
+        fig <- plot_ly(filtered_basicAge4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicSex4 <- renderPlotly({
+        
+        req(filtered_basicSex4())
+        
+        
+        fig <- plot_ly(filtered_basicSex4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household moderately food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    output$sBarBasic2 <- renderPlotly({
+        
+        req(filtered_basic2())
+        
+        
+        fig <- plot_ly(filtered_basic2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household marginally food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicAge2 <- renderPlotly({
+        
+        req(filtered_basicAge2)
+        
+        
+        fig <- plot_ly(filtered_basicAge2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household marginally food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicSex2 <- renderPlotly({
+        
+        req(filtered_basicSex2())
+        
+        
+        fig <- plot_ly(filtered_basicSex2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household marginally food insecure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    output$sBarBasic1 <- renderPlotly({
+        
+        req(filtered_basic1())
+        
+        
+        fig <- plot_ly(filtered_basic1(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household food secure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicAge1 <- renderPlotly({
+        
+        req(filtered_basicAge1)
+        
+        
+        fig <- plot_ly(filtered_basicAge1(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household food secure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarBasicSex1 <- renderPlotly({
+        
+        req(filtered_basicSex1())
+        
+        
+        fig <- plot_ly(filtered_basicSex1(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Household food secure",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ####
+    output$sBarHealth13 <- renderPlotly({
+        
+        req(filtered_health13())
+        
+        
+        fig <- plot_ly(filtered_health13(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Unmet health care needs",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge13 <- renderPlotly({
+        
+        req(filtered_healthAge13)
+        
+        
+        fig <- plot_ly(filtered_healthAge13(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Unmet health care needs",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex13 <- renderPlotly({
+        
+        req(filtered_healthSex13())
+        
+        
+        fig <- plot_ly(filtered_healthSex13(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Unmet health care needs",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    #####
+    
+    output$sBarHealth12 <- renderPlotly({
+        
+        req(filtered_health12())
+        
+        
+        fig <- plot_ly(filtered_health12(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge12 <- renderPlotly({
+        
+        req(filtered_healthAge12)
+        
+        
+        fig <- plot_ly(filtered_healthAge12(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex12 <- renderPlotly({
+        
+        req(filtered_healthSex12())
+        
+        
+        fig <- plot_ly(filtered_healthSex12(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, needs not met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    
+    output$sBarHealth11 <- renderPlotly({
+        
+        req(filtered_health11())
+        
+        
+        fig <- plot_ly(filtered_health11(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge11 <- renderPlotly({
+        
+        req(filtered_healthAge11)
+        
+        
+        fig <- plot_ly(filtered_healthAge11(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex11 <- renderPlotly({
+        
+        req(filtered_healthSex11())
+        
+        
+        fig <- plot_ly(filtered_healthSex11(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBarHealth10 <- renderPlotly({
+        
+        req(filtered_health10())
+        
+        
+        fig <- plot_ly(filtered_health10(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge10 <- renderPlotly({
+        
+        req(filtered_healthAge10)
+        
+        
+        fig <- plot_ly(filtered_healthAge10(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex10 <- renderPlotly({
+        
+        req(filtered_healthSex10())
+        
+        
+        fig <- plot_ly(filtered_healthSex10(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, all needs met",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    output$sBarHealth9 <- renderPlotly({
+        
+        req(filtered_health9())
+        
+        
+        fig <- plot_ly(filtered_health9(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, no need",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge9 <- renderPlotly({
+        
+        req(filtered_healthAge9)
+        
+        
+        fig <- plot_ly(filtered_healthAge9(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, no need",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex9 <- renderPlotly({
+        
+        req(filtered_healthSex9())
+        
+        
+        fig <- plot_ly(filtered_healthSex9(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived need for mental health care, no need",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    
+    output$sBarHealth8 <- renderPlotly({
+        
+        req(filtered_health8())
+        
+        
+        fig <- plot_ly(filtered_health8(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Has a regular healthcare provider",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge8 <- renderPlotly({
+        
+        req(filtered_healthAge8)
+        
+        
+        fig <- plot_ly(filtered_healthAge8(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Has a regular healthcare provider",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex8 <- renderPlotly({
+        
+        req(filtered_healthSex8())
+        
+        
+        fig <- plot_ly(filtered_healthSex8(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Has a regular healthcare provider",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBarHealth7 <- renderPlotly({
+        
+        req(filtered_health7())
+        
+        
+        fig <- plot_ly(filtered_health7(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Life satisfaction, satisfied or very satisfied",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge7 <- renderPlotly({
+        
+        req(filtered_healthAge7())
+        
+        
+        fig <- plot_ly(filtered_healthAge7(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Life satisfaction, satisfied or very satisfied",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex7 <- renderPlotly({
+        
+        req(filtered_healthSex7())
+        
+        
+        fig <- plot_ly(filtered_healthSex7(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Life satisfaction, satisfied or very satisfied",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBarHealth6 <- renderPlotly({
+        
+        req(filtered_health6())
+        
+        
+        fig <- plot_ly(filtered_health6(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived life stress, most days quite a bit or extremely stressful",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge6 <- renderPlotly({
+        
+        req(filtered_healthAge6())
+        
+        
+        fig <- plot_ly(filtered_healthAge6(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived life stress, most days quite a bit or extremely stressful",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex6 <- renderPlotly({
+        
+        req(filtered_healthSex6())
+        
+        
+        fig <- plot_ly(filtered_healthSex6(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived life stress, most days quite a bit or extremely stressful",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    #####
+    output$sBarHealth4 <- renderPlotly({
+        
+        req(filtered_health4())
+        
+        
+        fig <- plot_ly(filtered_health4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge4 <- renderPlotly({
+        
+        req(filtered_healthAge4())
+        
+        
+        fig <- plot_ly(filtered_healthAge4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex4 <- renderPlotly({
+        
+        req(filtered_healthSex4())
+        
+        
+        fig <- plot_ly(filtered_healthSex4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBarHealth3 <- renderPlotly({
+        
+        req(filtered_health3())
+        
+        
+        fig <- plot_ly(filtered_health3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge3 <- renderPlotly({
+        
+        req(filtered_healthAge3())
+        
+        
+        fig <- plot_ly(filtered_healthAge3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex3 <- renderPlotly({
+        
+        req(filtered_healthSex3())
+        
+        
+        fig <- plot_ly(filtered_healthSex3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived mental health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBarHealth2 <- renderPlotly({
+        
+        req(filtered_health2())
+        
+        
+        fig <- plot_ly(filtered_health2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge2 <- renderPlotly({
+        
+        req(filtered_healthAge2())
+        
+        
+        fig <- plot_ly(filtered_healthAge2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex2 <- renderPlotly({
+        
+        req(filtered_healthSex2())
+        
+        
+        fig <- plot_ly(filtered_healthSex2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, fair or poor",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    output$sBarHealth1 <- renderPlotly({
+        
+        req(filtered_health1())
+        
+        
+        fig <- plot_ly(filtered_health1(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthAge1 <- renderPlotly({
+        
+        req(filtered_healthAge1())
+        
+        
+        fig <- plot_ly(filtered_healthAge1(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarHealthSex1 <- renderPlotly({
+        
+        req(filtered_healthSex1())
+        
+        
+        fig <- plot_ly(filtered_healthSex1(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Perceived health, very good or excellent",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    ###
+    
+    
+    #Plotly for Civic Engagement - VisMin
+    
+    output$sBarCivic17 <- renderPlotly({
+        
+        req(filtered_civic17())
+        
+        
+        fig <- plot_ly(filtered_civic17(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Engaged in political activities",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge17 <- renderPlotly({
+        
+        req(filtered_civicAge17())
+        
+        
+        fig <- plot_ly(filtered_civicAge17(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Engaged in political activities",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex17 <- renderPlotly({
+        
+        req(filtered_civicSex17())
+        
+        
+        fig <- plot_ly(filtered_civicSex17(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Engaged in political activities",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen17 <- renderPlotly({
+        
+        req(filtered_civicGen17())
+        
+        
+        fig <- plot_ly(filtered_civicGen17(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Engaged in political activities",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang17 <- renderPlotly({
+        
+        req(filtered_civicLang17())
+        
+        
+        fig <- plot_ly(filtered_civicLang17(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Engaged in political activities",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu17 <- renderPlotly({
+        
+        req(filtered_civicEdu17())
+        
+        
+        fig <- plot_ly(filtered_civicEdu17(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Engaged in political activities",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ####
+    
+    output$sBarCivic16 <- renderPlotly({
+        
+        req(filtered_civic16())
+        
+        
+        fig <- plot_ly(filtered_civic16(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in environmental group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge16 <- renderPlotly({
+        
+        req(filtered_civicAge16())
+        
+        
+        fig <- plot_ly(filtered_civicAge16(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in environmental group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex16 <- renderPlotly({
+        
+        req(filtered_civicSex16())
+        
+        
+        fig <- plot_ly(filtered_civicSex16(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in environmental group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen16 <- renderPlotly({
+        
+        req(filtered_civicGen16())
+        
+        
+        fig <- plot_ly(filtered_civicGen16(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in environmental group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang16 <- renderPlotly({
+        
+        req(filtered_civicLang16())
+        
+        
+        fig <- plot_ly(filtered_civicLang16(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in environmental group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu16 <- renderPlotly({
+        
+        req(filtered_civicEdu16())
+        
+        
+        fig <- plot_ly(filtered_civicEdu16(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in environmental group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ####
+    output$sBarCivic15 <- renderPlotly({
+        
+        req(filtered_civic15())
+        
+        
+        fig <- plot_ly(filtered_civic15(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in immigrant or ethnic association or club",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge15 <- renderPlotly({
+        
+        req(filtered_civicAge15())
+        
+        
+        fig <- plot_ly(filtered_civicAge15(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in immigrant or ethnic association or club",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex15 <- renderPlotly({
+        
+        req(filtered_civicSex15())
+        
+        
+        fig <- plot_ly(filtered_civicSex15(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in immigrant or ethnic association or club",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen15 <- renderPlotly({
+        
+        req(filtered_civicGen15())
+        
+        
+        fig <- plot_ly(filtered_civicGen15(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in immigrant or ethnic association or club",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang15 <- renderPlotly({
+        
+        req(filtered_civicLang15())
+        
+        
+        fig <- plot_ly(filtered_civicLang15(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in immigrant or ethnic association or club",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu15 <- renderPlotly({
+        
+        req(filtered_civicEdu15())
+        
+        
+        fig <- plot_ly(filtered_civicEdu15(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in immigrant or ethnic association or club",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBarCivic14 <- renderPlotly({
+        
+        req(filtered_civic14())
+        
+        
+        fig <- plot_ly(filtered_civic14(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in youth organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge14 <- renderPlotly({
+        
+        req(filtered_civicAge14())
+        
+        
+        fig <- plot_ly(filtered_civicAge14(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in youth organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex14 <- renderPlotly({
+        
+        req(filtered_civicSex14())
+        
+        
+        fig <- plot_ly(filtered_civicSex14(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in youth organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen14 <- renderPlotly({
+        
+        req(filtered_civicGen14())
+        
+        
+        fig <- plot_ly(filtered_civicGen14(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in youth organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang14 <- renderPlotly({
+        
+        req(filtered_civicLang14())
+        
+        
+        fig <- plot_ly(filtered_civicLang14(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in youth organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu14 <- renderPlotly({
+        
+        req(filtered_civicEdu14())
+        
+        
+        fig <- plot_ly(filtered_civicEdu14(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in youth organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    
+    #######
+    
+    output$sBarCivic12 <- renderPlotly({
+        
+        req(filtered_civic12())
+        
+        
+        fig <- plot_ly(filtered_civic12(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in humanitarian or charitable organization or service club",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge12 <- renderPlotly({
+        
+        req(filtered_civicAge12())
+        
+        
+        fig <- plot_ly(filtered_civicAge12(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in humanitarian or charitable organization or service club",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex12 <- renderPlotly({
+        
+        req(filtered_civicSex12())
+        
+        
+        fig <- plot_ly(filtered_civicSex12(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in humanitarian or charitable organization or service club",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen12 <- renderPlotly({
+        
+        req(filtered_civicGen12())
+        
+        
+        fig <- plot_ly(filtered_civicGen12(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in humanitarian or charitable organization or service club",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang12 <- renderPlotly({
+        
+        req(filtered_civicLang12())
+        
+        
+        fig <- plot_ly(filtered_civicLang12(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in humanitarian or charitable organization or service club",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu12 <- renderPlotly({
+        
+        req(filtered_civicEdu12())
+        
+        
+        fig <- plot_ly(filtered_civicEdu12(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in humanitarian or charitable organization or service club",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    
+    ####
+    
+    output$sBarCivic11 <- renderPlotly({
+        
+        req(filtered_civic11())
+        
+        
+        fig <- plot_ly(filtered_civic11(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in school group, neighbourhood, civic or community association",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge11 <- renderPlotly({
+        
+        req(filtered_civicAge11())
+        
+        
+        fig <- plot_ly(filtered_civicAge11(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in school group, neighbourhood, civic or community association",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex11 <- renderPlotly({
+        
+        req(filtered_civicSex11())
+        
+        
+        fig <- plot_ly(filtered_civicSex11(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in school group, neighbourhood, civic or community association",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen11 <- renderPlotly({
+        
+        req(filtered_civicGen11())
+        
+        
+        fig <- plot_ly(filtered_civicGen11(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in school group, neighbourhood, civic or community association",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang11 <- renderPlotly({
+        
+        req(filtered_civicLang11())
+        
+        
+        fig <- plot_ly(filtered_civicLang11(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in school group, neighbourhood, civic or community association",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu11 <- renderPlotly({
+        
+        req(filtered_civicEdu11())
+        
+        
+        fig <- plot_ly(filtered_civicEdu11(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in school group, neighbourhood, civic or community association",font = list(size = 16)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    #####
+    
+    output$sBarCivic10 <- renderPlotly({
+        
+        req(filtered_civic10())
+        
+        
+        fig <- plot_ly(filtered_civic10(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in religious-affiliated group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge10 <- renderPlotly({
+        
+        req(filtered_civicAge10())
+        
+        
+        fig <- plot_ly(filtered_civicAge10(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in religious-affiliated group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex10 <- renderPlotly({
+        
+        req(filtered_civicSex10())
+        
+        
+        fig <- plot_ly(filtered_civicSex10(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in religious-affiliated group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen10 <- renderPlotly({
+        
+        req(filtered_civicGen10())
+        
+        
+        fig <- plot_ly(filtered_civicGen10(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in religious-affiliated group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang10 <- renderPlotly({
+        
+        req(filtered_civicLang10())
+        
+        
+        fig <- plot_ly(filtered_civicLang10(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in religious-affiliated group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu10 <- renderPlotly({
+        
+        req(filtered_civicEdu10())
+        
+        
+        fig <- plot_ly(filtered_civicEdu10(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in religious-affiliated group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ####
+    output$sBarCivic9 <- renderPlotly({
+        
+        req(filtered_civic9())
+        
+        
+        fig <- plot_ly(filtered_civic9(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in political party or group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge9 <- renderPlotly({
+        
+        req(filtered_civicAge9())
+        
+        
+        fig <- plot_ly(filtered_civicAge9(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in political party or group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex9 <- renderPlotly({
+        
+        req(filtered_civicSex9())
+        
+        
+        fig <- plot_ly(filtered_civicSex9(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in political party or group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen9 <- renderPlotly({
+        
+        req(filtered_civicGen9())
+        
+        
+        fig <- plot_ly(filtered_civicGen9(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in political party or group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang9 <- renderPlotly({
+        
+        req(filtered_civicLang9())
+        
+        
+        fig <- plot_ly(filtered_civicLang9(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in political party or group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu9 <- renderPlotly({
+        
+        req(filtered_civicEdu9())
+        
+        
+        fig <- plot_ly(filtered_civicEdu9(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in political party or group",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    ###
+    
+    output$sBarCivic8 <- renderPlotly({
+        
+        req(filtered_civic8())
+        
+        
+        fig <- plot_ly(filtered_civic8(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in union or professional association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge8 <- renderPlotly({
+        
+        req(filtered_civicAge8())
+        
+        
+        fig <- plot_ly(filtered_civicAge8(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in union or professional association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex8 <- renderPlotly({
+        
+        req(filtered_civicSex8())
+        
+        
+        fig <- plot_ly(filtered_civicSex8(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in union or professional association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen8 <- renderPlotly({
+        
+        req(filtered_civicGen8())
+        
+        
+        fig <- plot_ly(filtered_civicGen8(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in union or professional association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang8 <- renderPlotly({
+        
+        req(filtered_civicLang8())
+        
+        
+        fig <- plot_ly(filtered_civicLang8(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in union or professional association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu8 <- renderPlotly({
+        
+        req(filtered_civicEdu8())
+        
+        
+        fig <- plot_ly(filtered_civicEdu8(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in union or professional association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    
+    output$sBarCivic7 <- renderPlotly({
+        
+        req(filtered_civic7())
+        
+        
+        fig <- plot_ly(filtered_civic7(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in cultural, educational or hobby organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge7 <- renderPlotly({
+        
+        req(filtered_civicAge7())
+        
+        
+        fig <- plot_ly(filtered_civicAge7(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in cultural, educational or hobby organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex7 <- renderPlotly({
+        
+        req(filtered_civicSex7())
+        
+        
+        fig <- plot_ly(filtered_civicSex7(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in cultural, educational or hobby organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen7 <- renderPlotly({
+        
+        req(filtered_civicGen7())
+        
+        
+        fig <- plot_ly(filtered_civicGen7(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in cultural, educational or hobby organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang7 <- renderPlotly({
+        
+        req(filtered_civicLang7())
+        
+        
+        fig <- plot_ly(filtered_civicLang7(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in cultural, educational or hobby organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu7 <- renderPlotly({
+        
+        req(filtered_civicEdu7())
+        
+        
+        fig <- plot_ly(filtered_civicEdu7(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in cultural, educational or hobby organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    ###
+    
+    output$sBarCivic6 <- renderPlotly({
+        
+        req(filtered_civic6())
+        
+        
+        fig <- plot_ly(filtered_civic6(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge6 <- renderPlotly({
+        
+        req(filtered_civicAge6())
+        
+        
+        fig <- plot_ly(filtered_civicAge6(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex6 <- renderPlotly({
+        
+        req(filtered_civicSex6())
+        
+        
+        fig <- plot_ly(filtered_civicSex6(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen6 <- renderPlotly({
+        
+        req(filtered_civicGen6())
+        
+        
+        fig <- plot_ly(filtered_civicGen6(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang6 <- renderPlotly({
+        
+        req(filtered_civicLang6())
+        
+        
+        fig <- plot_ly(filtered_civicLang6(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu6 <- renderPlotly({
+        
+        req(filtered_civicEdu6())
+        
+        
+        fig <- plot_ly(filtered_civicEdu6(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    ####
+    
+    output$sBarCivic5 <- renderPlotly({
+        
+        req(filtered_civic5())
+        
+        
+        fig <- plot_ly(filtered_civic5(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in sports or recreational organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge5 <- renderPlotly({
+        
+        req(filtered_civicAge5())
+        
+        
+        fig <- plot_ly(filtered_civicAge5(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in sports or recreational organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex5 <- renderPlotly({
+        
+        req(filtered_civicSex5())
+        
+        
+        fig <- plot_ly(filtered_civicSex5(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in sports or recreational organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen5 <- renderPlotly({
+        
+        req(filtered_civicGen5())
+        
+        
+        fig <- plot_ly(filtered_civicGen5(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in sports or recreational organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang5 <- renderPlotly({
+        
+        req(filtered_civicLang5())
+        
+        
+        fig <- plot_ly(filtered_civicLang5(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in sports or recreational organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu5 <- renderPlotly({
+        
+        req(filtered_civicEdu5())
+        
+        
+        fig <- plot_ly(filtered_civicEdu5(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Member or participant in sports or recreational organization",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ###
+    output$sBarCivic4 <- renderPlotly({
+        
+        req(filtered_civic4())
+        
+        
+        fig <- plot_ly(filtered_civic4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last provincial election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge4 <- renderPlotly({
+        
+        req(filtered_civicAge4())
+        
+        
+        fig <- plot_ly(filtered_civicAge4(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last provincial election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex4 <- renderPlotly({
+        
+        req(filtered_civicSex4())
+        
+        
+        fig <- plot_ly(filtered_civicSex4(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last pronvincial election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen4 <- renderPlotly({
+        
+        req(filtered_civicGen4())
+        
+        
+        fig <- plot_ly(filtered_civicGen4(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last provincial election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang4 <- renderPlotly({
+        
+        req(filtered_civicLang4())
+        
+        
+        fig <- plot_ly(filtered_civicLang4(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last provincial election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu4 <- renderPlotly({
+        
+        req(filtered_civicEdu4())
+        
+        
+        fig <- plot_ly(filtered_civicEdu4(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last provincial election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    ###
+    output$sBarCivic2 <- renderPlotly({
         
         req(filtered_civic2())
         
         
         fig <- plot_ly(filtered_civic2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last municipal election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicAge2<- renderPlotly({
+        
+        req(filtered_civicAge2())
+        
+        
+        fig <- plot_ly(filtered_civicAge2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last municipal election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicSex2 <- renderPlotly({
+        
+        req(filtered_civicSex2())
+        
+        
+        fig <- plot_ly(filtered_civicSex2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last municipal election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicGen2 <- renderPlotly({
+        
+        req(filtered_civicGen2())
+        
+        
+        fig <- plot_ly(filtered_civicGen2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last municipal election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarCivicLang2 <- renderPlotly({
+        
+        req(filtered_civicLang2())
+        
+        
+        fig <- plot_ly(filtered_civicLang2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last municipal election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarCivicEdu2 <- renderPlotly({
+        
+        req(filtered_civicEdu2())
+        
+        
+        fig <- plot_ly(filtered_civicEdu2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Voted in last municipal election",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    #####
+    output$sBarCivic3 <- renderPlotly({
+        
+        req(filtered_civic3())
+        
+        
+        fig <- plot_ly(filtered_civic3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
             
             
             layout(title = list(text = "Voted in last federal election ",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
@@ -10468,10 +20829,10 @@ server <- function(input, output) {
     
     output$sBarCivicAge3<- renderPlotly({
         
-        req(filtered_civicAge2())
+        req(filtered_civicAge3())
         
         
-        fig <- plot_ly(filtered_civicAge2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+        fig <- plot_ly(filtered_civicAge3(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
             
             
             layout(title = list(text = "Voted in last federal election ",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
@@ -10482,10 +20843,10 @@ server <- function(input, output) {
     
     output$sBarCivicSex3 <- renderPlotly({
         
-        req(filtered_civicSex2())
+        req(filtered_civicSex3())
         
         
-        fig <- plot_ly(filtered_civicSex2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+        fig <- plot_ly(filtered_civicSex3(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
             
             
             layout(title = list(text = "Voted in last federal election ",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
@@ -10497,10 +20858,10 @@ server <- function(input, output) {
     
     output$sBarCivicGen3 <- renderPlotly({
         
-        req(filtered_civicGen2())
+        req(filtered_civicGen3())
         
         
-        fig <- plot_ly(filtered_civicGen2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+        fig <- plot_ly(filtered_civicGen3(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
             
             
             layout(title = list(text = "Voted in last federal election ",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
@@ -10511,10 +20872,10 @@ server <- function(input, output) {
     
     output$sBarCivicLang3 <- renderPlotly({
         
-        req(filtered_civicLang2())
+        req(filtered_civicLang3())
         
         
-        fig <- plot_ly(filtered_civicLang2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+        fig <- plot_ly(filtered_civicLang3(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
             
             
             layout(title = list(text = "Voted in last federal election ",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
@@ -10526,10 +20887,10 @@ server <- function(input, output) {
     
     output$sBarCivicEdu3 <- renderPlotly({
         
-        req(filtered_civicEdu2())
+        req(filtered_civicEdu3())
         
         
-        fig <- plot_ly(filtered_civicEdu2(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+        fig <- plot_ly(filtered_civicEdu3(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
             
             
             layout(title = list(text = "Voted in last federal election ",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
@@ -10543,97 +20904,7 @@ server <- function(input, output) {
     
     
     #####
-    output$sBarCivic1 <- renderPlotly({
-        
-        req(filtered_civic1())
-        
-        
-        fig <- plot_ly(filtered_civic1(), x = ~VisMin, y = ~Value, type = 'bar') %>%
-            
-            
-            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
-    output$sBarCivicAge1<- renderPlotly({
-        
-        req(filtered_civicAge1())
-        
-        
-        fig <- plot_ly(filtered_civicAge1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
-            
-            
-            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
-    output$sBarCivicSex1 <- renderPlotly({
-        
-        req(filtered_civicSex1())
-        
-        
-        fig <- plot_ly(filtered_civicSex1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
-            
-            
-            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
-    
-    output$sBarCivicGen1 <- renderPlotly({
-        
-        req(filtered_civicGen1())
-        
-        
-        fig <- plot_ly(filtered_civicGen1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
-            
-            
-            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
-    output$sBarCivicLang1 <- renderPlotly({
-        
-        req(filtered_civicLang1())
-        
-        
-        fig <- plot_ly(filtered_civicLang1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
-            
-            
-            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
-    
-    output$sBarCivicEdu1 <- renderPlotly({
-        
-        req(filtered_civicEdu1())
-        
-        
-        fig <- plot_ly(filtered_civicEdu1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
-            
-            
-            layout(title = list(text = "Member or participant of at least one group, organization or association",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
-    
    
-    
-    
-    
     #end
     output$sBarConf12 <- renderPlotly({
         
@@ -11081,6 +21352,11 @@ server <- function(input, output) {
     })
     
     #
+    
+    
+    
+    
+    
     output$sBarConf1 <- renderPlotly({
         
         req(filtered_Conf1())
@@ -12099,7 +22375,7 @@ server <- function(input, output) {
         req(filtered_Bank2())
         
         
-        fig <- plot_ly(filtered_Bank2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Bank2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12134,7 +22410,7 @@ server <- function(input, output) {
         req(filtered_BankAge2())
         
         
-        fig <- plot_ly(filtered_BankAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_BankAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12170,7 +22446,7 @@ server <- function(input, output) {
         req(filtered_BankSex2())
         
         
-        fig <- plot_ly(filtered_BankSex2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_BankSex2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12205,7 +22481,7 @@ server <- function(input, output) {
         req(filtered_BankGen2())
         
         
-        fig <- plot_ly(filtered_BankGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_BankGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12242,7 +22518,7 @@ server <- function(input, output) {
         req(filtered_BankLang2())
         
         
-        fig <- plot_ly(filtered_BankLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_BankLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12279,7 +22555,7 @@ server <- function(input, output) {
         req(filtered_BankEdu2())
         
         
-        fig <- plot_ly(filtered_BankEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_BankEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12320,7 +22596,7 @@ server <- function(input, output) {
         req(filtered_Class2())
         
         
-        fig <- plot_ly(filtered_Class2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Class2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12355,7 +22631,7 @@ server <- function(input, output) {
         req(filtered_ClassAge2())
         
         
-        fig <- plot_ly(filtered_ClassAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ClassAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12369,41 +22645,7 @@ server <- function(input, output) {
     })
     
     
-    output$sBarClassGender <- renderPlotly({
-        
-        req(filtered_ClassGender())
-        
-        
-        fig <- plot_ly(filtered_ClassGender(), x = ~VisMin, y = ~Value, type = 'bar') %>%
-            
-            
-            layout(title = list(text = "5 years before Covid-19 pandemic",font = list(size = 18)),  
-                   yaxis = list(range=c(0,60), title = 'Percent (%)'), yaxis = list(title = 'Percent (%)'),
-                   xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
-    
-    output$sBarClassGender2 <- renderPlotly({
-        
-        req(filtered_ClassGender2())
-        
-        
-        fig <- plot_ly(filtered_ClassGender2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
-            
-            
-            
-            
-            layout(title = list(text = "Since the beginning of Covid-19 pandemic",font = list(size = 18)), 
-                   yaxis = list(range=c(0,60), title = 'Percent (%)'),
-                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
-        
-        fig
-        
-    })
-    
+   
     
     output$sBarClassGen <- renderPlotly({
         
@@ -12426,7 +22668,7 @@ server <- function(input, output) {
         req(filtered_ClassGen2())
         
         
-        fig <- plot_ly(filtered_ClassGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ClassGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12463,7 +22705,7 @@ server <- function(input, output) {
         req(filtered_ClassLang2())
         
         
-        fig <- plot_ly(filtered_ClassLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ClassLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12500,7 +22742,7 @@ server <- function(input, output) {
         req(filtered_ClassEdu2())
         
         
-        fig <- plot_ly(filtered_ClassEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ClassEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12540,7 +22782,7 @@ server <- function(input, output) {
         req(filtered_Work2())
         
         
-        fig <- plot_ly(filtered_Work2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Work2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12575,7 +22817,7 @@ server <- function(input, output) {
         req(filtered_WorkAge2())
         
         
-        fig <- plot_ly(filtered_WorkAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_WorkAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12611,7 +22853,7 @@ server <- function(input, output) {
         req(filtered_WorkGender2())
         
         
-        fig <- plot_ly(filtered_WorkGender2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_WorkGender2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12646,7 +22888,7 @@ server <- function(input, output) {
         req(filtered_WorkGen2())
         
         
-        fig <- plot_ly(filtered_WorkGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_WorkGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12683,7 +22925,7 @@ server <- function(input, output) {
         req(filtered_WorkLang2())
         
         
-        fig <- plot_ly(filtered_WorkLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_WorkLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12720,7 +22962,7 @@ server <- function(input, output) {
         req(filtered_WorkEdu2())
         
         
-        fig <- plot_ly(filtered_WorkEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_WorkEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12759,7 +23001,7 @@ server <- function(input, output) {
         req(filtered_Pol2())
         
         
-        fig <- plot_ly(filtered_Pol2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Pol2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12794,7 +23036,7 @@ server <- function(input, output) {
         req(filtered_PolAge2())
         
         
-        fig <- plot_ly(filtered_PolAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_PolAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12830,7 +23072,7 @@ server <- function(input, output) {
         req(filtered_PolSex2())
         
         
-        fig <- plot_ly(filtered_PolSex2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_PolSex2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12865,7 +23107,7 @@ server <- function(input, output) {
         req(filtered_PolGen2())
         
         
-        fig <- plot_ly(filtered_PolGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_PolGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12902,7 +23144,7 @@ server <- function(input, output) {
         req(filtered_PolLang2())
         
         
-        fig <- plot_ly(filtered_PolLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_PolLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12939,7 +23181,7 @@ server <- function(input, output) {
         req(filtered_PolEdu2())
         
         
-        fig <- plot_ly(filtered_PolEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_PolEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -12978,7 +23220,7 @@ server <- function(input, output) {
         req(filtered_Lang2())
         
         
-        fig <- plot_ly(filtered_Lang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Lang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13013,7 +23255,7 @@ server <- function(input, output) {
         req(filtered_LangAge2())
         
         
-        fig <- plot_ly(filtered_LangAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_LangAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13049,7 +23291,7 @@ server <- function(input, output) {
         req(filtered_LangSex2())
         
         
-        fig <- plot_ly(filtered_LangSex2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_LangSex2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13084,7 +23326,7 @@ server <- function(input, output) {
         req(filtered_LangGen2())
         
         
-        fig <- plot_ly(filtered_LangGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_LangGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13121,7 +23363,7 @@ server <- function(input, output) {
         req(filtered_LangLang2())
         
         
-        fig <- plot_ly(filtered_LangLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_LangLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13158,7 +23400,7 @@ server <- function(input, output) {
         req(filtered_LangEdu2())
         
         
-        fig <- plot_ly(filtered_LangEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_LangEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13195,7 +23437,7 @@ server <- function(input, output) {
         req(filtered_Rel2())
         
         
-        fig <- plot_ly(filtered_Rel2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Rel2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13230,7 +23472,7 @@ server <- function(input, output) {
         req(filtered_RelAge2())
         
         
-        fig <- plot_ly(filtered_RelAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_RelAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13265,7 +23507,7 @@ server <- function(input, output) {
         req(filtered_RelSex2())
         
         
-        fig <- plot_ly(filtered_RelSex2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_RelSex2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13300,7 +23542,7 @@ server <- function(input, output) {
         req(filtered_RelGen2())
         
         
-        fig <- plot_ly(filtered_RelGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_RelGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13336,7 +23578,7 @@ server <- function(input, output) {
         req(filtered_RelLang2())
         
         
-        fig <- plot_ly(filtered_RelLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_RelLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13373,7 +23615,7 @@ server <- function(input, output) {
         req(filtered_RelEdu2())
         
         
-        fig <- plot_ly(filtered_RelEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_RelEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13411,7 +23653,7 @@ server <- function(input, output) {
         req(filtered_Cov2())
         
         
-        fig <- plot_ly(filtered_Col2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Col2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13446,7 +23688,7 @@ server <- function(input, output) {
         req(filtered_ColAge2())
         
         
-        fig <- plot_ly(filtered_ColAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ColAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13481,7 +23723,7 @@ server <- function(input, output) {
         req(filtered_ColSex2())
         
         
-        fig <- plot_ly(filtered_ColSex2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ColSex2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13516,7 +23758,7 @@ server <- function(input, output) {
         req(filtered_ColGen2())
         
         
-        fig <- plot_ly(filtered_ColGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ColGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13552,7 +23794,7 @@ server <- function(input, output) {
         req(filtered_ColLang2())
         
         
-        fig <- plot_ly(filtered_ColLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ColLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13589,7 +23831,7 @@ server <- function(input, output) {
         req(filtered_ColEdu2())
         
         
-        fig <- plot_ly(filtered_ColEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_ColEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13627,7 +23869,7 @@ server <- function(input, output) {
         req(filtered_Cov2())
         
         
-        fig <- plot_ly(filtered_Cov2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Cov2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13662,7 +23904,7 @@ server <- function(input, output) {
         req(filtered_CovAge2())
         
         
-        fig <- plot_ly(filtered_CovAge2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovAge2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13697,7 +23939,7 @@ server <- function(input, output) {
         req(filtered_CovSex2())
         
         
-        fig <- plot_ly(filtered_CovSex2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovSex2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13732,7 +23974,7 @@ server <- function(input, output) {
         req(filtered_CovGen2())
         
         
-        fig <- plot_ly(filtered_CovGen2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovGen2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13768,7 +24010,7 @@ server <- function(input, output) {
         req(filtered_CovLang2())
         
         
-        fig <- plot_ly(filtered_CovLang2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovLang2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13805,7 +24047,7 @@ server <- function(input, output) {
         req(filtered_CovEdu2())
         
         
-        fig <- plot_ly(filtered_CovEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovEdu2(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13841,7 +24083,7 @@ server <- function(input, output) {
         req(filtered_Cov21())
         
         
-        fig <- plot_ly(filtered_Cov21(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_Cov21(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13874,7 +24116,7 @@ server <- function(input, output) {
         req(filtered_CovAge21())
         
         
-        fig <- plot_ly(filtered_CovAge21(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovAge21(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13907,7 +24149,7 @@ server <- function(input, output) {
         req(filtered_CovSex21())
         
         
-        fig <- plot_ly(filtered_CovSex21(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovSex21(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13940,7 +24182,7 @@ server <- function(input, output) {
         req(filtered_CovGen21())
         
         
-        fig <- plot_ly(filtered_CovGen21(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovGen21(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -13974,7 +24216,7 @@ server <- function(input, output) {
         req(filtered_CovLang21())
         
         
-        fig <- plot_ly(filtered_CovLang21(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovLang21(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -14008,7 +24250,7 @@ server <- function(input, output) {
         req(filtered_CovEdu21())
         
         
-        fig <- plot_ly(filtered_CovEdu21(), x = ~VisMin, y = ~Value,  type = 'bar', color = "red") %>%
+        fig <- plot_ly(filtered_CovEdu21(), x = ~VisMin, y = ~Value,  type = 'bar', marker = list(color = "#FF6105")) %>%
             
             
             
@@ -14071,7 +24313,1688 @@ server <- function(input, output) {
     
    
     
-    #Today
+    #Mimi
+ 
+    #Plotly Immigration 
+    
+    output$sBarConf1 <- renderPlotly({
+        
+        req(filtered_Conf1())
+        
+        
+        fig <- plot_ly(filtered_Conf1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarConfAge1 <- renderPlotly({
+        
+        req(filtered_ConfAge1())
+        
+        
+        fig <- plot_ly(filtered_ConfAge1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarConfSex1 <- renderPlotly({
+        
+        req(filtered_ConfSex1())
+        
+        
+        fig <- plot_ly(filtered_ConfSex1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarConfGen1 <- renderPlotly({
+        
+        req(filtered_ConfGen1())
+        
+        
+        fig <- plot_ly(filtered_ConfGen1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBarConfLang1 <- renderPlotly({
+        
+        req(filtered_ConfLang1())
+        
+        
+        fig <- plot_ly(filtered_ConfLang1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBarConfEdu1 <- renderPlotly({
+        
+        req(filtered_ConfEdu1())
+        
+        
+        fig <- plot_ly(filtered_ConfEdu1(), x = ~VisMin, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    #
+    output$employmentPlot7<- renderPlotly({
+        
+        req(filtered_Employ7())
+        
+        
+        fig <- plot_ly(filtered_Employ7(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Have access to disability insurance under employment contract",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$employmentPlot6<- renderPlotly({
+        
+        req(filtered_Employ6())
+        
+        
+        fig <- plot_ly(filtered_Employ6(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Match between education and employment",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$employmentPlot5<- renderPlotly({
+        
+        req(filtered_Employ5())
+        
+        
+        fig <- plot_ly(filtered_Employ5(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Have access to paid vacation leave under employment contract",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    output$employmentPlot4<- renderPlotly({
+        
+        req(filtered_Employ4())
+        
+        
+        fig <- plot_ly(filtered_Employ4(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Employment contract includes at least one type of employment benefits",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$employmentPlot3<- renderPlotly({
+        
+        req(filtered_Employ3())
+        
+        
+        fig <- plot_ly(filtered_Employ3(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Have a workplace pension plan",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$employmentPlot2<- renderPlotly({
+        
+        req(filtered_Employ2())
+        
+        
+        fig <- plot_ly(filtered_Employ2(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Job offers good prospects for career advancement",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$employmentPlot<- renderPlotly({
+        
+        req(filtered_Employ())
+        
+        
+        fig <- plot_ly(filtered_Employ(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Have access to paid sick leave under employment contract",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    #Plotly for Immigration Public services
+    
+    output$sBar2Conf <- renderPlotly({
+        
+        req(filtered_2Conf())
+        
+        
+        fig <- plot_ly(filtered_2Conf(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge <- renderPlotly({
+        
+        req(filtered_2ConfAge())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex <- renderPlotly({
+        
+        req(filtered_2ConfSex())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen <- renderPlotly({
+        
+        req(filtered_2ConfGen())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang <- renderPlotly({
+        
+        req(filtered_2ConfLang())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu <- renderPlotly({
+        
+        req(filtered_2ConfEdu())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2Conf1 <- renderPlotly({
+        
+        req(filtered_2Conf1())
+        
+        
+        fig <- plot_ly(filtered_2Conf1(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge1 <- renderPlotly({
+        
+        req(filtered_2ConfAge1())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge1(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex1 <- renderPlotly({
+        
+        req(filtered_2ConfSex1())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex1(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen1 <- renderPlotly({
+        
+        req(filtered_2ConfGen1())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen1(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang1 <- renderPlotly({
+        
+        req(filtered_2ConfLang1())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang1(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu1 <- renderPlotly({
+        
+        req(filtered_2ConfEdu1())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu1(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the police",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    ##
+    
+    output$sBar2Conf2 <- renderPlotly({
+        
+        req(filtered_2Conf2())
+        
+        
+        fig <- plot_ly(filtered_2Conf2(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the Canadian media",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge2 <- renderPlotly({
+        
+        req(filtered_2ConfAge2())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge2(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the Canadian media",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex2 <- renderPlotly({
+        
+        req(filtered_2ConfSex2())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex2(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the Canadian media",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen2 <- renderPlotly({
+        
+        req(filtered_2ConfGen2())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen2(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the Canadian media",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang2 <- renderPlotly({
+        
+        req(filtered_2ConfLang2())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang2(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the Canadian media",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu2 <- renderPlotly({
+        
+        req(filtered_2ConfEdu2())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu2(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the Canadian media",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    ##
+    
+    output$sBar2Conf3 <- renderPlotly({
+        
+        req(filtered_2Conf3())
+        
+        
+        fig <- plot_ly(filtered_2Conf3(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the school system",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge3 <- renderPlotly({
+        
+        req(filtered_2ConfAge3())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge3(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the school system",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex3 <- renderPlotly({
+        
+        req(filtered_2ConfSex3())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex3(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the school system",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen3 <- renderPlotly({
+        
+        req(filtered_2ConfGen3())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen3(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the school system",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang3 <- renderPlotly({
+        
+        req(filtered_2ConfLang3())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang3(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the school system",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu3 <- renderPlotly({
+        
+        req(filtered_2ConfEdu3())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu3(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the school system",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    ##
+    
+    
+    output$sBar2Conf4 <- renderPlotly({
+        
+        req(filtered_2Conf4())
+        
+        
+        fig <- plot_ly(filtered_2Conf4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the justice system and courts",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge4 <- renderPlotly({
+        
+        req(filtered_2ConfAge4())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the justice system and courts",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex4 <- renderPlotly({
+        
+        req(filtered_2ConfSex4())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the justice system and courts",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen4 <- renderPlotly({
+        
+        req(filtered_2ConfGen4())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the justice system and courts",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang4 <- renderPlotly({
+        
+        req(filtered_2ConfLang4())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the justice system and courts",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu4 <- renderPlotly({
+        
+        req(filtered_2ConfEdu4())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in the justice system and courts",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    ##
+    
+    
+    output$sBar2Conf5 <- renderPlotly({
+        
+        req(filtered_2Conf5())
+        
+        
+        fig <- plot_ly(filtered_2Conf5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge5 <- renderPlotly({
+        
+        req(filtered_2ConfAge5())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex5 <- renderPlotly({
+        
+        req(filtered_2ConfSex5())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen5 <- renderPlotly({
+        
+        req(filtered_2ConfGen5())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang5 <- renderPlotly({
+        
+        req(filtered_2ConfLang5())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu5 <- renderPlotly({
+        
+        req(filtered_2ConfEdu5())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    ##
+    
+    output$sBar2Conf5 <- renderPlotly({
+        
+        req(filtered_2Conf5())
+        
+        
+        fig <- plot_ly(filtered_2Conf5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge5 <- renderPlotly({
+        
+        req(filtered_2ConfAge5())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex5 <- renderPlotly({
+        
+        req(filtered_2ConfSex5())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen5 <- renderPlotly({
+        
+        req(filtered_2ConfGen5())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang5 <- renderPlotly({
+        
+        req(filtered_2ConfLang5())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang5(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu5 <- renderPlotly({
+        
+        req(filtered_2ConfEdu5())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu4(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in major corporations",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    ##
+    
+    output$sBar2Conf6 <- renderPlotly({
+        
+        req(filtered_2Conf6())
+        
+        
+        fig <- plot_ly(filtered_2Conf6(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in merchants and local business people",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge6 <- renderPlotly({
+        
+        req(filtered_2ConfAge6())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge6(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in merchants and local business people",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex6 <- renderPlotly({
+        
+        req(filtered_2ConfSex6())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex6(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in merchants and local business people",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen6 <- renderPlotly({
+        
+        req(filtered_2ConfGen6())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen6(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in merchants and local business people",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang6 <- renderPlotly({
+        
+        req(filtered_2ConfLang6())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang6(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in merchants and local business people",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu6 <- renderPlotly({
+        
+        req(filtered_2ConfEdu6())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu6(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in merchants and local business people",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    ##
+    
+    output$sBar2Conf7 <- renderPlotly({
+        
+        req(filtered_2Conf7())
+        
+        
+        fig <- plot_ly(filtered_2Conf7(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in banks",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge7 <- renderPlotly({
+        
+        req(filtered_2ConfAge7())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge7(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in banks",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex7 <- renderPlotly({
+        
+        req(filtered_2ConfSex7())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex7(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in banks",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen7 <- renderPlotly({
+        
+        req(filtered_2ConfGen7())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen7(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in banks",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang7 <- renderPlotly({
+        
+        req(filtered_2ConfLang7())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang7(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in banks",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu7 <- renderPlotly({
+        
+        req(filtered_2ConfEdu7())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu7(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Confidence in banks",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    #END
+    
+    
+    output$sBar2Conf12 <- renderPlotly({
+        
+        req(filtered_2Conf12())
+        
+        
+        fig <- plot_ly(filtered_2Conf12(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to Canada",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge12<- renderPlotly({
+        
+        req(filtered_2ConfAge12())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge12(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to Canada",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex12 <- renderPlotly({
+        
+        req(filtered_2ConfSex12())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex12(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to Canada",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen12 <- renderPlotly({
+        
+        req(filtered_2ConfGen12())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen12(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to Canada",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang12 <- renderPlotly({
+        
+        req(filtered_2ConfLang12())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang12(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to Canada",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu12 <- renderPlotly({
+        
+        req(filtered_2ConfEdu12())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu12(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to Canada",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    #End
+    output$sBar2Conf11 <- renderPlotly({
+        
+        req(filtered_2Conf11())
+        
+        
+        fig <- plot_ly(filtered_2Conf11(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the province",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge11<- renderPlotly({
+        
+        req(filtered_2ConfAge11())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge11(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the province",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex11 <- renderPlotly({
+        
+        req(filtered_2ConfSex11())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex11(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the province",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen11 <- renderPlotly({
+        
+        req(filtered_2ConfGen11())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen11(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the province",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang11 <- renderPlotly({
+        
+        req(filtered_2ConfLang11())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang11(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the province",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu11 <- renderPlotly({
+        
+        req(filtered_2ConfEdu11())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu11(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the province",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    #End
+    output$sBar2Conf10 <- renderPlotly({
+        
+        req(filtered_2Conf10())
+        
+        
+        fig <- plot_ly(filtered_2Conf10(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the town or city",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge10 <- renderPlotly({
+        
+        req(filtered_2ConfAge10())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge10(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the town or city",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex10 <- renderPlotly({
+        
+        req(filtered_2ConfSex10())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex10(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the town or city",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen10 <- renderPlotly({
+        
+        req(filtered_2ConfGen10())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen10(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the town or city",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang10 <- renderPlotly({
+        
+        req(filtered_2ConfLang10())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang10(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the town or city",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu10 <- renderPlotly({
+        
+        req(filtered_2ConfEdu10())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu10(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the town or city",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    #End
+    
+    
+    output$sBar2Conf9 <- renderPlotly({
+        
+        req(filtered_2Conf9())
+        
+        
+        fig <- plot_ly(filtered_2Conf9(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the local community",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge9 <- renderPlotly({
+        
+        req(filtered_2ConfAge9())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge9(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the local community",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex9 <- renderPlotly({
+        
+        req(filtered_2ConfSex9())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex9(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the local community",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen9 <- renderPlotly({
+        
+        req(filtered_2ConfGen9())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen9(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the local community",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang9 <- renderPlotly({
+        
+        req(filtered_2ConfLang9())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang9(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the local community",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu9 <- renderPlotly({
+        
+        req(filtered_2ConfEdu9())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu9(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Strong sense of belonging to the local community",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    #End
+    
+    output$sBar2Conf8 <- renderPlotly({
+        
+        req(filtered_2Conf8())
+        
+        
+        fig <- plot_ly(filtered_2Conf8(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Reported that most people can be trusted in general",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfAge8 <- renderPlotly({
+        
+        req(filtered_2ConfAge8())
+        
+        
+        fig <- plot_ly(filtered_2ConfAge8(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Reported that most people can be trusted in general",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfSex8 <- renderPlotly({
+        
+        req(filtered_2ConfSex8())
+        
+        
+        fig <- plot_ly(filtered_2ConfSex8(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Reported that most people can be trusted in general",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfGen8 <- renderPlotly({
+        
+        req(filtered_2ConfGen8())
+        
+        
+        fig <- plot_ly(filtered_2ConfGen8(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Reported that most people can be trusted in general",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    output$sBar2ConfLang8 <- renderPlotly({
+        
+        req(filtered_2ConfLang8())
+        
+        
+        fig <- plot_ly(filtered_2ConfLang8(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Reported that most people can be trusted in general",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    output$sBar2ConfEdu8 <- renderPlotly({
+        
+        req(filtered_2ConfEdu8())
+        
+        
+        fig <- plot_ly(filtered_2ConfEdu8(), x = ~Characteristic, y = ~Value, name = "2014", type = 'bar') %>%
+            
+            
+            layout(title = list(text = "Reported that most people can be trusted in general",font = list(size = 18)),  yaxis = list( title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    #
+    
+    
+    
+    #end
+    
+    output$sBarYouth2 <- renderPlotly({
+        
+        req(filtered_youthVM2())
+        
+        fig <- plot_ly(filtered_youthVM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Youth not in employment, education or training",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    #end
+    
+    output$sBar2Rep4 <- renderPlotly({
+        
+        req(filtered_rep4VM2())
+        
+        fig <- plot_ly(filtered_rep4VM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Population in self-employment (unincorporated)",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    #end
+    
+    output$sBar2Rate4 <- renderPlotly({
+        
+        req(filtered_rate4VM2())
+        
+        fig <- plot_ly(filtered_rate4VM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Population in full-time employment",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    #end
+    
+    output$sBar2Rate3<- renderPlotly({
+        
+        req(filtered_rate3VM2())
+        
+        fig <- plot_ly(filtered_rate3VM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Unemployment rate",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    #end
+    
+    output$sBar2Rate2<- renderPlotly({
+        
+        req(filtered_rate2VM2())
+        
+        fig <- plot_ly(filtered_rate2VM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Employment rate",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    #end
+    output$sBar2Rate1<- renderPlotly({
+        
+        req(filtered_rate1VM2())
+        
+        fig <- plot_ly(filtered_rate1VM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Participation rate",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    #end
+    
+    output$sBar2Inc2<- renderPlotly({
+        
+        req(filtered_inc2VM2())
+        
+        fig <- plot_ly(filtered_inc2VM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Average weekly earnings (full-time)",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    #end
+    
+    output$sBar2Inc1<- renderPlotly({
+        
+        req(filtered_inc1VM2())
+        
+        fig <- plot_ly(filtered_inc1VM2(), x = ~Immigration, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Average employment income",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Immigrant and generation status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    #Plotly VisMin Labour Participation 
+    output$sBarRate4 <- renderPlotly({
+        
+        req(filtered_rate4VM())
+        
+        fig <- plot_ly(filtered_rate4VM(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Population in full-time employment",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    #end
+    output$sBarRate3<- renderPlotly({
+        
+        req(filtered_rate3VM())
+        
+        fig <- plot_ly(filtered_rate3VM(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Unemployment rate",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    #end
+    output$sBarRate2<- renderPlotly({
+        
+        req(filtered_rate2VM())
+        
+        fig <- plot_ly(filtered_rate2VM(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Employment rate",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    #end
+    output$sBarRate1<- renderPlotly({
+        
+        req(filtered_rate1VM())
+        
+        fig <- plot_ly(filtered_rate1VM(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Participation rate",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    #end
+    
+    output$sBarInc2<- renderPlotly({
+        
+        req(filtered_inc2VM())
+        
+        fig <- plot_ly(filtered_inc2VM(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Average weekly earnings (full-time)",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    #end
+    
+    output$sBarInc1<- renderPlotly({
+        
+        req(filtered_inc1VM())
+        
+        fig <- plot_ly(filtered_inc1VM(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Average employment income",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    #end
+    output$sBarRep4 <- renderPlotly({
+        
+        req(filtered_rep4VM())
+        
+        fig <- plot_ly(filtered_rep4VM(), x = ~VisMin, y = ~Value, type = 'bar') %>%
+            
+            layout(title = list(text = "Population in self-employment (unincorporated)",font = list(size = 18)),
+                   yaxis = list(title = 'Percent (%)'), xaxis = list(title = 'Visible minority status'))
+        
+        fig
+        
+    })
+    
+    
+    
+    
+    
+    
+    ######
     
     output$sBarRep3 <- renderPlotly({
         
@@ -14085,9 +26008,6 @@ server <- function(input, output) {
         fig
         
     })
-    
-    
-    
     
     
     
@@ -14119,7 +26039,7 @@ server <- function(input, output) {
     })
     
     
-    #end
+    ####end
     output$sBarYouth <- renderPlotly({
         
         req(filtered_youthVM())
