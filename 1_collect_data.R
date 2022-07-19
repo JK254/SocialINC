@@ -5,12 +5,32 @@ library(arrow) # to write files to parquet (smaller than .csv files)
 
 #'NOTE [You might need to run each data pull one by one otherwise it might crash your session since it's a lot of data. However, once you've done pulled the data you don't need to do it again since it looks like the data is periodically collected and dissemination.]
 
+# Repeated values ----
+prov_filter <- 
+  c(
+    "11124", # Canada
+    "10", # Newfoundland and Labrador
+    "11", # Prince Edward Island Nova Scotia
+    "12", # Nova Scotia
+    "13", # New Brunswick
+    "2", # Quebec region
+    "3", # Ontario region
+    "46", # Manitoba
+    "47", # Saskatchewan
+    "48", # Alberta
+    "5", # British Columbia region
+    "60", # Northwest Territories
+    "61", # Yukon
+    "62" # Nunavut
+  ) # can only retrieve at the provincial level because otherwise it's costs too much memory
+
 # Functions ----
 #'NOTE [you need to specific what variable grouping you want to pull and what CODR table you want. E.g., if you want just REF_DATE, GEO, `Visible minority`, `Selected sociodemographic characteristics`, Indicators, and VALUE you'd only need to reference the "base" pull]
 func_codr <- function(pull_type, codr_no) {
   if (pull_type == "base") {
     #'NOTE [Return reference period, geography, visible minority, characteristic, indicator, and value as a base retrieval]
-    get_cansim(codr_no) %>% 
+    df <- 
+      get_cansim(codr_no) %>% 
       select(
         Year = REF_DATE,
         Geography = GEO,
@@ -21,7 +41,8 @@ func_codr <- function(pull_type, codr_no) {
       ) # select and rename the relevant variables
   } else if (pull_type == "condfidence") {
     #'NOTE [Retrieve confidence/characteristics on top of base retrieval]
-    get_cansim(codr_no) %>%
+    df <- 
+      get_cansim(codr_no) %>%
       select(
         Year = REF_DATE,
         Geography = GEO,
@@ -33,7 +54,8 @@ func_codr <- function(pull_type, codr_no) {
       ) # select and rename the relevant variables
   } else if (pull_type == "characteristics") {
     #'NOTE [Retrieve confidence/statistics on top of base retrieval]
-    get_cansim(codr_no) %>%
+    df <- 
+      get_cansim(codr_no) %>%
       select(
         Year = REF_DATE,
         Geography = GEO,
@@ -44,33 +66,19 @@ func_codr <- function(pull_type, codr_no) {
         Value = VALUE
       ) # select and rename the relevant variables
   }
+  gc()
+  return(df)
 }
 
 #'NOTE [Return first official language spoken (on top of base variables)]
 #'NOTE [These tables are huge and require the get_cansim_sqlite function instead of the regular get_cansim function, otherwise we run out of memory]
 func_sql <- function(x) {
-  get_cansim_sqlite(x,
+  df <- 
+    get_cansim_sqlite(x,
                     refresh = TRUE,
                     timeout = 1000,
                     language = "en") %>%
-    filter(
-      GeoUID %in% c(
-        "11124", # Canada
-        "10", # Newfoundland and Labrador
-        "11", # Prince Edward Island Nova Scotia
-        "12", # Nova Scotia
-        "13", # New Brunswick
-        "2", # Quebec region
-        "3", # Ontario region
-        "46", # Manitoba
-        "47", # Saskatchewan
-        "48", # Alberta
-        "5", # British Columbia region
-        "60", # Northwest Territories
-        "61", # Yukon
-        "62" # Nunavut
-      ) # can only retrieve at the provincial level because otherwise it's costs too much memory
-    ) %>%
+    filter(GeoUID %in% prov_filter) %>% 
     collect_and_normalize() %>% # required to properly index the data
     select(
       Year = REF_DATE,
@@ -83,18 +91,18 @@ func_sql <- function(x) {
       Indicator = Indicators,
       Value = VALUE
     ) # select and rename the relevant variables
+  gc()
+  return(df)
 }
 
 # Data loading and pre-processing ----
 ## Selected labour force status ----
 rateDT <-
   func_sql(4310006901)
-disconnect_cansim_sqlite(rateDT)
 
 ## Average employment income indicators ----
 incomeDT <-
   func_sql(4310006801)
-disconnect_cansim_sqlite(incomeDT)
 
 ## Basic needs and housing data ----
 basicDT <- 
@@ -116,7 +124,6 @@ civicDT2 <-
 ## Representation (Selected management occupations and self-employed class of worker) ----
 representationDT <-
   func_sql(4310007001)
-disconnect_cansim_sqlite(representationDT)
 
 ## Youth not in employment ----
 youthDT <- 
@@ -133,6 +140,7 @@ youthDT <-
     Indicator = Indicators,
     Value = VALUE
   ) # select and rename the relevant variables
+gc()
 
 ## Sense of belonging ----
 belongingDT <-
@@ -157,24 +165,7 @@ educationDT <-
                     refresh = TRUE,
                     timeout = 1000,
                     language = "en") %>%
-  filter(
-    GeoUID %in% c(
-      "11124", # Canada
-      "10", # Newfoundland and Labrador
-      "11", # Prince Edward Island Nova Scotia
-      "12", # Nova Scotia
-      "13", # New Brunswick
-      "2", # Quebec region
-      "3", # Ontario region
-      "46", # Manitoba
-      "47", # Saskatchewan
-      "48", # Alberta
-      "5", # British Columbia region
-      "60", # Northwest Territories
-      "61", # Yukon
-      "62" # Nunavut
-    ) # can only retrieve at the provincial level because otherwise it's costs too much memory
-  ) %>%
+  filter(GeoUID %in% prov_filter) %>% 
   collect_and_normalize() %>%
   select(
     Year = REF_DATE,
@@ -188,7 +179,7 @@ educationDT <-
     Indicator = Indicators,
     Value = VALUE
   ) # select and rename the relevant variables
-disconnect_cansim_sqlite(educationDT)
+gc()
 
 ## Overqualification rate ----
 OverQualDT <-
@@ -196,7 +187,7 @@ OverQualDT <-
                     refresh = TRUE,
                     timeout = 1000,
                     language = "en") %>%
-  filter(GeoUID == "11124" ) %>% # Canada
+  filter(GeoUID == "11124") %>% # Canada
   collect_and_normalize() %>%
   select(
     Year = REF_DATE,
@@ -214,7 +205,7 @@ OverQualDT <-
     Indicator = Indicators,
     Value = VALUE
   ) # select and rename the relevant variables
-disconnect_cansim_sqlite(OverQualDT)
+gc()
 
 ## Police-reported hate crime ----
 polData <-
@@ -225,6 +216,7 @@ polData <-
     Motivation = `Type of motivation`,
     Value = VALUE
   ) # select and rename the relevant variables
+gc()
 
 # Export files to parquet -------------------------------------------------
 # Create list of datasets
