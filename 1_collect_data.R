@@ -143,7 +143,7 @@ belongingDT <-
 
 ## Confidence in Canadian institutions ----
 confidenceDT <-
-  func_codr(pull_type = "base", codr_no = "43-10-0062")
+  func_codr(pull_type = "characteristics", codr_no = "43-10-0062")
 
 ## Discrimination ----
 discriminationDT <-
@@ -232,7 +232,8 @@ conn <-
     timeout = 1000,
     language = "en"
   )
-  
+
+### Canada ----  
 OverQualDT_canada <-
   conn %>%
   filter(GeoUID == "11124") %>% # Canada
@@ -255,6 +256,7 @@ OverQualDT_canada <-
   ) # select and rename the relevant variables
 gc()
 
+### Regions ----
 OverQualDT_region <-
   conn %>%
   filter(GeoUID %in% 
@@ -284,6 +286,7 @@ OverQualDT_region <-
   ) # select and rename the relevant variables
 gc()
 
+### Provinces & territories ----
 OverQualDT_prov <-
   conn %>%
   filter(GeoUID %in% 
@@ -319,8 +322,6 @@ OverQualDT_prov <-
   ) # select and rename the relevant variables
 gc()
 
-remove_cansim_sqlite_cached_table(cansimTableNumber = "43-10-0071")
-
 OverQualDT <-
   rbind(OverQualDT_canada,
         OverQualDT_region,
@@ -330,32 +331,26 @@ rm(OverQualDT_canada,
    OverQualDT_region,
    OverQualDT_prov)
 
-gc()
-
-disconnect_cansim_sqlite(conn)
-
+### CMA ----
+#### Part 1 ----
 #'NOTE [need to separate CMAs because it's too much memory]
-OverQualDT_cma <-
+OverQualDT_cma_1 <-
   conn %>%
-  filter(!GEO %in%
+  filter(GeoUID %in%
            c(
-             "Canada",
-             "Atlantic Region",
-             "Quebec Region",
-             "Ontario Region",
-             "Prairies Region",
-             "British Columbia Region",
-             "Territories",
-             "Newfoundland and Labrador",
-             "Prince Edward Island",
-             "Nova Scotia",
-             "New Brunswick",
-             "Manitoba",
-             "Saskatchewan",
-             "Alberta",
-             "Yukon",
-             "North-West Territories",
-             "Nunavut"
+             "001",
+             "205",
+             "305",
+             "310",
+             "408",
+             "421",
+             "433",
+             "442",
+             "462",
+             
+             "505",
+             "24505",
+             "35505"
            )
   ) %>%
   collect_and_normalize() %>%
@@ -376,6 +371,104 @@ OverQualDT_cma <-
     Value = VALUE
   ) # select and rename the relevant variables
 gc()
+
+#### Part 2 ----
+OverQualDT_cma_2 <-
+  conn %>%
+  filter(GeoUID %in%
+           c(
+             "521",
+             "522",
+             "529",
+             "532",
+             "535",
+             "537",
+             "539",
+             "541",
+             "543",
+             "550",
+             "555",
+             "559"
+           )
+  ) %>%
+  collect_and_normalize() %>%
+  select(
+    Year = REF_DATE,
+    Geography = GEO,
+    Sex,
+    Age = `Age group`,
+    Language =  `First official language spoken`,
+    Immigration = `Immigrant and generation status`,
+    # This variable ^ isn't found in the other tables hence no function for this CODR
+    VisMin = `Visible minority status`,
+    Location = `Location of study`,
+    # This variable ^ isn't found in the other tables hence no function for this CODR
+    Degree = `Highest certificate, diploma or degree`,
+    # This variable ^ isn't found in the other tables hence no function for this CODR
+    Indicator = Indicators,
+    Value = VALUE
+  ) # select and rename the relevant variables
+gc()
+
+#### Part 3 ----
+OverQualDT_cma_3 <-
+  conn %>%
+  filter(GeoUID %in%
+           c(
+             "568",
+             "580",
+             "595",
+             "602",
+             "705",
+             "725",
+             "810",
+             "825",
+             "835",
+             "915",
+             "932",
+             "933",
+             "935"
+           )
+  ) %>%
+  collect_and_normalize() %>%
+  select(
+    Year = REF_DATE,
+    Geography = GEO,
+    Sex,
+    Age = `Age group`,
+    Language =  `First official language spoken`,
+    Immigration = `Immigrant and generation status`,
+    # This variable ^ isn't found in the other tables hence no function for this CODR
+    VisMin = `Visible minority status`,
+    Location = `Location of study`,
+    # This variable ^ isn't found in the other tables hence no function for this CODR
+    Degree = `Highest certificate, diploma or degree`,
+    # This variable ^ isn't found in the other tables hence no function for this CODR
+    Indicator = Indicators,
+    Value = VALUE
+  ) # select and rename the relevant variables
+gc()
+
+remove_cansim_sqlite_cached_table(cansimTableNumber = "43-10-0071")
+disconnect_cansim_sqlite(conn)
+
+#'NOTE [it would be ideally to run this to have everything related to overqualification together but this whole process takes a really long time/it crashes so to be safe I'm outputting two data files which I'll combine later]
+# OverQualDT <-
+#   OverQualDT %>%
+#   bind_rows(OverQualDT_cma_1,
+#             OverQualDT_cma_2,
+#             OverQualDT_cma_3)
+
+OverQualDT_cma <-
+  bind_rows(OverQualDT_cma_1,
+            OverQualDT_cma_2,
+            OverQualDT_cma_3)
+gc()
+
+rm(conn,
+   OverQualDT_cma_1,
+   OverQualDT_cma_2,
+   OverQualDT_cma_3)
 
 ## Police-reported hate crime ----
 polData <-
