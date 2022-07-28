@@ -1,5 +1,5 @@
 # Install packages ----
-for (i in c(
+package_list <- c(
   "shiny",
   "tidyverse",
   "data.table",
@@ -10,12 +10,13 @@ for (i in c(
   "RColorBrewer",
   "shinyjs",
   "cansim"
-)) {
-  if (!i %in% installed.packages()) {
-    install.packages(i, dependencies = TRUE)
-  }
-  require(i)
-}
+)
+new_packages <-
+  package_list[!(package_list %in% installed.packages()[, "Package"])]
+if (length(new_packages))
+  install.packages(new_packages)
+
+rm(package_list, new_packages)
 
 # Load packages ----
 library(tidyverse) # for dplyr
