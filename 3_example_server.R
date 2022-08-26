@@ -5,205 +5,202 @@ server <- function(input, output, session) {
   
   ## Themes and Definitions of Indicators ----
   ### Table 1 ----
-  output$def_table <-
-    renderDataTable(reactive({
+  #'NOTE [Makes is so the table reacts to the user's selection]
+  choose_def <- 
+    reactive({
       req(input$theme_0)
-      template %>%
+      template %>% 
         filter(Theme %in% input$theme_0)
-    }))
+    })
   
-  ## Filters ----
-  # FIXME: I feel like we can make this reactive into a function but haven't sorted that out yet
-  ### 1. Theme: Groups designated as visible Minorities ----
+  #'NOTE [Table is adjusted depending on the theme the user selects]
+  output$def_table <- 
+    renderDataTable({
+      choose_def() %>% 
+        select(-Theme) # Removed theme column because it's not needed in the table
+    })
   
-  observe({
-    filtered_characteristic <-
-      unique(
-        c(
-          as.character(basicDT$Characteristic[basicDT$char_type == input$char_type]),
-          as.character(belongingDT$Characteristic[belongingDT$char_type == input$char_type]),
-          as.character(civicDT$Characteristic[civicDT$char_type == input$char_type]),
-          as.character(confidenceDT$Characteristic[confidenceDT$char_type == input$char_type]),
-          as.character(discriminationDT$Characteristic[discriminationDT$char_type == input$char_type]),
-          as.character(healthDT$Characteristic[healthDT$char_type == input$char_type])
-        )
+  ## Tab 1: Groups Designated as Visible Minorities ----
+  ### Filters ----
+  #'NOTE [This makes it so the theme filter affects the indicator filter]
+  observe(
+    updateSelectizeInput(
+      session = session,
+      inputId = "indicator_1",
+      choices = as.character(unique(template$Indicator[template$Theme == input$theme_1]))
+    )
+  )
+  
+  #### 1. Participation in the Labour Market ----
+  ##### 1.1. Working-age population in the labour force (participation rate) ----
+  filtered_vm_lm_1 <- reactive({
+    rateDT %>%
+      filter(
+        Indicator == "Participation rate",
+        VisMin %in% input$lm_vismin,
+        Degree == input$lm_degree,
+        Geography == input$lm_geography,
+        Immigration == input$lm_immigration,
+        Year == input$lm_year,
+        Age == input$lm_age,
+        Sex == input$lm_sex
       )
-
-    updatePickerInput(session, "characteristic", choices = filtered_characteristic)
   })
   
-  ## Plots ----
-  ### 1. Theme: Groups designated as visible Minorities ----
-  # FIXME: I feel like we can make this plot into a function but haven't sorted that out yet
+  ##### 1.2. Working-age population in employment (employment rate) ----
+  filtered_vm_lm_2 <- reactive({
+    rateDT %>%
+      filter(
+        Indicator == "Employment rate",
+        VisMin %in% input$lm_vismin,
+        Degree == input$lm_degree,
+        Geography == input$lm_geography,
+        Immigration == input$lm_immigration,
+        Year == input$lm_year,
+        Age == input$lm_age,
+        Sex == input$lm_sex
+      )
+  })
   
-  output$plot_vismin <-
+  ##### 1.3. Working-age population in unemployment (unemployment rate) ----
+  filtered_vm_lm_3 <- reactive({
+    rateDT %>%
+      filter(
+        Indicator == "Unemployment rate",
+        VisMin %in% input$lm_vismin,
+        Degree == input$lm_degree,
+        Geography == input$lm_geography,
+        Immigration == input$lm_immigration,
+        Year == input$lm_year,
+        Age == input$lm_age,
+        Sex == input$lm_sex
+      )
+  })
+  
+  ### Plots ----
+  #### 1. Participation in the Labour Market ----
+  ##### 1.1. Working-age population in the labour force (participation rate) ----
+  output$plot_vm_lm_1 <-
     renderPlotly(ggplotly({
-      ggplot(
-        {
-          if (input$theme_1 == "Participation in the Labour Market") {
-            reactive({
-              rateDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Age == input$Age,
-                  Sex == input$Sex,
-                  Indicator == input$Indicator,
-                  Immigration == input$Immigration,
-                  Degree == input$Degree,
-                  Location == input$Location,
-                  Language == input$Language
-                )
-            })
-          } else if (input$theme_1 == "Civic engagement and political participation") {
-            reactive({
-              civicDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          }  else if (input$theme_1 == "Representation in decision-making positions") {
-            reactive({
-              representationDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          } else if (input$theme_1 == "Basic needs and housing") {
-            reactive({
-              basicDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          } else if (input$theme_1 == "Health and wellbeing") {
-            reactive({
-              healthDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          } else if (input$theme_1 == "Education, training and skills") {
-            reactive({
-              educationDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Age == input$Age,
-                  Sex == input$Sex,
-                  Indicator == input$Indicator,
-                  Immigration == input$Immigration,
-                  Language == input$Language
-                )
-            })
-          } else if (input$theme_1 == "Income and wealth") {
-            reactive({
-              incomeDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          } else if (input$theme_1 == "Social connections and personnal networks") {
-            reactive({
-              belongingDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          } else if (input$theme_1 == "Local community") {
-            # FIXME: did I write down this theme correctly?
-            reactive({
-              incomeDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          } else if (input$theme_1 == "Public services and institutions") {
-            reactive({
-              confidenceDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Geography == input$Geography,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence
-                )
-            })
-          } else if (input$theme_1 == "Discrimination and victimization") {
-            reactive({
-              discriminationDT %>%
-                filter(
-                  VisMin %in% input$VisMin,
-                  Year == input$Year,
-                  Characteristic == input$Characteristic,
-                  Indicator == input$Indicator,
-                  Confidence == input$Confidence,
-                  Motivation == input$Motivation
-                )
-            })
-          }
-        }
-      ) +
-        geom_bar(stat = "identity",
-                 position = "dodge",
-                 aes(
-                   x = Year,
-                   y = Value,
-                   colour = VisMin,
-                   fill = VisMin,
-                   text = paste0(
-                     "Visible Minority group: ", VisMin,
-                     "<br>",
-                     "Value: ", format(Value, big.mark = ","),
-                     "<br>",
-                     "Year: ", format(Year, "%Y")
-                   )
-                 ))+
+      ggplot(filtered_vm_lm_1()) +
+        geom_bar(
+          stat = "identity",
+          position = "dodge",
+          aes(
+            x = Year,
+            y = Value,
+            colour = VisMin,
+            fill = VisMin,
+            text = paste0(
+              "Visible Minority group: ",
+              VisMin,
+              "<br>",
+              "Value: ",
+              format(Value, big.mark = ","),
+              "<br>",
+              "Year: ",
+              format(Year, "%Y")
+            )
+          )
+        ) +
         theme_minimal() +
         scale_x_date(date_labels = "%Y") +
         scale_y_continuous(labels = comma) +
-        labs(x = "Value",
-             y = "Year",
-             colour = "Visible Minority group",
-             fill = "Visible Minority group")
+        labs(
+          x = "Year",
+          y = "Value",
+          colour = "Visible Minority group",
+          fill = "Visible Minority group"
+        )
     }, tooltip = "text"))
   
+  ##### 1.2. Working-age population in employment (employment rate) ----
+  output$plot_vm_lm_2 <-
+    renderPlotly(ggplotly({
+      ggplot(filtered_vm_lm_2()) +
+        geom_bar(
+          stat = "identity",
+          position = "dodge",
+          aes(
+            x = Year,
+            y = Value,
+            colour = VisMin,
+            fill = VisMin,
+            text = paste0(
+              "Visible Minority group: ",
+              VisMin,
+              "<br>",
+              "Value: ",
+              format(Value, big.mark = ","),
+              "<br>",
+              "Year: ",
+              format(Year, "%Y")
+            )
+          )
+        ) +
+        theme_minimal() +
+        scale_x_date(date_labels = "%Y") +
+        scale_y_continuous(labels = comma) +
+        labs(
+          x = "Year",
+          y = "Value",
+          colour = "Visible Minority group",
+          fill = "Visible Minority group"
+        )
+    }, tooltip = "text"))
+  
+  ##### 1.3. Working-age population in employment (unemployment rate) ----
+  output$plot_vm_lm_3 <-
+    renderPlotly(ggplotly({
+      ggplot(filtered_vm_lm_3()) +
+        geom_bar(
+          stat = "identity",
+          position = "dodge",
+          aes(
+            x = Year,
+            y = Value,
+            colour = VisMin,
+            fill = VisMin,
+            text = paste0(
+              "Visible Minority group: ",
+              VisMin,
+              "<br>",
+              "Value: ",
+              format(Value, big.mark = ","),
+              "<br>",
+              "Year: ",
+              format(Year, "%Y")
+            )
+          )
+        ) +
+        theme_minimal() +
+        scale_x_date(date_labels = "%Y") +
+        scale_y_continuous(labels = comma) +
+        labs(
+          x = "Year",
+          y = "Value",
+          colour = "Visible Minority group",
+          fill = "Visible Minority group"
+        )
+    }, tooltip = "text"))
+
+  #### 2. Civic engagement and political participation ----
+  
+  #### 3. Representation in decision-making positions ----
+  
+  #### 4. Basic needs and housing ----
+  
+  #### 5. Local community ----
+  
+  #### 6. Health and wellbeing ----
+  
+  #### 7. Public services and institutions ----
+  
+  #### 8. Income and wealth ----
+  
+  #### 9. Social connections and personnal networks ----
+  
+  #### 10. Discrimination and victimization ----
 }
 
 # All together now ----
