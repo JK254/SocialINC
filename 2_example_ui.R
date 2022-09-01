@@ -63,11 +63,12 @@ ui <-
               label = "Theme",
               choices = unique(as.character(template$Theme))
             ),
-
+            
             ### 2. Indicator ----
             selectizeInput(
               inputId = "indicator_1",
               label = "Indicator",
+              #'NOTE [SHOULD WE ONLY SHOW THE INDICATORS THAT ARE ASSOCIATED WITH THIS VISMIN TAB?]
               choices = unique(as.character(template$Indicator))
             ),
             
@@ -84,13 +85,18 @@ ui <-
 
               ###### Visible Minority ----
               #'NOTE [this is the focal variable for this tab]
-              selectizeInput(
-                inputId = "lm_vismin",
-                label = "Visible minority status",
-                choices = unique(as.character(rateDT$VisMin)),
-                multiple = TRUE,
-                selected = unique(as.character(rateDT$VisMin))[1],
-              ),
+              #'NOTE [I made this one different (pickerInput) because I like the select all option but I think overall it's slower so I kept the other ones at selectizeInput]
+              pickerInput(
+              inputId = "lm_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = as.character(unique(rateDT$VisMin)), # create drop-down list option
+              multiple = TRUE,# multi-select
+              selected = as.character(unique(rateDT$VisMin))[1],
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+              )),
               ###### Degree ----
               selectizeInput(
                 inputId = "lm_degree",
@@ -138,13 +144,17 @@ ui <-
 
               ###### Visible Minority ----
               #'NOTE [this is the focal variable for this tab]
-              selectizeInput(
-                inputId = "lm_rep_vismin",
-                label = "Visible minority status",
-                choices = unique(as.character(representationDT$VisMin)),
-                multiple = TRUE,
-                selected = unique(as.character(representationDT$VisMin))[1],
-              ),
+              pickerInput(
+              inputId = "lm_rep_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = as.character(unique(representationDT$VisMin)), # create drop-down list option
+              multiple = TRUE, # multi-select
+              selected = as.character(unique(representationDT$VisMin))[1],
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+              )),
               ###### Degree ----
               selectizeInput(
                 inputId = "lm_rep_degree",
@@ -192,16 +202,20 @@ ui <-
 
               ###### Visible Minority ----
               #'NOTE [this is the focal variable for this tab]
-              selectizeInput(
-                inputId = "lm_over_vismin",
-                label = "Visible minority status",
-                choices = unique(as.character(OverQualDT$VisMin)),
-                multiple = TRUE,
-                selected = unique(as.character(OverQualDT$VisMin))[1],
-              ),
+              pickerInput(
+                inputId = "lm_over_vismin", # name this for the server
+                label = "Visible minority status", # label of filter
+                choices = as.character(unique(OverQualDT$VisMin)), # create drop-down list option
+                multiple = TRUE, # multi-select
+                selected = as.character(unique(OverQualDT$VisMin))[1],
+                options = list(
+                  `actions-box` = TRUE,
+                  `deselect-all-text` = "Deselect all",
+                  `select-all-text` = "Select all"
+              )), 
               ###### Location of Study ----
               selectizeInput(
-                inputId = "lm_over_degree",
+                inputId = "lm_over_location",
                 label = "Location of Study",
                 choices = unique(as.character(OverQualDT$Location))
               ),
@@ -258,13 +272,17 @@ ui <-
 
               ###### Visible Minority ----
               #'NOTE [this is the focal variable for this tab]
-              selectizeInput(
-                inputId = "lm_youth_vismin",
-                label = "Visible minority status",
-                choices = unique(as.character(youthDT$VisMin)),
-                multiple = TRUE,
-                selected = unique(as.character(youthDT$VisMin))[1],
-              ),
+              pickerInput(
+                inputId = "lm_youth_vismin", # name this for the server
+                label = "Visible minority status", # label of filter
+                choices = as.character(unique(youthDT$VisMin)), # create drop-down list option
+                multiple = TRUE, # multi-select
+                selected = as.character(unique(youthDT$VisMin))[1],
+                options = list(
+                  `actions-box` = TRUE,
+                  `deselect-all-text` = "Deselect all",
+                  `select-all-text` = "Select all"
+              )),
               ###### Geography ----
               selectizeInput(
                 inputId = "lm_youth_geography",
@@ -313,13 +331,17 @@ ui <-
 
               ###### Visible Minority ----
               #'NOTE [this is the focal variable for this tab]
-              selectizeInput(
-                inputId = "lm_income_vismin",
-                label = "Visible minority status",
-                choices = unique(as.character(incomeDT$VisMin)),
-                multiple = TRUE,
-                selected = unique(as.character(incomeDT$VisMin))[1],
-              ),
+              pickerInput(
+                inputId = "lm_income_vismin", # name this for the server
+                label = "Visible minority status", # label of filter
+                choices = as.character(unique(incomeDT$VisMin)), # create drop-down list option
+                multiple = TRUE, # multi-select
+                selected = as.character(unique(incomeDT$VisMin))[1],
+                options = list(
+                  `actions-box` = TRUE,
+                  `deselect-all-text` = "Deselect all",
+                  `select-all-text` = "Select all"
+              )),
               ###### Degree ----
               selectizeInput(
                 inputId = "lm_income_degree",
@@ -375,13 +397,18 @@ ui <-
             #'
             #'   ###### Visible Minority ----
             #'   #'NOTE [this is the focal variable for this tab]
-            #'   selectizeInput(
-            #'     inputId = "lm_employment_vismin",
-            #'     label = "Visible minority status",
-            #'     choices = unique(as.character(employmentDT$VisMin)),
-            #'     multiple = TRUE,
-            #'     selected = unique(as.character(employmentDT$VisMin))[1],
-            #'   ),
+            # pickerInput(
+            #   inputId = "lm_employment_vismin", # name this for the server
+            #   label = "Visible minority status", # label of filter
+            #   choices = as.character(unique(employmentDT$VisMin)),
+            #   # create drop-down list option
+            #   multiple = TRUE, # multi-select
+            #   selected = as.character(unique(employmentDT$VisMin))[1],
+            #   options = list(
+            #     `actions-box` = TRUE,
+            #     `deselect-all-text` = "Deselect all",
+            #     `select-all-text` = "Select all"
+            #   )),
             #'   ###### Year ----
             #'   selectizeInput(
             #'     inputId = "lm_employmentyear",
@@ -440,13 +467,17 @@ ui <-
               
               ###### Visible Minority ----
               #'NOTE [this is the focal variable for this tab]
-              selectizeInput(
-                inputId = "civic_vismin",
-                label = "Visible minority status",
-                choices = vm_10,
-                multiple = TRUE,
+              pickerInput(
+                inputId = "civic_vismin", # name this for the server
+                label = "Visible minority status", # label of filter
+                choices = vm_10, # create drop-down list option
+                multiple = TRUE, # multi-select
                 selected = vm_10[1],
-              ),
+                options = list(
+                  `actions-box` = TRUE,
+                  `deselect-all-text` = "Deselect all",
+                  `select-all-text` = "Select all"
+              )),
               ###### Year ----
               selectizeInput(
                 inputId = "civic_year",
@@ -538,13 +569,17 @@ ui <-
 
               ###### Visible Minority ----
               #'NOTE [this is the focal variable for this tab]
-              selectizeInput(
-                inputId = "civic2_vismin",
-                label = "Visible minority status",
-                choices = vm_10,
-                multiple = TRUE,
+              pickerInput(
+                inputId = "civic2_vismin", # name this for the server
+                label = "Visible minority status", # label of filter
+                choices = vm_10, # create drop-down list option
+                multiple = TRUE, # multi-select
                 selected = vm_10[1],
-              ),
+                options = list(
+                  `actions-box` = TRUE,
+                  `deselect-all-text` = "Deselect all",
+                  `select-all-text` = "Select all"
+              )),
               ###### Year ----
               selectizeInput(
                 inputId = "civic2_year",
@@ -634,16 +669,20 @@ ui <-
 
             ##### Visible Minority ----
             #'NOTE [this is the focal variable for this tab]
-            selectizeInput(
-              inputId = "rep_vismin",
-              label = "Visible minority status",
-              choices = unique(as.character(representationDT$VisMin)),
-              multiple = TRUE,
+            pickerInput(
+              inputId = "rep_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = unique(as.character(representationDT$VisMin)), # create drop-down list option
+              multiple = TRUE, # multi-select
               selected = unique(as.character(representationDT$VisMin))[1],
-            ),
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+            )),
             ##### Highest certificate, diploma or degree ----
             selectizeInput(
-              inputId = "rep_year",
+              inputId = "rep_degree",
               label = "Highest certificate, diploma or degree",
               choices = unique(as.character(representationDT$Degree))
             ),
@@ -655,7 +694,7 @@ ui <-
             ),
             ##### Immigrant and generation status ----
             selectizeInput(
-              inputId = "rep_year",
+              inputId = "rep_immigration",
               label = "Immigrant and generation status",
               choices = unique(as.character(representationDT$Immigration))
             ),
@@ -667,13 +706,13 @@ ui <-
             ),
             ##### Age group and first official language spoken ----
             selectizeInput(
-              inputId = "rep_year",
+              inputId = "rep_age",
               label = "Age group and first official language spoken",
               choices = unique(as.character(representationDT$Age))
             ),
             ##### Gender ----
             selectizeInput(
-              inputId = "rep_year",
+              inputId = "rep_sex",
               label = "Gender",
               choices = unique(as.character(representationDT$Sex))
             )
@@ -692,13 +731,17 @@ ui <-
 
             ##### Visible Minority ----
             #'NOTE [this is the focal variable for this tab]
-            selectizeInput(
-              inputId = "basic_vismin",
-              label = "Visible minority status",
-              choices = vm_10,
-              multiple = TRUE,
+            pickerInput(
+              inputId = "basic_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = vm_10, # create drop-down list option
+              multiple = TRUE, # multi-select
               selected = vm_10[1],
-            ),
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+            )),
             ##### Year ----
             selectizeInput(
               inputId = "basic_year",
@@ -757,7 +800,76 @@ ui <-
           #'[from my notes it looks like it should take from incomeDT]
 
           #### 2.6. Health and wellbeing ----
-          #'NOTE [it doesn't look like the health data comes from the basicDT???]
+          #'NOTE [basicDT]
+          conditionalPanel(
+            condition =
+              "input.theme_1 == 'Health and wellbeing'",
+            
+            ##### Visible Minority ----
+            #'NOTE [this is the focal variable for this tab]
+            pickerInput(
+              inputId = "health_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = vm_10, # create drop-down list option
+              multiple = TRUE, # multi-select
+              selected = vm_10[1],
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+            )),
+            ##### Year  ----
+            selectizeInput(
+              inputId = "health_year",
+              label = "Year",
+              choices = unique(as.character(basicDT$Year))
+            ),
+            ##### Geography  ----
+            selectizeInput(
+              inputId = "health_geography",
+              label = "Geography",
+              choices = unique(as.character(basicDT$Geography))
+            ), 
+            ##### Selected sociodemographic characteristics ----
+            selectizeInput(
+              inputId = "health_sociodem",
+              label = "Selected sociodemographic characteristics",
+              choices = unique(as.character(basicDT$char_type))
+            ),
+            ###### Age ----
+            conditionalPanel(
+              condition = "input.health_sociodem == 'Age'",
+              selectizeInput(
+                inputId = "health_age",
+                label = "Age group",
+                choices = unique(as.character(basicDT$Characteristic)[basicDT$char_type == "Age"])
+              )
+            ),
+            ###### Gender ----
+            conditionalPanel(
+              condition = "input.health_sociodem == 'Gender'",
+              selectizeInput(
+                inputId = "health_sex",
+                label = "Gender",
+                choices = unique(as.character(basicDT$Characteristic)[basicDT$char_type == "Gender"])
+              )
+            ),
+            ###### Immigration Status ----
+            conditionalPanel(
+              condition = "input.health_sociodem == 'Immigration Status'",
+              selectizeInput(
+                inputId = "health_immigration",
+                label = "Immigration Status",
+                choices = unique(as.character(basicDT$Characteristic)[basicDT$char_type == "Immigration Status"])
+              )
+            ),
+            ##### Confidence Interval ----
+            selectizeInput(
+              inputId = "health_conf_interval",
+              label = "Confidence Interval",
+              choices = unique(as.character(basicDT$Confidence))
+            )
+          ),
 
           #### 2.7. Public services and institutions ----
           #'NOTE [confidenceDT]
@@ -767,13 +879,17 @@ ui <-
 
             ##### Visible Minority ----
             #'NOTE [this is the focal variable for this tab]
-            selectizeInput(
-              inputId = "public_vismin",
-              label = "Visible minority status",
-              choices = vm_10,
-              multiple = TRUE,
+            pickerInput(
+              inputId = "public_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = vm_10, # create drop-down list option
+              multiple = TRUE, # multi-select
               selected = vm_10[1],
-            ),
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+            )),
             ##### Year ----
             selectizeInput(
               inputId = "public_year",
@@ -960,13 +1076,17 @@ ui <-
 
             ##### Visible Minority ----
             #'NOTE [this is the focal variable for this tab]
-            selectizeInput(
-              inputId = "belonging_vismin",
-              label = "Visible minority status",
-              choices = vm_10,
-              multiple = TRUE,
+            pickerInput(
+              inputId = "belonging_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = vm_10, # create drop-down list option
+              multiple = TRUE, # multi-select
               selected = vm_10[1],
-            ),
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+            )),
             ##### Year ----
             selectizeInput(
               inputId = "belonging_year",
@@ -1058,13 +1178,17 @@ ui <-
             
             ##### Visible Minority ----
             #'NOTE [this is the focal variable for this tab]
-            selectizeInput(
-              inputId = "discrimination_vismin",
-              label = "Visible minority status",
-              choices = vm_10,
-              multiple = TRUE,
+            pickerInput(
+              inputId = "discrimination_vismin", # name this for the server
+              label = "Visible minority status", # label of filter
+              choices = vm_10, # create drop-down list option
+              multiple = TRUE, # multi-select
               selected = vm_10[1],
-            ),
+              options = list(
+                `actions-box` = TRUE,
+                `deselect-all-text` = "Deselect all",
+                `select-all-text` = "Select all"
+            )),
             ##### Year ----
             selectizeInput(
               inputId = "discrimination_year",
@@ -1149,23 +1273,28 @@ ui <-
           #'NOTE [discriminationDT]
           conditionalPanel(
             condition =
-              "input.theme_1 == 'Discrimination and victimization'
-              && input.indicator_1 == 'Hate Crime'",
+              "input.indicator_1 == 'Hate Crime'",
             
             ##### Visible Minority ----
             #'NOTE [this is the focal variable for this tab]
-            selectizeInput(
-              inputId = "discrimination_vismin",
-              label = "Visible minority status",
-              choices = vm_10,
-              multiple = TRUE,
-              selected = vm_10[1],
-            ),
+            # selectizeInput(
+            #   inputId = "discrimination_vismin",
+            #   label = "Visible minority status",
+            #   choices = vm_10,
+            #   multiple = TRUE,
+            #   selected = vm_10[1],
+            # ),
             ##### Year ----
             selectizeInput(
               inputId = "discrimination2_year",
               label = "Year",
               choices = unique(as.character(polData$Year))
+            ),
+            ##### Geography ----
+            selectizeInput(
+              inputId = "discrimination2_geography",
+              label = "Geography",
+              choices = unique(as.character(polData$Geography))
             ),
             ##### Motivation  ----
             selectizeInput(
@@ -1186,7 +1315,7 @@ ui <-
             conditionalPanel(
               condition = "input.discrimination2_motivation_type == 'Race or ethnicity'",
               selectizeInput(
-                inputId = "discrimination_total",
+                inputId = "discrimination_groups",
                 label = "Groups designated as Visible Minority",
                 choices =  unique(as.character(polData$Motivation)[polData$motivation_type == "Race or ethnicity"])
               )
@@ -1199,66 +1328,7 @@ ui <-
       mainPanel(
         h2("Groups Designated as Visible Minorities"),
         
-        #### 1. Participation in the Labour Market ----
-        ##### 1.1. Working-age population in the labour force (participation rate) ----
-        #'NOTE [CONFIRM WHERE THE RATEDT COMES FROM FOR SOURCE]
-        conditionalPanel(
-          condition = "input.indicator_1 == 'Working-age population in the labour force (participation rate)'",
-          br(),
-          br(),
-          plotlyOutput("plot_vm_lm_1",
-                       inline = TRUE,
-                       width = 700,
-                       height = 500),
-          br(),
-          helpText(source_cchs)
-        ),
-        
-        ##### 1.2. Working-age population in employment (employment rate) ----
-        conditionalPanel(
-          condition = "input.indicator_1 == 'Working-age population in employment (employment rate)'",
-          br(),
-          br(),
-          plotlyOutput("plot_vm_lm_2",
-                       inline = TRUE,
-                       width = 700,
-                       height = 500),
-          br(),
-          helpText(source_cchs)
-        ),
-        
-        ##### 1.3. Working-age population in unemployment (unemployment rate) ----
-        conditionalPanel(
-          condition = "input.indicator_1 == 'Working-age population in unemployment (unemployment rate)'",
-          br(),
-          br(),
-          plotlyOutput("plot_vm_lm_3",
-                       inline = TRUE,
-                       width = 700,
-                       height = 500),
-          br(),
-          helpText(source_cchs)
-        )
-
-        #### 2. Civic engagement and political participation ----
-        
-        #### 3. Representation in decision-making positions ----
-        
-        #### 4. Basic needs and housing ----
-        
-        #### 5. Local community ----
-        
-        #### 6. Health and wellbeing ----
-        
-        #### 7. Public services and institutions ----
-        
-        #### 8. Income and wealth ----
-        
-        #### 9. Social connections and personnal networks ----
-        
-        #### 10. Discrimination and victimization ----
-        
-        
+        #'NOTE [EXAMPLE OF PREVIOUS CODE]
         # conditionalPanel(
         #   condition = "input.dim == 'Health and wellbeing' & input.dimHealth == 'Percent of the population reporting very good or excellent mental health' & input.healthCharacteristics == 'Immigration Status'",
         #   br(),
@@ -1271,10 +1341,832 @@ ui <-
         #   helpText("Source: Canadian Community Health Survey (CCHS), September to December 2020")
         # )
         
+        #### 1. Participation in the Labour Market ----
+        ##### 1.1. Working-age population in the labour force (participation rate) ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Working-age population in the labour force (participation rate)'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_1",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 1.2. Working-age population in employment (employment rate) ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Working-age population in employment (employment rate)'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_2",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 1.3. Working-age population in unemployment (unemployment rate) ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Working-age population in unemployment (unemployment rate)'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_3",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 1.4. Workers working mainly full-time weeks in the previous year (Population in full-time employment) ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Workers working mainly full-time weeks in the previous year'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_4",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 1.5. Self-employed workers in the labour force (unincorporated) ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Self-employed workers in the labour force (unincorporated)'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_5",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 1.6. Overqualified workers with a university degree ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Overqualified workers with a university degree'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_6",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs)
+        ),
+        
+        ##### 1.7. Youth not in employment, education or training (NEET) ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Youth not in employment, education or training (NEET)'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_7",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 1.8. Average employment income of the population ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Average employment income of the population'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_8",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 1.9. Average weekly wage of paid employees ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Average weekly wage of paid employees'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_lm_9",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+
+        #### 2. Civic engagement and political participation ----
+        ##### 2.1. Percent of the population members of at least one civic group or organization ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members of at least one civic group or organization'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_1",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.2. Percent of the population members in a sports or recreational organization ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a sports or recreational organization'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_2",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.3. Percent of the population members in a cultural, educational or hobby organization ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a cultural, educational or hobby organization'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_3",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.4. Percent of the population members in union or professional association ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in union or professional association'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_4",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.5. Percent of the population members in a political party or group ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a political party or group'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_5",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.6. Percent of the population members in a religious-affiliated group ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a religious-affiliated group'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_6",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.7. Percent of the population members in a school group, neighbourhood, civic or community association ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a school group, neighbourhood, civic or community association'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_7",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.8. Percent of the population members in a humanitarian or charitable organization or service club ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a humanitarian or charitable organization or service club'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_8",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.9. Percent of the population members in a seniors' group ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a seniors\\' group'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_9",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.10. Percent of the population members in a youth organization ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in a youth organization'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_10",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.11. Percent of the population members in an immigrant or ethnic association or club ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in an immigrant or ethnic association or club'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_11",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.12. Percent of the population members in an environmental group ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population members in an environmental group'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_12",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.13. Percent of the population engaged in political activities ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population engaged in political activities'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_13",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.14 Percent of the population voting in the last federal election ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population voting in the last federal election'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_14",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.15 Percent of the population voting in the last provincial election ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population voting in the last provincial election'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_15",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 2.16 Percent of the population voting in the last municipal election ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population voting in the last municipal election'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_civic_16",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        #### 3. Representation in decision-making positions ----
+        ##### 3.1. Percent of workers in all management occupations ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of workers in all management occupations'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_rep_1",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        ##### 3.2. Percent of workers in senior management occupations ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of workers in senior management occupations'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_rep_2",
+                       inline = TRUE),
+          br(),
+          helpText(source_census_nhs_census)
+        ),
+        
+        #'NOTE [WHY IS THIS SEPARATED?]
+        ##### 3.3. Percent of workers in specialized middle management occupations ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of workers in specialized middle management occupations'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_rep_3",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 3.4. Percent of workers in other middle management occupations ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of workers in other middle management occupations'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_rep_4",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        #### 4. Basic needs and housing ----
+        ##### 4.1. Percent of workers in senior management occupations ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population living in a dwelling owned by one member of the household'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_basic_1",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_cchs)
+        # ),
+        
+        ##### 4.2. Percent of the population living in core need household ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population living in core need household'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_basic_2",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_cchs)
+        # ),
+        
+        ##### 4.3. Percent of the population living in suitable housing ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population living in suitable housing'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_basic_3",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_cchs)
+        # ),
+        
+        ##### 4.4. Percent of the population living in an affordable housing ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population living in an affordable housing'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_basic_4",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_cchs)
+        # ),
+        
+        ##### 4.5. Percent of the population living in a food-secure household ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population living in a food-secure household'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_basic_5",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 4.6. Percent of the population living in a household with marginal food security ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population living in a household with marginal food security'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_basic_6",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 4.7. Percent of the population living in a food-insecure household, moderate or severe ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population living in a food-insecure household, moderate or severe'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_basic_7",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 4.8. Percent of the population living in a household with moderate food insecurity ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population living in a household with moderate food insecurity'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_basic_8",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 4.9. Percent of the population living in a household with severe food insecurity ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population living in a household with severe food insecurity'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_basic_9",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        #### 5. Local community ----
+        #'NOTE [TBD]
+        
+        #### 6. Health and wellbeing ----
+        ##### 6.1. Percent of the population reporting very good or excellent general health ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population reporting very good or excellent general health'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_health_1",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 6.2. Percent of the population reporting fair or poor general health ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population reporting fair or poor general health'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_health_2",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 6.3. Percent of the population reporting very good or excellent mental health ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population reporting very good or excellent mental health'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_health_3",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 6.4. Percent of the population reporting fair or poor mental health ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population reporting fair or poor mental health'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_health_4",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 6.5. Percent of the population reporting their life stressful ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population reporting their life stressful'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_health_5",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 6.6. Percent of the population satisfied with life as a whole ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Percent of the population satisfied with life as a whole'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_health_6",
+                       inline = TRUE),
+          br(),
+          helpText(source_cchs)
+        ),
+        
+        ##### 6.7. Percent of the population predicting their life opportunities will improve in the next 5 years ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population predicting their life opportunities will improve in the next 5 years'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_health_7",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_cchs)
+        # ),
+        
+        #### 7. Public services and institutions ----
+        ##### 7.1. Population expressing confidence in Federal Parliament ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing confidence in Federal Parliament'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_1",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 7.2. Population expressing Confidence in the Canadian media ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing Confidence in the Canadian media'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_2",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 7.3. Population expressing confidence in the school system ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing confidence in the school system'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_3",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 7.4. Population expressing confidence in the justice system, courts ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing confidence in the justice system, courts'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_4",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 7.5. Population expressing confidence in the police ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing confidence in the police'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_5",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 7.6. Population expressing confidence in major corporations ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing confidence in major corporations'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_6",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 7.7. Population expressing confidence in merchants and business people ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing confidence in merchants and business people'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_7",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 7.8. Population expressing confidence in banks ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Population expressing confidence in banks'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_public_8",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        #### 8. Income and wealth ----
+        #'NOTE [TBD because the incomeDT was used in the Participation in the Labour Market section]
+        
+        #### 9. Social connections and personnal networks ----
+        ##### 9.1. Percent of the population living alone ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population living alone'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_1",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.2. Median size of a personal local network with close ties ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Median size of a personal local network with close ties'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_2",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.3. Average size of a local personal network with close ties ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Average size of a local personal network with close ties'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_3",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.4. Percent of the population with a personal close-ties network of 10 or more people ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population with a personal close-ties network of 10 or more people'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_4",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.5. Percent of the population with a personal close-ties network of 5 or more relatives ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population with a personal close-ties network of 5 or more relatives'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_5",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.6. Percent of the population with a personal close-ties network of 5 or more friends ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population with a personal close-ties network of 5 or more friends'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_6",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.7. Percent of the population with no personal network with weak ties ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population with no personal network with weak ties'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_7",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.8. Percent of the population with a personal weak-ties network of 1 to 19 people ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population with a personal weak-ties network of 1 to 19 people'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_8",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.9. Percent of the population with a personal weak-ties network of 20 or more people ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population with a personal weak-ties network of 20 or more people'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_9",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        ##### 9.10. Percent of the population with a personal ethnically-diverse network ----
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Percent of the population with a personal ethnically-diverse network'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_social_10",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_census_nhs_census)
+        # ),
+        
+        #### 10. Discrimination and victimization ----
+        ##### 10.1. Experience(s) of discrimination ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Experience(s) of discrimination'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_1",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.2. Experience(s) of discrimination based on ethnicity or culture ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Experience(s) of discrimination based on ethnicity or culture'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_2",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.3. Experience(s) of discrimination based on race or colour ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Experience(s) of discrimination based on race or colour'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_3",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.4. Experience(s) of discrimination based on religion ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Experience(s) of discrimination based on religion'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_4",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.5. Experience(s) of discrimination based on language ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Experience(s) of discrimination based on language'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_5",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.6. Discrimination at work or when applying for a job or promotion ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Discrimination at work or when applying for a job or promotion'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_6",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.7. Discrimination when dealing with the police ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Discrimination when dealing with the police'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_7",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.8. Discrimination when in a store, bank or restaurant ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Discrimination when in a store, bank or restaurant'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_8",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        ),
+        
+        ##### 10.9. Discrimination when attending school or classes ----
+        conditionalPanel(
+          condition = "input.indicator_1 == 'Discrimination when attending school or classes'",
+          br(),
+          br(),
+          plotlyOutput("plot_vm_discrimination_9",
+                       inline = TRUE),
+          br(),
+          helpText(source_gss)
+        )
+        
+        ##### 10.10. Hate Crime ----
+        #'NOTE [this data set doesn't have breakdown by vismin]
+        # conditionalPanel(
+        #   condition = "input.indicator_1 == 'Hate Crime'",
+        #   br(),
+        #   br(),
+        #   plotlyOutput("plot_vm_discrimination_10",
+        #                inline = TRUE),
+        #   br(),
+        #   helpText(source_ucrs)
+        # )
+
         ) # Main panel closing bracket // should be blue
       
         ) # sidebarLayout closing bracket // should be greenish-blue
       )
+      #'NOTE [END OF FIRST TAB]
+      
+      #'NOTE [HERE IS WHERE YOU WOULD ADD A NEW TAB // use what's in the Visible Minority tab as a reference]
       
     )
   )

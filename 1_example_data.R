@@ -1,8 +1,21 @@
+# Install packages ----
+package_list <- c(
+  "arrow",
+  "dplyr",
+  "plotly",
+  "shiny",
+  "shinyWidgets"
+)
+new_packages <-
+  package_list[!(package_list %in% installed.packages()[, "Package"])]
+if (length(new_packages))
+  install.packages(new_packages)
+
+rm(package_list, new_packages)
+
 # Load libraries ----
 library(arrow)
 library(dplyr)
-library(ggplot2)
-library(scales)
 library(plotly)
 library(shiny)
 library(shinyWidgets)
@@ -92,8 +105,7 @@ dfs_characteristics <-
     "civicDT",
     "civicDT2",
     "confidenceDT",
-    "discriminationDT",
-    "healthDT"
+    "discriminationDT"
   )
 
 ### Define characteristics
@@ -173,6 +185,8 @@ template <-
 # Repetitive code ----
 ## Sources ----
 #'NOTE [these are the reoccuring sources I seen, I might be missing something]
+source_ucrs <- 
+  "Source: Uniform Crime Reporting Survey (UCR), 2022"
 source_cchs <-
   "Source: Canadian Community Health Survey (CCHS), September to December 2020"
 source_gss <-
