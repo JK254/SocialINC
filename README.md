@@ -15,32 +15,27 @@ This project intends to create a dashboard for social indicators.
 
 ## Required packages
 
-The following code will install the required packages if they are not currently installed.
+The scripts will install the required packages if they are not currently installed.
 
-```
-list_packages <-
-  c(
-    "shiny",
-    "tidyverse",
-    "data.table",
-    "readxl",
-    "plotly",
-    "leaflet",
-    "htmltools",
-    "RColorBrewer",
-    "shinyjs",
-    "cansim"
-  )
+You'll need the following to run [0_collect_data.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/1_collect_data.R):
 
-for (i in list_packages) {
-  if (!i %in% installed.packages()) {
-    install.packages(i, dependencies = TRUE)
-  }
-  require(i)
-}
-```
+- tidyverse
+- cansim
+- arrow
 
-## [1_collect_data.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/1_collect_data.R)
+You'll need the following to run example dashboard:
+
+- arrow
+- dplyr
+- plotly
+- shiny
+- shinyWidgets
+
+> Note: these are separated because you only need to run [0_collect_data.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/1_collect_data.R) to update the data.
+
+## [0_collect_data.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/1_collect_data.R)
+
+> Note: it is highly recommended that you use the `Document Outline` function in RStudio to navigate going through the code.
 
 This file retrieves all the data from the following tables and outputs them as .parquet files in the _tempfile folder:
 
@@ -49,7 +44,7 @@ This file retrieves all the data from the following tables and outputs them as .
 | 43100069 | Selected labour force status | rateDT | |
 | 43100068 | Average employment income indicators | incomeDT | |
 | 13100841 | Basic needs and housing data | basicDT | |
-| 13100841 | Health indicators | healthDT | Same as basicDT |
+| 13100841 | Health indicators | basicDT | |
 | 43100065 | Civic engagement| civicDT | |
 | 43100066 | Civic engagement and engagement in political activities | civicDT2 | |
 | 43100070 | Representation (Selected management occupations and self-employed class of worker) | representationDT | |
@@ -72,15 +67,17 @@ This script does the following:
 4. remove the table to clear up memory
 5. rinse and repeat for all CODR tables
 
-## [2_ui.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/2_ui.R)
+## [2_example_ui.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/2_ui.R)
 
 This script separates the user interface from the original script with some sectioning to better navigate the code.
 
-## [3_server.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/3_server.R)
+## [3_example_server.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/3_server.R)
 
 This script separates the server from the original script with some sectioning to better navigate the code.
 
 ## [test.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/test.R)
+
+> Note: this is a miscellaneous dashboard to see what other options there are to present the data.
 
 This script is a sample that provides different ways to show the data more efficiently. This consists of both the user interface and the server components. The following sections will give a brief description of the tabs.
 
@@ -99,46 +96,6 @@ This tab was created to show how multiple filters and plots can be integrated in
 ### Tab 4 (Confidence)
 
 This tab uses the `char_type` variable that was created to add a conditional filter to group relevant characteristics together. 
-
-# About the data
-
-## List of themes
-
-| Themes | Table(s) included within the theme |
-|---|---|
-| Participation in the Labour Market | rateDT, OverQualDT, youthDT |
-| Civic engagement and political participation | civicDT & civicDT2 |
-| Representation in decision-making positions | representationDT |
-| Basic needs and housing | basicDT |
-| Health and wellbeing | healthDT |
-| Education, training and skills | educationDT |
-| Income and wealth | incomeDT |
-| Social connections and personnal networks | belongingDT |
-| Local community | incomeDT |
-| Public services and institutions | confidenceDT |
-| Discrimination and victimization | discriminationDT, polData |
-
-## General notes
-
-### Visibile minority
-
-These data sets have 10 levels for VisMin:
-- basicDT
-- belongingDT
-- civicDT
-- civicDT2
-- confidenceDT
-- discriminationDT
-- healthDT
-
-These data sets have 15 levels for VisMin:
-- incomeDT
-- OverQualDT
-- rateDT
-- representationDT
-- youthDT
-
-polData has no breakdown by VisMin
 
 # Resources
 
