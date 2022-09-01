@@ -1,0 +1,108 @@
+Theme,Indicator,Dataset,Indicator ,Location
+Participation in the Labour Market,Working-age population in the labour force (participation rate),rateDT, Working-age population in the labour force (participation rate),1
+Participation in the Labour Market,Working-age population in employment (employment rate),rateDT, Working-age population in employment (employment rate),2
+Participation in the Labour Market,Working-age population in unemployment (unemployment rate),rateDT, Working-age population in employment (unemployment rate),3
+Participation in the Labour Market,Workers working mainly full-time weeks in the previous year,rateDT, Workers working mainly full-time weeks in the previous year (Population in full-time employment),4
+Participation in the Labour Market,Self-employed workers in the labour force (unincorporated),representationDT, Workers working mainly full-time weeks in the previous year (Population in full-time employment),4
+Participation in the Labour Market,Overqualified workers with a university degree,OverQualDT, Overqualified workers with a university degree,NA
+Participation in the Labour Market,"Youth not in employment, education or training (NEET)",YouthDT," Youth not in employment, education or training (NEET)",NA
+Participation in the Labour Market,Average employment income of the population,incomeDT, Average employment income of the population,1
+Participation in the Labour Market,Average weekly wage of paid employees,incomeDT, Average weekly wage of paid employees,2
+Participation in the Labour Market,Currently employed population considering their job related to their education,,,
+Participation in the Labour Market,Paid employees considering their current job good for career advancement,,,
+Participation in the Labour Market,Paid employees receiving at least one employment benefit in their current job,,,
+Participation in the Labour Market,Paid employees having pension plan in their current job,,,
+Participation in the Labour Market,Paid employees having paid sick leave in their current job,,,
+Participation in the Labour Market,Paid employees having paid vacation leave in their current job,,,
+Participation in the Labour Market,Paid employees having disability insurance in their current job,,,
+Participation in the Labour Market,Paid employees having supplemental medical care in their current job,,,
+Participation in the Labour Market,Paid employees having worker's compensation in their current job,,,
+Participation in the Labour Market,"Paid employees having maternity, paternity or lay-off benefits in their current job",,,
+Participation in the Labour Market,Paid employees covered by union contract or collective agreement in their current job,,,
+Participation in the Labour Market,Paid employees receiving formal training in their current job,,,
+Participation in the Labour Market,Paid employees receiving informal training in their current job,,,
+Civic engagement and political participation,Percent of the population members of at least one civic group or organization,civicDT," Member or participant of at least one group, organization or association",1
+Civic engagement and political participation,Percent of the population members in a sports or recreational organization,civicDT, Member or participant in sports or recreational organization,2
+Civic engagement and political participation,"Percent of the population members in a cultural, educational or hobby organization",civicDT," Member or participant in cultural, educational or hobby organization",3
+Civic engagement and political participation,Percent of the population members in union or professional association,civicDT, Member or participant in union or professional association,4
+Civic engagement and political participation,Percent of the population members in a political party or group,civicDT, Member or participant in political party or group,5
+Civic engagement and political participation,Percent of the population members in a religious-affiliated group,civicDT, Member or participant in religious-affiliated group,6
+Civic engagement and political participation,"Percent of the population members in a school group, neighbourhood, civic or community association",civicDT," Member or participant in school group, neighbourhood, civic or community association",7
+Civic engagement and political participation,Percent of the population members in a humanitarian or charitable organization or service club,civicDT, Member or participant in humanitarian or charitable organization or service club,8
+Civic engagement and political participation,Percent of the population members in a seniors' group,civicDT, Member or participant in seniors' group,9
+Civic engagement and political participation,Percent of the population members in a youth organization,civicDT, Member or participant in youth organization,10
+Civic engagement and political participation,Percent of the population members in an immigrant or ethnic association or club,civicDT, Member or participant in immigrant or ethnic association or club,11
+Civic engagement and political participation,Percent of the population members in an environmental group ,civicDT,  Member or participant in environmental group,12
+Civic engagement and political participation,Percent of the population engaged in political activities,civicDT, Engaged in political activities,13
+Civic engagement and political participation,Percent of the population voting in the last federal election,civicDT2, Voted in last federal election,1
+Civic engagement and political participation,Percent of the population voting in the last provincial election,civicDT2, Voted in last provincial election,2
+Civic engagement and political participation,Percent of the population voting in the last municipal election,civicDT2, Voted in last municipal election,3
+Representation in decision-making positions,Percent of workers in all management occupations,representationDT, Workers in all management occupations,1
+Representation in decision-making positions,Percent of workers in senior management occupations,representationDT, Workers in senior management occupations,2
+Representation in decision-making positions,Percent of workers in specialized middle management occupations,representationDT, Workers in middle management occupations,3
+Representation in decision-making positions,Percent of workers in other middle management occupations,representationDT, Population in self-employment (unincorporated),4
+Basic needs and housing,Percent of the population living in a dwelling owned by one member of the household ,,,
+Basic needs and housing,Percent of the population living in core need household,,,
+Basic needs and housing,Percent of the population living in suitable housing,,,
+Basic needs and housing,Percent of the population living in an affordable housing,,,
+Basic needs and housing,Percent of the population living in a food-secure household,,,
+Basic needs and housing,Percent of the population living in a household with marginal food security,,,
+Basic needs and housing,"Percent of the population living in a food-insecure household, moderate or severe",,,
+Basic needs and housing,Percent of the population living in a household with moderate food insecurity,,,
+Basic needs and housing,Percent of the population living in a household with severe food insecurity,,,
+Local community,Percent of the population satisfied with feeling part of their community,,,
+Local community,Percent of the population satisfied with their neighbourhood,,,
+Local community,Percent of the population satisfied with quality of local environment,,,
+Local community,Percent of the population reporting feeling safe in their neighbourhood,,,
+Local community,Percent of the population satisfied with personal safety from crime,,,
+Local community,"Violent victimization rate per 1,000 population",,,
+Local community,Percent of the population reporting incident against them was a hate crime,,,
+Local community,Percent of police reported hate crimes motivated by Race or ethnicity,,,
+Local community,Percent of police reported hate crimes motivated by religion,,,
+Local community,Percent of the population perceiving local police good in enforcing laws,,,
+Local community,Percent of the population perceiving local police good in responding to calls,,,
+Local community,Percent of the population perceiving local police good in being approachable,,,
+Local community,Percent of the population perceiving local police good in supplying information,,,
+Local community,Percent of the population perceiving local police good in ensuring safety in the area,,,
+Local community,Percent of the population perceiving local police as treating people fairly,,,
+Health and wellbeing,Percent of the population reporting very good or excellent general health,basicDT," Perceived health, very good or excellent",1
+Health and wellbeing,Percent of the population reporting fair or poor general health,basicDT," Perceived health, fair or poor",2
+Health and wellbeing,Percent of the population reporting very good or excellent mental health,basicDT," Perceived mental health, very good or excellent",3
+Health and wellbeing,Percent of the population reporting fair or poor mental health,basicDT," Perceived mental health, fair or poor",4
+Health and wellbeing,Percent of the population reporting their life stressful,basicDT," Perceived life stress, most days quite a bit or extremely stressful",6
+Health and wellbeing,Percent of the population satisfied with life as a whole,basicDT," Life satisfaction, satisfied or very satisfied",5
+Health and wellbeing,Percent of the population predicting their life opportunities will improve in the next 5 years,,,
+Public services and institutions,Population expressing confidence in Federal Parliament,confidenceDT, Confidence in Federal Parliament,4
+Public services and institutions,Population expressing Confidence in the Canadian media,confidenceDT, Confidence in the Canadian media,8
+Public services and institutions,Population expressing confidence in the school system,confidenceDT, Confidence in the school system,3
+Public services and institutions,"Population expressing confidence in the justice system, courts",confidenceDT, Confidence in the justice system and courts,2
+Public services and institutions,Population expressing confidence in the police,confidenceDT, Confidence in the police service,1
+Public services and institutions,Population expressing confidence in major corporations,confidenceDT, Confidence in major corporations,6
+Public services and institutions,Population expressing confidence in merchants and business people,confidenceDT, Confidence in merchants and local business people,7
+Public services and institutions,Population expressing confidence in banks,confidenceDT, Confidence in banks,5
+Income and wealth,"Average total household income, adjusted for the number of persons",,,
+Income and wealth,Percent of the population living in poverty (low-income MBM),,,
+Income and wealth,Percent of the population living in low income situation (before-tax),,,
+Income and wealth,Percent of the population living in low income situation (after-tax),,,
+Income and wealth,Percent of the population reporting difficulty in meeting financial needs of their household,,,
+Income and wealth,Percent of the population reporting ease in meeting financial needs of their household,,,
+Social connections and personnal networks,Percent of the population living alone,,,
+Social connections and personnal networks,Median size of a personal local network with close ties,,,
+Social connections and personnal networks,Average size of a local personal network with close ties,,,
+Social connections and personnal networks,Percent of the population with a personal close-ties network of 10 or more people,,,
+Social connections and personnal networks,Percent of the population with a personal close-ties network of 5 or more relatives,,,
+Social connections and personnal networks,Percent of the population with a personal close-ties network of 5 or more friends,,,
+Social connections and personnal networks,Percent of the population with no personal network with weak ties,,,
+Social connections and personnal networks,Percent of the population with a personal weak-ties network of 1 to 19 people,,,
+Social connections and personnal networks,Percent of the population with a personal weak-ties network of 20 or more people ,,,
+Social connections and personnal networks,Percent of the population with a personal ethnically-diverse network,,,
+Discrimination and victimization,Experience(s) of discrimination,discrimination," Experience(s) of discrimination, 5 years before COVID-19 pandemic",1
+Discrimination and victimization,Experience(s) of discrimination based on ethnicity or culture,discrimination," Experience(s) of discrimination based on ethnicity or culture, 5 years before COVID-19 pandemic",2
+Discrimination and victimization,Experience(s) of discrimination based on race or colour,discrimination," Experience(s) of discrimination based on race or colour, 5 years before COVID-19 pandemic",3
+Discrimination and victimization,Experience(s) of discrimination based on religion,discrimination," Experience(s) of discrimination based on religion, 5 years before COVID-19 pandemic",4
+Discrimination and victimization,Experience(s) of discrimination based on language,discrimination," Experience(s) of discrimination based on language, 5 years before COVID-19 pandemic ",5
+Discrimination and victimization,Discrimination at work or when applying for a job or promotion,discrimination," Discrimination at work or when applying for a job or a promotion, 5 years before COVID-19 pandemic",6
+Discrimination and victimization,Discrimination when dealing with the police,discrimination," Discrimination when dealing with the police, 5 years before COVID-19 pandemic",7
+Discrimination and victimization,"Discrimination when in a store, bank or restaurant",discrimination," Discrimination in a store, bank or restaurant, 5 years before COVID-19 pandemic",8
+Discrimination and victimization,Discrimination when attending school or classes,discrimination," Discrimination when attending school or classes, 5 years before COVID-19 pandemic",9
+Discrimination and victimization,Hate Crime,polData,,
