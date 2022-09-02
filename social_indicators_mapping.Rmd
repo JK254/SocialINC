@@ -1,0 +1,125 @@
+---
+title: "Social indicators mapping"
+author: "Brittny Vongdara"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+  
+```{r setup, include=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Load libraries ----
+library(dplyr)
+library(collapsibleTree) 
+library(colorspace)
+
+# Mapping data ----
+df <-
+  read.csv("./social_indicators_mapping.csv",
+           encoding = "latin1") %>% # read in HR data
+  mutate_all(trimws)
+```
+
+```{css, echo=FALSE}
+.graph {
+  border: 3px solid grey;
+  font-weight: bold;
+  position: relative;
+  width: 100%;
+  white-space: pre;
+}
+
+body {
+ max-width: 1100px;
+ margin: auto;
+ padding: 1em;
+ line-height: 20px;
+}
+
+```
+
+# About the data
+
+## List of themes
+
+| Themes | Table(s) included within the theme |
+|---|---|
+| Participation in the Labour Market | rateDT, OverQualDT, youthDT |
+| Civic engagement and political participation | civicDT & civicDT2 |
+| Representation in decision-making positions | representationDT |
+| Basic needs and housing | basicDT |
+| Health and wellbeing | basicDT |
+| Education, training and skills | educationDT |
+| Income and wealth | incomeDT |
+| Social connections and personnal networks | belongingDT |
+| Local community | incomeDT |
+| Public services and institutions | confidenceDT |
+| Discrimination and victimization | discriminationDT, polData |
+
+## General notes
+
+### Visible minority
+
+> Note: the data sets with 10 levels for VisMin are not in the correct order but the ones with 15 are.
+
+These data sets have 10 levels for VisMin:
+
+- basicDT
+- belongingDT
+- civicDT
+- civicDT2
+- confidenceDT
+- discriminationDT
+
+These data sets have 15 levels for VisMin:
+
+- incomeDT
+- OverQualDT
+- rateDT
+- representationDT
+- youthDT
+
+polData has no breakdown by VisMin
+
+# Indicators flowchart
+
+<div class = "graph">
+
+```{r general tree, echo=FALSE, warning=FALSE}
+collapsibleTreeSummary(
+  df = df,
+  hierarchy = c("Theme", "Indicator", "Dataset", "Indicator.1", "Location"),
+  root = "Themes",
+  fontSize = 12,
+  collapsed = TRUE,
+  zoomable = FALSE
+) 
+```
+
+</div>
+
+# Dashboard reactivity
+
+Following the instructions of this [script]() and running it will show you how the dashboard reacts. You'll notice that it currently is quite large--this is due to the many conditions created for the filters to be output as it is. It is largely recommended that there are less conditions as it arbitrarily adds burden to the code. There are ways where you can build the datasets more effectively or focus the data so that it does not depend on creating many conditions. Another potential danger of creating so many conditions is that it can cause a waterfall effect if you make a change. This creates a burden on the coder to know how the code dominoes.
+
+# Moving forward
+
+## Rethinking how to present the data
+
+Currently, to run the dashboard takes a memory--and it's currently at one page. This is due to the use of conditions to output the filters in a specific way. Because so much is needed to make the filters as they are, my suggestion would be to rethink how to present the data because the memory should really be focused on showing the data and not showing the filters.
+
+## Rethinking the purpose of a dashboard
+
+It should have been a sign that if you cannot pull all the data from the StatCan website that it might be too much data. That being said, you can pull it out in R--but should you? To pull all the data at the CMA level takes up a lot of memory. At that point, you have to decide whether you want all the data or do you want a dashabord? If a script costs a lot of memory it will crash R. Additionally, the purpose of a dashboard is to quickly show data--generally, it should not be used to validate a lot of data points nor should it be a tool to give to a client "in case they want to see whatever they want". Dashboards should be focused and curated--because another concern of giving a client everything is that they may correlated data that shouldn't be correlated in the first place. When you add use a lot of memory, it will make the dashboard slow and users may not use it because of this. So it's really important to think about why you are making this dashboard--or if a dashboard is really the solution to your clients' problems.
+
+## Documentation
+
+How things often get lost is that there is no documentation. When code is being passed and there's no documentation, this can be diastruous. It may cause someone to have to reverse engineer something if there is an issue with the code. Documentation should always be done for sustainability. Ensure that you continue to document your work and do so in a clear way.
+
+## Adding more
+
+The code is already very large as it is, be wary in adding more because it will add to the memory usage. Additionally, consider what the limits are when it comes to memory. If you plan on disseminating this, can Dissemination run a dashboard this size? Let alone if you decide to add more to it? Will the new additions meet accessibility requirement?

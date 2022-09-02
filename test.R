@@ -9,27 +9,21 @@ library(shinyWidgets)
 
 # Import data ----
 df_list <-
-  c(
-    "rateDT",
-    "incomeDT",
-    "basicDT",
-    "healthDT",
-    "civicDT",
-    "civicDT2",
-    "representationDT",
-    "youthDT",
-    "belongingDT",
-    "confidenceDT",
-    "discriminationDT",
-    "educationDT",
-    "OverQualDT",
-    "polData"
-  )
+  list.files("./_tempdata/", ".*\\.parquet$", ignore.case = TRUE) %>%
+  as.data.frame() %>%
+  rename(df_list = ".") %>%
+  mutate(df_list = sub(
+    pattern = "\\.parquet",
+    replacement = "",
+    x = df_list
+  )) %>% 
+  unlist()
 
 #'NOTE [make sure the working directory is pointing to the right location]
 for (i in df_list) {
   assign(i, read_parquet(file = paste0("./_tempdata/", i, ".parquet")))
 }
+gc()
 
 # Functions ----
 add_date_charvar <- function(x) {
@@ -92,6 +86,9 @@ civicDT <-
 
 civicDT2 <- 
   add_date_charvar(civicDT2)
+
+confidenceDT <- 
+  add_date_charvar(confidenceDT)
 
 # Repetitive code ----
 #'NOTE [these are the reoccuring sources I seen, I might be missing something]
@@ -290,6 +287,55 @@ ui <-
         column(width = 9,
                plotlyOutput("civic2", width = "100%"))
       )
+    ),
+    
+    ## 4. Confidence  ----
+    tabPanel(
+      "Confidence",
+      fluid = TRUE,
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          pickerInput(
+            inputId = "conf_vismin", # name this for the server
+            label = "Choose a visible minority group", # label of filter
+            choices = as.character(unique(confidenceDT$VisMin)),
+            # create drop-down list option
+            multiple = TRUE, 
+            selected = as.character(unique(confidenceDT$VisMin))[1],
+            options = list(
+              `actions-box` = TRUE,
+              `deselect-all-text` = "Deselect all",
+              `select-all-text` = "Select all"
+            )), # single-select
+          #'NOTE [this filter affects the next one]
+          pickerInput(
+            inputId = "conf_chartype", # name this for the server
+            label = "Choose a characteristic group", # label of filter
+            choices = as.character(unique(confidenceDT$char_type)),
+            # create drop-down list option
+            multiple = FALSE), # single-select
+          pickerInput(
+            inputId = "conf_characteristic", # name this for the server
+            label = "Choose a characteristic", # label of filter
+            choices = as.character(unique(confidenceDT$Characteristic)),
+            # create drop-down list option
+            multiple = FALSE), # single-select
+          pickerInput(
+            inputId = "conf_indicator", # name this for the server
+            label = "Choose an indicator", # label of filter
+            choices = as.character(unique(confidenceDT$Indicator)),
+            # create drop-down list option
+            multiple = FALSE), # single-select
+          pickerInput(
+            inputId = "conf_conf", # name this for the server
+            label = "Choose a statistic", # label of filter
+            choices = as.character(unique(confidenceDT$Confidence)),
+            # create drop-down list option
+            multiple = FALSE) # single-select
+        ),
+        mainPanel(plotlyOutput("confidence", width = "100%"))
+      )
     )
   )
 )
@@ -346,6 +392,26 @@ server <- function(input, output, session) {
           Characteristic == input$civic2_characteristic,
           Indicator == input$civic2_indicator,
           Confidence == input$civic2_confidence
+        )
+    })
+  
+  ### 4. Confidence ----
+  #'NOTE [lines 402-407 makes the filter char_type affect the characteristics options]
+  observe({
+    confidenceDT_2 <-
+      as.character(unique(confidenceDT$Characteristic[confidenceDT$char_type == input$conf_chartype]))
+    
+    updatePickerInput(session, "conf_characteristic", choices = confidenceDT_2)
+  })
+  
+  confidence_filter <-
+    reactive({
+      confidenceDT %>%
+        filter(
+          VisMin %in% input$conf_vismin,
+          Characteristic == input$conf_characteristic,
+          Indicator == input$conf_indicator,
+          Confidence == input$conf_conf
         )
     })
   
@@ -439,6 +505,34 @@ server <- function(input, output, session) {
   output$civic2 <-
     renderPlotly(ggplotly({
       ggplot(civic2_filter()) +
+        geom_bar(stat = "identity",
+                 position = "dodge",
+                 aes(
+                   x = Year,
+                   y = Value,
+                   colour = VisMin,
+                   fill = VisMin,
+                   text = paste0(
+                     "Visible Minority group: ", VisMin,
+                     "<br>",
+                     "Value: ", format(Value, big.mark = ","),
+                     "<br>",
+                     "Year: ", format(Year, "%Y")
+                   )
+                 ))+
+        theme_minimal() +
+        scale_x_date(date_labels = "%Y") +
+        scale_y_continuous(labels = comma) +
+        labs(x = "Value",
+             y = "Year",
+             colour = "Visible Minority group",
+             fill = "Visible Minority group")
+    }, tooltip = "text"))
+  
+  ### 4. Confidence ----
+  output$confidence <-
+    renderPlotly(ggplotly({
+      ggplot(confidence_filter()) +
         geom_bar(stat = "identity",
                  position = "dodge",
                  aes(
