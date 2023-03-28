@@ -4,8 +4,9 @@ Task: Create a data visualization for SII-IIS
 
 Authors: 
 
-- Suhayl Sayed
 - Jecinta Kemboi
+- Suhayl Sayed
+
 
 Date: 2022-06-10
 
