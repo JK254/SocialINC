@@ -42,21 +42,25 @@ This file retrieves all the data from the following tables and outputs them as .
 
 | CODR # | Table name | Dataset name | Notes |
 |---|---|---|----|
-| 43100069 | Selected labour force status | rateDT | |
-| 43100068 | Average employment income indicators | incomeDT | |
-| 13100841 | Basic needs and housing data | basicDT | |
-| 13100841 | Health indicators | basicDT | |
-| 43100065 | Civic engagement| civicDT | |
-| 43100066 | Civic engagement and engagement in political activities | civicDT2 | |
-| 43100070 | Representation (Selected management occupations and self-employed class of worker) | representationDT | |
-| 43100072 | Youth not in employment | youthDT | |
-| 43100064 | Sense of belonging | belongingDT | |
-| 43100059 | Employment | employmentDT | Has not been released |
-| 43100062 | Confidence in Canadian institutions | confidenceDT | |
-| 43100061 | Discrimination | discriminationDT | |
-| 43100067 | Education | educationDT | |
-| 43100071 | Overqualification rate | OverQualDT & OverQualDT_cma | |
-| 35100066 | Police-reported hate crime | polData | |
+| 43-10-0058-01 | Community and neighbourhood satisfaction | communityDT | |
+| 43-10-0059-01 | Perceptions of police performance and personal safety satisfaction | perceptionDT | |
+| 43-10-0060-01 | Selected housing characteristics low income indicators and knowledge of official languages | languagesDT | |
+| 43-10-0060-01 | Size and composition of personal networks | networkDT | |
+| 43-10-0073-01 | Selected economic housing characteristics | housingDT | |
+| 43-10-0061-01 | Experience(s) of discrimination 5 years before and since the beginning of COVID-19 pandemic | discriminationDT | |
+| 43-10-0062-01 | Confidence in Canadian institutions | confidenceDT | |
+| 43-10-0064-01 | Sense of belonging to the local community town province and Canada and trust in people | belongingDT | |
+| 43-10-0065-01 | Civic engagement and engagement in political activities | civicDT | |
+| 43-10-0066-01 | Vote in the last federal provincial and municipal elections | civicDT2 | |
+| 43-10-0067-01 | Highest certificate degree or diploma | educationDT | |
+| 43-10-0068-01 | Average employment income indicators | incomeDT | |
+| 43-10-0069-01 | Selected labour force status | rateDT | |
+| 43-10-0070-01 | Selected management occupations and self-employed class of worker | representationDT | |
+| 43-10-0071-01 | Overqualification rate | OverQualDT | |
+| 43-10-0072-01 | Youth not in employment education or training in percent |  youthDT | |
+| 13-10-0841-01 | Health indicators (demographic characteristics) | basicDT | |
+| 13-10-0842-01 | Health indicators (sociodemographic characteristics) | basicDT | |
+| 35-10-0066-01 | Police-reported hate crime |  polData | |
 
 This script does not need to be run everytime as these surveys are not frequent. The script takes roughly **2.5 hours** to run if you want to output the most recent data.
 
