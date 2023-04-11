@@ -10,7 +10,7 @@ Authors:
 
 Date: 2022-06-10
 
-This project intends to create a dashboards for the following social inclusion themes with their indicators:
+This project intends to create a dashboards for the following social inclusion themes with their indicators
 ### Participation in the labor market
 (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023004-eng.htm)
 
