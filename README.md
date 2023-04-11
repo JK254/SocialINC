@@ -105,48 +105,48 @@ This script does the following:
 5. rinse and repeat for all CODR tables
 
 ### Participation in the labor market
-(https://github.com/JK254/SocialINC/blob/main/theme_1_lm_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_1_lm_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_1_lm_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_1_lm_fr.R)
 
 ### Representation in decision-making positions
-(https://github.com/JK254/SocialINC/blob/main/theme_2_representation_fr.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_2_representattion_en.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_2_representation_fr.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_2_representattion_en.R)
 
 ### Civic engagement and political representation
-(https://github.com/JK254/SocialINC/blob/main/theme_3_civic_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_3_civic_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_3_civic_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_3_civic_fr.R)
 
 ### Basic needs and housing
-(https://github.com/JK254/SocialINC/blob/main/theme_4_basic_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_4_basic_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_4_basic_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_4_basic_fr.R)
 
 ### Health and well-being
-(https://github.com/JK254/SocialINC/blob/main/theme_5_health_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_5_health_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_5_health_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_5_health_fr.R)
 
 ### Income and wealth
-(https://github.com/JK254/SocialINC/blob/main/theme_6_income_en.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_6_income_en.R)
 (https://github.com/JK254/SocialINC/blob/main/theme_6_income_fr.R)
 
 ### Social connections and personal networks
-(https://github.com/JK254/SocialINC/blob/main/theme_7_social_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_7_social_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_7_social_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_7_social_fr.R)
 
 ### Education and skills development
-(https://github.com/JK254/SocialINC/blob/main/theme_8_education_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_8_education_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_8_education_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_8_education_fr.R)
 
 ### Public services and institutions
-(https://github.com/JK254/SocialINC/blob/main/theme_9_publicserv_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_9_publicserv_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_9_publicserv_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_9_publicserv_fr.R)
 
 ### Local community
-(https://github.com/JK254/SocialINC/blob/main/theme_10_community_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_10_community_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_10_community_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_10_community_fr.R)
 
 ### Discrimination and victimization
-(https://github.com/JK254/SocialINC/blob/main/theme_11_discrimination_en.R)
-(https://github.com/JK254/SocialINC/blob/main/theme_11_discrimination_fr.R)
+- English script (https://github.com/JK254/SocialINC/blob/main/theme_11_discrimination_en.R)
+- French script (https://github.com/JK254/SocialINC/blob/main/theme_11_discrimination_fr.R)
 
 # Resources
 
