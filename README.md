@@ -11,17 +11,38 @@ Authors:
 Date: 2022-06-10
 
 This project intends to create a dashboards for the following social inclusion themes with their indicators:
-Participation in the labor market (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023004-eng.htm)
-Representation in decision-making positions (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023005-eng.htm)
-Civic engagement and political representation (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023006-eng.htm)
-Basic needs and housing (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023007-eng.htm)
-Health and well-being (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023008-eng.htm)
-Income and wealth (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023009-eng.htm)
-Social connections and personal networks (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023010-eng.htm)
-Education and skills development (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023011-eng.htm)
-Public services and institutions (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023012-eng.htm)
-Local community (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023013-eng.htm)
-Discrimination and victimization (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023014-eng.htm)
+### Participation in the labor market
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023004-eng.htm)
+
+### Representation in decision-making positions 
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023005-eng.htm)
+
+### Civic engagement and political representation
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023006-eng.htm)
+
+### Basic needs and housing 
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023007-eng.htm)
+
+###Health and well-being 
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023008-eng.htm)
+
+### Income and wealth 
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023009-eng.htm)
+
+### Social connections and personal networks
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023010-eng.htm)
+
+### Education and skills development
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023011-eng.htm)
+
+### Public services and institutions
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023012-eng.htm)
+
+### Local community 
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023013-eng.htm)
+
+### Discrimination and victimization
+(https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023014-eng.htm)
 
 # R script
 
