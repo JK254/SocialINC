@@ -1,6 +1,6 @@
 # About
 
-Task: Create a data visualization for SII-IIS
+Task: Create a data visualization tools for SII-IIS
 
 Authors: 
 
@@ -10,9 +10,20 @@ Authors:
 
 Date: 2022-06-10
 
-This project intends to create a dashboards for the follwing social indicators.
+This project intends to create a dashboards for the following social inclusion themes with their indicators:
+Participation in the labor market (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023004-eng.htm)
+Representation in decision-making positions (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023005-eng.htm)
+Civic engagement and political representation (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023006-eng.htm)
+Basic needs and housing (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023007-eng.htm)
+Health and well-being (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023008-eng.htm)
+Income and wealth (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023009-eng.htm)
+Social connections and personal networks (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023010-eng.htm)
+Education and skills development (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023011-eng.htm)
+Public services and institutions (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023012-eng.htm)
+Local community (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023013-eng.htm)
+Discrimination and victimization (https://stc-ndm-prod-wc.statcan.gc.ca/n1/pub/71-607-x/71-607-x2023014-eng.htm)
 
-# R scripts
+# R script
 
 ## Required packages
 
@@ -72,35 +83,49 @@ This script does the following:
 4. remove the table to clear up memory
 5. rinse and repeat for all CODR tables
 
-## [2_example_ui.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/2_ui.R)
+### Participation in the labor market
+(https://github.com/JK254/SocialINC/blob/main/theme_1_lm_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_1_lm_fr.R)
 
-This script separates the user interface from the original script with some sectioning to better navigate the code.
+### Representation in decision-making positions
+(https://github.com/JK254/SocialINC/blob/main/theme_2_representation_fr.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_2_representattion_en.R)
 
-## [3_example_server.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/3_server.R)
+### Civic engagement and political representation
+(https://github.com/JK254/SocialINC/blob/main/theme_3_civic_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_3_civic_fr.R)
 
-This script separates the server from the original script with some sectioning to better navigate the code.
+### Basic needs and housing
+(https://github.com/JK254/SocialINC/blob/main/theme_4_basic_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_4_basic_fr.R)
 
-## [test.R](https://github.com/klaxonklaxoff/SocialINC/blob/main/test.R)
+### Health and well-being
+(https://github.com/JK254/SocialINC/blob/main/theme_5_health_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_5_health_fr.R)
 
-> Note: this is a miscellaneous dashboard to see what other options there are to present the data.
+### Income and wealth
+(https://github.com/JK254/SocialINC/blob/main/theme_6_income_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_6_income_fr.R)
 
-This script is a sample that provides different ways to show the data more efficiently. This consists of both the user interface and the server components. The following sections will give a brief description of the tabs.
+### Social connections and personal networks
+(https://github.com/JK254/SocialINC/blob/main/theme_7_social_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_7_social_fr.R)
 
-### Tab 1 (Basic income)
+### Education and skills development
+(https://github.com/JK254/SocialINC/blob/main/theme_8_education_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_8_education_fr.R)
 
-This is the most bare bones of the tabs to show the filters using the table as it comes loaded.
+### Public services and institutions
+(https://github.com/JK254/SocialINC/blob/main/theme_9_publicserv_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_9_publicserv_fr.R)
 
-### Tab 2 (Sense of belonging)
+### Local community
+(https://github.com/JK254/SocialINC/blob/main/theme_10_community_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_10_community_fr.R)
 
-The tab uses the `facet_wrap()` function to split the graph into the characteristic groupings (AKA `char_type`).
-
-### Tab 3 (Civic)
-
-This tab was created to show how multiple filters and plots can be integrated into one tab.
-
-### Tab 4 (Confidence)
-
-This tab uses the `char_type` variable that was created to add a conditional filter to group relevant characteristics together. 
+### Discrimination and victimization
+(https://github.com/JK254/SocialINC/blob/main/theme_11_discrimination_en.R)
+(https://github.com/JK254/SocialINC/blob/main/theme_11_discrimination_fr.R)
 
 # Resources
 
@@ -122,3 +147,4 @@ This tab uses the `char_type` variable that was created to add a conditional fil
 - [Best Practices For Coding In R](https://surge-team.pages.cloud.statcan.ca/blog/2022-07/best_practices_for_coding_in_r/)
 - [Data Analytics Standard](https://digital.pages.cloud.statcan.ca/playbook/solutions/data-analytics/standard/)
 - [Rainbow Parentheses In RStudio](https://surge-team.pages.cloud.statcan.ca/blog/2022-03/rainbow_parentheses/)
+
