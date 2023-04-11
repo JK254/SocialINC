@@ -10,7 +10,7 @@ Authors:
 
 Date: 2022-06-10
 
-This project intends to create a dashboard for social indicators.
+This project intends to create a dashboards for the follwing social indicators.
 
 # R scripts
 
